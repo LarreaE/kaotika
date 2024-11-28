@@ -16,7 +16,7 @@ const Shop = () => {
       try {
         setLoading(true);
         console.log("Fetching Aivan's shop");
-        const res = await fetch('/api/player/shop/');
+        const res = await fetch('/api/player/shop');
         const data = await res.json();
         console.log(data);
       } catch (error) {
