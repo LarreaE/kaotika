@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SERVER_URL } from '@/constants/constants';
-import '../mongoose/config.js';
-import {Player,Weapon,Shield,Helmet,Armor,Boot,Artifact,Ring} from '../mongoose/models/player.js'
+import '../../../DB/mongoose/config.js';
+import {Player,Weapon,Shield,Helmet,Armor,Boot,Artifact,Ring} from '../../../DB/mongoose/models/player.js'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
