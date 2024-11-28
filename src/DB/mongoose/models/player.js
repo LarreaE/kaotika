@@ -26,7 +26,7 @@ const BaseEquipmentSchema = new Schema({
 });
 
 // Weapon Schema
-const WeaponSchema = new Schema({
+export const WeaponSchema = new Schema({
   base_percentage: { type: Number },
   die_faces: { type: Number },
   die_modifier: { type: Number },
@@ -37,7 +37,7 @@ const WeaponSchema = new Schema({
 });
 
 // Armor Schema
-const ArmorSchema = new Schema({
+export const ArmorSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -45,7 +45,7 @@ const ArmorSchema = new Schema({
 });
 
 // Artifact Schema
-const ArtifactSchema = new Schema({
+export const ArtifactSchema = new Schema({
   ...BaseEquipmentSchema.obj,
 });
 
@@ -68,7 +68,7 @@ const PotionSchema = new Schema({
 });
 
 // Shield Schema
-const ShieldSchema = new Schema({
+export const ShieldSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -76,7 +76,7 @@ const ShieldSchema = new Schema({
 });
 
 // Helmet Schema
-const HelmetSchema = new Schema({
+export const HelmetSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -84,7 +84,7 @@ const HelmetSchema = new Schema({
 });
 
 // Boot Schema
-const BootSchema = new Schema({
+export const BootSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -92,7 +92,7 @@ const BootSchema = new Schema({
 });
 
 // Ring Schema
-const RingSchema = new Schema({
+export const RingSchema = new Schema({
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
   ...BaseEquipmentSchema.obj,
