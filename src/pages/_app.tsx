@@ -6,9 +6,20 @@ import Head from "next/head";
 
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const mockSession = {
+    user: {
+      name: "Ion Pazos",
+      email: "jon.pazos@ikasle.aeg.eus",
+      image: "",
+    },
+    expires: "2025-12-31T23:59:59.999Z",
+    accessToken: "fake-access-token",
+    refreshToken: "fake-refresh-token",
+    email: "jon.pazos@ikasle.aeg.eus",
+  };
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={mockSession}>
       <NextUIProvider>
           <Head>
             <link rel='icon' href='/favicon.ico' />
