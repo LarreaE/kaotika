@@ -23,6 +23,8 @@ const MerchantPage: React.FC = () => {
    
     const [items, setItems] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(true);
+    const [player, setPlayer] = useState<Player>();
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
       if (status === 'loading' || !session || !merchantId) return;
@@ -36,24 +38,80 @@ const MerchantPage: React.FC = () => {
         } catch (error) {
           console.error('Failed to fetch merchant items:', error);
         } finally {
-          setLoading(false);
+            if (player) {
+              setLoading(false); // player is slower to fetch 
+            }
         }
       };
     
       fetchShopItems();
     }, [merchantId]);
-    
-  const handleBuy = (item:any) => {
-    
+  
+    useEffect(() => {
+      if (session?.user?.email) {
+        const fetchPlayerData = async () => {
+          try {
+            setLoading(true);
+            const res = await fetch(`/api/player/check-registration?email=${session.user?.email}`);
+            if (res.status === 200) {
+              const response = await res.json();
+              console.log(response.data)
+              setPlayer(response.data);
+            } else if (res.status === 404) {
+              const response = await res.json();
+            } else {
+              setError('An error occurred while checking registration');
+            }
+          } catch (error) {
+            setError('An error occurred while checking registration');
+          } finally {
+            setLoading(false);
+          }
+        };
+  
+        fetchPlayerData();
+      }
+    }, [session]);
+
+  const handleBuy = async(item:any, player:any) => {
+    console.log(item);
+    if (player.gold >= item.value) {
+      console.log("Available");
+      try {
+        setLoading(true);
+
+        if (player.gold >= item.value ) {
+          await fetch(`/api/shop/${player.email}/${merchantId}/${item.name}`);
+        }
+
+        
+      } catch (error) {
+        setError('An error occurred with the purchase');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.log("Unavaliable");
+
+    }
   }
 
   if (!session) return null;
+
+  if (error) return <div className="text-4xl text-center">{error}</div>;
 
   if (items) {
     return (
       <Layout>
         {loading && <Loading />}
         <div className="mt-8 text-center">
+        <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
+          <h2 className="text-xl font-semibold">Balance</h2>
+          <div className="text-lg text-green-600">
+            ${player?.gold}
+          </div>
+        </div>
+  
           <h1>Data for {merchantId}</h1>
           {items && items.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -68,13 +126,13 @@ const MerchantPage: React.FC = () => {
                     className="w-full h-40 object-cover rounded-md mb-4"
                   />
                   <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
-                  <div className="text-gray-700">Price: ${item.value || "N/A"}</div>
+                  <div className="text-red-700">Price: ${item.value || "N/A"}</div>
                   <div className="text-sm text-gray-500 my-2">
                     {item.description || "No description available"}
                   </div>
                   <button
                     className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => handleBuy(item)}
+                    onClick={() => handleBuy(item, player)}
                   >
                     Buy Now
                   </button>
@@ -87,9 +145,7 @@ const MerchantPage: React.FC = () => {
         </div>
       </Layout>
     );
-  }
-  
-  
+  }  
 };
 
 export default MerchantPage;
