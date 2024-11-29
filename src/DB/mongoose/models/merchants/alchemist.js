@@ -20,4 +20,4 @@ const alchemistSchema = new Schema({
     invetory: { type: inventorySchema },
   });
 
-export const Alchemist = mongoose.model('Alchemist', alchemistSchema);
+export const Alchemist = mongoose.models.Alchemist || mongoose.model('Alchemist', alchemistSchema);

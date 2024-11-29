@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {HelmetSchema, ArmorSchema, BootSchema} from './player'
+import {HelmetSchema, ArmorSchema, BootSchema} from '../player'
 const Schema = mongoose.Schema;
 
 // Main Equipment and Potions Schema
@@ -13,4 +13,4 @@ const armorsmithSchema = new Schema({
     invetory: { type: inventorySchema },
   });
 
-export const Armorsmith = mongoose.model('Armorsmith', armorsmithSchema);
+export const Armorsmith = mongoose.models.Armorsmith || mongoose.model('Armorsmith', armorsmithSchema);
