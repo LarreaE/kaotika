@@ -24,9 +24,55 @@ import {
   
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
+  console.log(req.query);
+  
   const { merchantId } = req.query;
-
+  console.log("MERCHANT IDDDDDDDDDDD: ",merchantId);
+  
   const merchantName = Array.isArray(merchantId) ? merchantId[0] : merchantId;
+
+  const updateMerchantInventory = async (merchantName: string) => {
+    try {
+      const db = mongoose.connection;
+  
+
+      const merchantCollections: Record<string, string[]> = {
+        weaponsmith: ['weapons', 'shields'],
+        armorsmith: ['helmets', 'armors', 'boots'],
+        jeweler: ['artifacts', 'rings'],
+        alchemist: ['ingredients',], 
+      };
+  
+      const collectionsToFetch = merchantCollections[merchantName];
+      if (!collectionsToFetch) {
+        throw new Error(`Merchant type "${merchantName}" is not recognized.`);
+      }
+  
+      //take 12 random items, splitting between total item types
+      const itemsPerCollection = Math.floor(12 / collectionsToFetch.length);
+      let merchantItems: any[] = [];
+  
+      for (const collection of collectionsToFetch) {
+        console.log("Collections to fetch: ", collectionsToFetch);
+        console.log("Collection:", collection)
+        
+        const randomItems = await getRandomItems(collection, itemsPerCollection);
+        merchantItems = merchantItems.concat(randomItems);
+        console.log(merchantItems); 
+      }
+      const merchantCollection = db.collection(`merchant_${merchantName}`);
+
+      // delete collection
+      await merchantCollection.deleteMany({});
+
+      // insert new items
+      await merchantCollection.insertMany(merchantItems);
+  
+      console.log(`Updated inventory for ${merchantName} with ${merchantItems.length} items.`);
+    } catch (error) {
+      console.error('Error updating merchant inventory:', error);
+    }
+  };
 
   if (!merchantName) {
     return res.status(400).json({ error: "Merchant name is required." });
@@ -34,7 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
   try {
     const currentDate = new Date();    
-    const previousDate = new Date(await mongoose.connection.collection('date').find({}).toArray().date)
+    const previousDate = new Date(await mongoose.connection.collection('date').find({}).date)
     const isDayDifferent = isDifferentDay(currentDate,previousDate);
 
     const collection = `merchant_${merchantName}`;
@@ -42,16 +88,6 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
     if (isDayDifferent) {
       console.log("Update Store, is ", isDayDifferent);
-
-      const wepons = await Weapon.find()
-      const shields = await Shield.find()
-      const helmets = await Helmet.find()
-      const armors = await Armor.find()
-      const boots = await Boot.find()
-      const artifacts = await Artifact.find()
-      const rings = await Ring.find()
-      const equipment = {wepons,shields,helmets,armors,boots,artifacts,rings}
-      console.log(equipment);
     
       await merchantStore.find({}).toArray();
     }
@@ -61,10 +97,13 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       { $set: { date: currentDate } }
     );
       
+    updateMerchantInventory(merchantName);
+
     const response = await merchantStore.find({}).toArray();
     res.status(200).json(response);    
   } catch (error) {
     console.error('Error fetching merchant data:', error);
     res.status(500).json({ error: 'Failed to fetch merchant inventory' });
   }
+  
 };
