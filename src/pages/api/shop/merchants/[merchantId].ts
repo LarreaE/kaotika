@@ -89,7 +89,6 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
     if (isDayDifferent) {
       console.log("Update Store, is ", isDayDifferent);
     
-      await merchantStore.find({}).toArray();
     }
     //update the las date to the new one
     await mongoose.connection.collection('date').updateOne(
@@ -97,7 +96,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       { $set: { date: currentDate } }
     );
       
-    updateMerchantInventory(merchantName);
+    await updateMerchantInventory(merchantName);
 
     const response = await merchantStore.find({}).toArray();
     res.status(200).json(response);    
