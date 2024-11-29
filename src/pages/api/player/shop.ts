@@ -1,22 +1,30 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SERVER_URL } from '@/constants/constants';
 import '../../../DB/mongoose/config.js';
-import {Player,Weapon,Shield,Helmet,Armor,Boot,Artifact,Ring} from '../../../DB/mongoose/models/player.js'
+import { retrieveAllEquipments } from '../../../helpers/retrieveAllEquipments.js';
+import {
+	
+Weapon,
+Armor,
+Artifact,
+Helmet,
+Shield,
+Boot,
+Ring,
+	
+	} from '@/DB/mongoose/models/models';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	try {
-	    console.log("nigma");
-        
-        const wepons = await Weapon.find()
-        const shields = await Shield.find()
-        const helmets = await Helmet.find()
-        const armors = await Armor.find()
-        const boots = await Boot.find()
-        const artifacts = await Artifact.find()
-        const rings = await Ring.find()
-        
-        const equipment = {wepons,shields,helmets,armors,boots,artifacts,rings};
+		const wepons = await Weapon.find()
+		const shields = await Shield.find()
+		const helmets = await Helmet.find()
+		const armors = await Armor.find()
+		const boots = await Boot.find()
+		const artifacts = await Artifact.find()
+		const rings = await Ring.find()
+		const equipment = {wepons,shields,helmets,armors,boots,artifacts,rings}
         res.status(200).json(equipment);
 
 	} catch (error) {
