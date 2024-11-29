@@ -43,25 +43,44 @@ const MerchantPage: React.FC = () => {
       fetchShopItems();
     }, [merchantId]);
     
+  const handleBuy = (item:any) => {
+    
+  }
 
   if (!session) return null;
 
   if (items) {
     return (
       <Layout>
-      {loading && <Loading />}
+        {loading && <Loading />}
         <div className="mt-8 text-center">
           <h1>Data for {merchantId}</h1>
           {items && items.length > 0 ? (
-            <ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {items.map((item: any, index: React.Key | null | undefined) => (
-                <li key={index} className="my-2 p-2 border-b">
-                  <strong>{item.name || "Unnamed Item"}</strong>
-                  <div>Price: ${item.value || "N/A"}</div>
-                  <div>Description: {item.description || "No description available"}</div>
-                </li>
+                <div
+                  key={index}
+                  className="border rounded-lg shadow-md p-4 flex flex-col items-center"
+                >
+                  <img
+                    src={item.image || "/placeholder.jpg"}
+                    alt={item.name || "Unnamed Item"}
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
+                  <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
+                  <div className="text-gray-700">Price: ${item.value || "N/A"}</div>
+                  <div className="text-sm text-gray-500 my-2">
+                    {item.description || "No description available"}
+                  </div>
+                  <button
+                    className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    onClick={() => handleBuy(item)}
+                  >
+                    Buy Now
+                  </button>
+                </div>
               ))}
-            </ul>
+            </div>
           ) : (
             <p>No items available for this merchant.</p>
           )}
@@ -69,6 +88,7 @@ const MerchantPage: React.FC = () => {
       </Layout>
     );
   }
+  
   
 };
 
