@@ -34,10 +34,10 @@ const MerchantPage: React.FC = () => {
     const fetchShopItems = async () => {
       try {
         setLoading(true);
-        const items = await fetch(`/api/shop/merchants/${merchantId}`)
-
-        const itemsData = await items.json();
-
+        const response = await fetch(`/api/shop/merchants/${merchantId}`)        
+        const itemsData = await response.json();
+        console.log(itemsData);
+        
         setItems(itemsData)
       } catch (error) {
         console.error('Failed to fetch merchant items:', error);
@@ -52,19 +52,20 @@ const MerchantPage: React.FC = () => {
 
   if (!session) return null;
 
-  return (
-    <Layout>
-      {(loading) ? <Loading /> : null}
-      <div className="mt-8 text-center">
-      <h1>Data for {merchantId}</h1>
-      <ul>
+  if (items) {
+    return (
+      <Layout>
+        {(loading) ? <Loading /> : null}
+        <div className="mt-8 text-center">
+        <h1>Data for {merchantId}</h1>
         {items.map((item: any, index: Key | null | undefined) => (
           <li key={index}>{JSON.stringify(item)}</li>
         ))}
-      </ul>
-      </div>
-    </Layout>
-  );
+        </div>
+      </Layout>
+    );
+  }
+  
 };
 
 export default MerchantPage;
