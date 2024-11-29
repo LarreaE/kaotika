@@ -1,4 +1,4 @@
-import Alchemist  from './merchants/alchemist';
+import Alchemist, {Ingredient}  from './merchants/alchemist';
 import Armorsmith  from './merchants/armorsmith';
 import Jeweler  from './merchants/jeweler';
 import Weaponsmith  from './merchants/weaponsmith';
@@ -34,4 +34,5 @@ export {
     HealingPotion,
     EnhancerPotion,
     Equipment,
+    Ingredient
 }

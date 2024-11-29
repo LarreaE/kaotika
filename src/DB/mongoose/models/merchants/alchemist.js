@@ -21,3 +21,5 @@ const alchemistSchema = new Schema({
   });
 
 export const Alchemist = mongoose.models.Alchemist || mongoose.model('Alchemist', alchemistSchema);
+export const Ingredient = mongoose.models.Ingredient || mongoose.model('Ingredient', ingredientSchema);
+
