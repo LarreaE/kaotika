@@ -1,33 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '../../../../DB/mongoose/config';
 import {isDifferentDay} from '../../../../helpers/isDifferentDay'
-import { retrieveAllEquipments } from '@/helpers/retrieveAllEquipments';
 import { getRandomItems } from '@/helpers/getRandomItems';
-
-import {
-  Alchemist,
-  Armorsmith,
-  Jeweler,
-  Weaponsmith,
-  Player,
-  Weapon,
-  Armor,
-  Artifact,
-  Potion,
-  Helmet,
-  Shield,
-  Boot,
-  Ring,
-  HealingPotion,
-  EnhancerPotion,
-  Equipment} from '@/DB/mongoose/models/models';
   
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
-  console.log(req.query);
-  
   const { merchantId } = req.query;
-  console.log("MERCHANT IDDDDDDDDDDD: ",merchantId);
+  console.log("MERCHANT ID: ",merchantId);
   
   const merchantName = Array.isArray(merchantId) ? merchantId[0] : merchantId;
 
@@ -79,27 +58,30 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
   }
 
   try {
-    const currentDate = new Date();    
-    const previousDate = new Date(await mongoose.connection.collection('date').find({}).date)
-    const isDayDifferent = isDifferentDay(currentDate,previousDate);
+    const currentDate = new Date();
+    const doc = await mongoose.connection.collection('date').findOne({})
+    if (doc && doc.date) {
+      const previousDate = new Date(doc.date);
+      const isDayDifferent = isDifferentDay(currentDate,previousDate);
+      console.log("PREVIOUS DATE: ",previousDate);
 
-    const collection = `merchant_${merchantName}`;
-    const merchantStore = mongoose.connection.collection(collection);  
+      const collection = `merchant_${merchantName}`;
+      const merchantStore = mongoose.connection.collection(collection);  
 
-    if (isDayDifferent) {
-      console.log("Update Store, is ", isDayDifferent);
-    
-    }
-    //update the las date to the new one
-    await mongoose.connection.collection('date').updateOne(
-      {},
-      { $set: { date: currentDate } }
-    );
-      
-    await updateMerchantInventory(merchantName);
+      if (isDayDifferent) {
+        console.log("Update Store, is ", isDayDifferent);
+      }
+      //update the las date to the new one
+      await mongoose.connection.collection('date').updateOne(
+        {},
+        { $set: { date: currentDate } }
+      );
+        
+      await updateMerchantInventory(merchantName);
 
-    const response = await merchantStore.find({}).toArray();
-    res.status(200).json(response);    
+      const response = await merchantStore.find({}).toArray();
+      res.status(200).json(response);   
+    } 
   } catch (error) {
     console.error('Error fetching merchant data:', error);
     res.status(500).json({ error: 'Failed to fetch merchant inventory' });
