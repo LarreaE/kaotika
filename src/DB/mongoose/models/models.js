@@ -2,7 +2,7 @@ import Alchemist, {Ingredient}  from './merchants/alchemist';
 import Armorsmith  from './merchants/armorsmith';
 import Jeweler  from './merchants/jeweler';
 import Weaponsmith  from './merchants/weaponsmith';
-import Date from './date'
+import DateModel from './date'
 import { 
 Player,
 Weapon,
@@ -36,5 +36,5 @@ export {
     EnhancerPotion,
     Equipment,
     Ingredient,
-    Date
+    DateModel
 }

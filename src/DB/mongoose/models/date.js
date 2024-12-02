@@ -6,5 +6,5 @@ const dateSchema = new Schema({
     date: { type: Date },
   });
 
-export const Date = mongoose.models.Date || mongoose.model('Date', dateSchema);
+export const DateModel = mongoose.models.DateModel || mongoose.model('DateModel', dateSchema, 'date');
 
