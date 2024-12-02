@@ -30,22 +30,33 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       //take 12 random items, splitting between total item types
       const itemsPerCollection = Math.floor(12 / collectionsToFetch.length);
       let merchantItems: any[] = [];
-  
+      
+      let inventory: any = {};
+
       for (const collection of collectionsToFetch) {
         console.log("Collections to fetch: ", collectionsToFetch);
         console.log("Collection:", collection)
         
         const randomItems = await getRandomItems(collection, itemsPerCollection);
+
+        inventory[collection] = randomItems;
         merchantItems = merchantItems.concat(randomItems);
-        console.log(merchantItems); 
+      
       }
+      
+        
+      // const model = mongoose.models[merchantName];
+      // if (!model) {
+      //   throw new Error(`Model for collection "${merchantName}" not found.`);
+      // }
+      
       const merchantCollection = db.collection(`merchant_${merchantName}`);
 
       // delete collection
       await merchantCollection.deleteMany({});
 
       // insert new items
-      await merchantCollection.insertMany(merchantItems);
+      await merchantCollection.insertOne(inventory);
   
       console.log(`Updated inventory for ${merchantName} with ${merchantItems.length} items.`);
     } catch (error) {

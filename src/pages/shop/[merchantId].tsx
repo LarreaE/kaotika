@@ -37,6 +37,8 @@ const MerchantPage: React.FC = () => {
           setLoading(true);
           const response = await fetch(`/api/shop/merchants/${merchantId}`);
           const itemsData = await response.json();
+          console.log(itemsData);
+          
           setItems(itemsData);
         } catch (error) {
           console.error('Failed to fetch merchant items:', error);
@@ -101,46 +103,63 @@ const MerchantPage: React.FC = () => {
 
   if (!session) return null;
 
-  return (
-    <Layout>
-      {loading && <Loading />}
-      <div className="flex mt-8">
-        {/* Franja izquierda */}
-        <div className="w-1/4 bg-white shadow-lg p-4">
-          <MerchantInfo
-            merchantImage="/path-to-merchant-image.jpg"
-            merchantName={`Merchant ${merchantId}`}
-          />
-          <div className="mt-6">
-            <ItemStats selectedItem={null} />
-          </div>
-        </div>
+  if (error) return <div className="text-4xl text-center">{error}</div>;
 
-        {/* Contenido principal */}
-        <div className="w-3/4 p-4">
-          {error && <div className="text-red-600">{error}</div>}
-          <h1 className="text-center text-2xl font-bold mb-4">
-            Items for Merchant {merchantId}
-          </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {items.map((item: any, index: React.Key | null | undefined) => (
-              <div
-                key={index}
-                onMouseEnter={() => 'setSelectedItem(item)'} // Actualiza el objeto seleccionado al hacer hover
-                onMouseLeave={() => 'setSelectedItem(null)'} // Limpia al salir del hover
-              >
-                <ItemCard
-                  item={item}
-                  player={player}
-                  handleBuy={() => console.log("Buy item")}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+  if (items) {
+    return (
+      <Layout>
+  {loading && <Loading />}
+  <div className="mt-8 text-center">
+    <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
+      <h2 className="text-xl font-semibold">Balance</h2>
+      <div className="text-lg text-green-600">
+        ${player?.gold}
       </div>
-    </Layout>
-  );
+    </div>
+
+    <h1>Data for {merchantId}</h1>
+
+    {/* Iterate through each collection in inventory */}
+      {items[0] && Object.keys(items[0]).length > 0 ? (
+        Object.keys(items[0]).map((collectionName) => (
+          <div key={collectionName}>
+            <h2 className="text-2xl font-semibold mt-6">{collectionName}</h2>
+
+            {/* Render items for this collection */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {items[0][collectionName].map((item: any, index: React.Key | null | undefined) => (
+                <div
+                  key={index}
+                  className="border rounded-lg shadow-md p-4 flex flex-col items-center"
+                >
+                  <img
+                    src={item.image || "/placeholder.jpg"}
+                    alt={item.name || "Unnamed Item"}
+                    className="w-full h-40 object-cover rounded-md mb-4"
+                  />
+                  <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
+                  <div className="text-red-700">Price: ${item.value || "N/A"}</div>
+                  <div className="text-sm text-gray-500 my-2">
+                    {item.description || "No description available"}
+                  </div>
+                  <button
+                    className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    onClick={() => handleBuy(item, player)}
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No items available for this merchant.</p>
+      )}
+    </div>
+  </Layout>
+    );
+  }  
 };
 
 export default MerchantPage;
