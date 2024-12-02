@@ -40,7 +40,7 @@ const Shop = () => {
         name="Alaric Gemwright"
         description="Alaric Gemwright, a master jeweler of unmatched skill, crafts exquisite pieces sought after by royalty. Renowned for their intricate designs and flawless craftsmanship, his creations blend elegance, precision, and a touch of magic. Those who wear them often claim to feel imbued with grace and prestige, as if a part of Alaric’s spirit resides within his work."
         merchantId="seller1"
-        profession='jewlerer'
+        profession='jeweler'
       />
       <FlipCard
         name="Eadric Steelwright"
@@ -60,7 +60,7 @@ const Shop = () => {
         name="Draven Ironvalor"
         description="Draven Ironvalor, the legendary master of shields and weapons, is a towering figure whose creations are revered by warriors and kings alike. In his blazing forge, he crafts unyielding shields that withstand the mightiest blows and blades so sharp they sing in battle. With arms like iron and a presence that commands respect, Draven’s every strike is a promise of unmatched strength. His masterpieces bear intricate carvings, telling stories of valor, and are said to carry the spirit of the forge itself, protecting those who wield them."
         merchantId="seller4"
-        profession='weponsmith'
+        profession='weaponsmith'
 
       />
     </div>
