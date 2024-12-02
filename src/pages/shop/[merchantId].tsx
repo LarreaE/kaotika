@@ -101,43 +101,46 @@ const MerchantPage: React.FC = () => {
 
   if (!session) return null;
 
-  if (error) return <div className="text-4xl text-center">{error}</div>;
-
-  if (items) {
-    return (
-      <Layout>
-        {loading && <Loading />}
-        <div className="mt-8 text-center">
-          <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
-            <h2 className="text-xl font-semibold">Balance</h2>
-            <div className="text-lg text-green-600">
-              ${player?.gold}
-            </div>
+  return (
+    <Layout>
+      {loading && <Loading />}
+      <div className="flex mt-8">
+        {/* Franja izquierda */}
+        <div className="w-1/4 bg-white shadow-lg p-4">
+          <MerchantInfo
+            merchantImage="/path-to-merchant-image.jpg"
+            merchantName={`Merchant ${merchantId}`}
+          />
+          <div className="mt-6">
+            <ItemStats selectedItem={null} />
           </div>
-
-          <h1>Data for {merchantId}</h1>
-
-          {items && items.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {items.map((item: any, index: React.Key | null | undefined) => (
-                  <ItemCard item={{
-                    image: item.image,
-                    name: item.name,
-                    value: item.value,
-                    description: item.description
-                  }} player={player} handleBuy={function (item: any, player: any): void {
-                    throw new Error('Function not implemented.');
-                  } }/>
-                ))
-                }
-              </div>
-          ) : (
-            <p>No items available for this merchant.</p>
-          )}
         </div>
-      </Layout>
-    );
-    }  
+
+        {/* Contenido principal */}
+        <div className="w-3/4 p-4">
+          {error && <div className="text-red-600">{error}</div>}
+          <h1 className="text-center text-2xl font-bold mb-4">
+            Items for Merchant {merchantId}
+          </h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {items.map((item: any, index: React.Key | null | undefined) => (
+              <div
+                key={index}
+                onMouseEnter={() => 'setSelectedItem(item)'} // Actualiza el objeto seleccionado al hacer hover
+                onMouseLeave={() => 'setSelectedItem(null)'} // Limpia al salir del hover
+              >
+                <ItemCard
+                  item={item}
+                  player={player}
+                  handleBuy={() => console.log("Buy item")}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default MerchantPage;
