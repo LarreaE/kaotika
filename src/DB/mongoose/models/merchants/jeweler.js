@@ -12,4 +12,4 @@ const jewelerSchema = new Schema({
     invetory: { type: inventorySchema },
   });
 
-export const Jeweler = mongoose.models.Jeweler || mongoose.model('Jeweler', jewelerSchema);
+export const Jeweler = mongoose.models.Jeweler || mongoose.model('Jeweler', jewelerSchema, 'merchant_jeweler');
