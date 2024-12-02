@@ -34,6 +34,8 @@ const MerchantPage: React.FC = () => {
           setLoading(true);
           const response = await fetch(`/api/shop/merchants/${merchantId}`);
           const itemsData = await response.json();
+          console.log(itemsData);
+          
           setItems(itemsData);
         } catch (error) {
           console.error('Failed to fetch merchant items:', error);
@@ -103,19 +105,26 @@ const MerchantPage: React.FC = () => {
   if (items) {
     return (
       <Layout>
-        {loading && <Loading />}
-        <div className="mt-8 text-center">
-        <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
-          <h2 className="text-xl font-semibold">Balance</h2>
-          <div className="text-lg text-green-600">
-            ${player?.gold}
-          </div>
-        </div>
-  
-          <h1>Data for {merchantId}</h1>
-          {items && items.length > 0 ? (
+  {loading && <Loading />}
+  <div className="mt-8 text-center">
+    <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
+      <h2 className="text-xl font-semibold">Balance</h2>
+      <div className="text-lg text-green-600">
+        ${player?.gold}
+      </div>
+    </div>
+
+    <h1>Data for {merchantId}</h1>
+
+    {/* Iterate through each collection in inventory */}
+      {items[0] && Object.keys(items[0]).length > 0 ? (
+        Object.keys(items[0]).map((collectionName) => (
+          <div key={collectionName}>
+            <h2 className="text-2xl font-semibold mt-6">{collectionName}</h2>
+
+            {/* Render items for this collection */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {items.map((item: any, index: React.Key | null | undefined) => (
+              {items[0][collectionName].map((item: any, index: React.Key | null | undefined) => (
                 <div
                   key={index}
                   className="border rounded-lg shadow-md p-4 flex flex-col items-center"
@@ -139,11 +148,13 @@ const MerchantPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          ) : (
-            <p>No items available for this merchant.</p>
-          )}
-        </div>
-      </Layout>
+          </div>
+        ))
+      ) : (
+        <p>No items available for this merchant.</p>
+      )}
+    </div>
+  </Layout>
     );
   }  
 };

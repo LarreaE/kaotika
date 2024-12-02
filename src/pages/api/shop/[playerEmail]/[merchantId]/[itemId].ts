@@ -2,6 +2,7 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
+import {Player} from '@/DB/mongoose/models/models'
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
   const { playerEmail, merchantId ,itemId } = req.query;
@@ -15,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       if (!model) {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
-      const player = await mongoose.connection.collection('players').findOne({email: playerEmail})
+      const player = await Player.findOne({email: playerEmail})
       const collection = `merchant_${merchantId}`;
       console.log(collection);      
 
@@ -40,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
       console.log(updatedInventory);
 
-      const updatedPlayer = await mongoose.connection.collection('players').findOneAndUpdate(
+      const updatedPlayer = await Player.findOneAndUpdate(
         { _id: player?._id },
         {
           $set: { inventory: updatedInventory }, // adds the item
