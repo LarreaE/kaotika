@@ -1,7 +1,6 @@
 import mongoose from '@/DB/mongoose/config';
 
 export const getRandomItems = async (collectionName: string, count: number) => {
-  
   const model = mongoose.models[collectionName];
   if (!model) {
     throw new Error(`Model for collection "${collectionName}" not found.`);

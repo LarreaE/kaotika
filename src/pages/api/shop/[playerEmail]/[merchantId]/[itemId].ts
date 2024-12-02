@@ -17,8 +17,6 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
       const player = await Player.findOne({email: playerEmail})
-      const collection = `merchant_${merchantId}`;
-      console.log(collection);      
 
       const item = await model.findOne({ name: itemId });
       
