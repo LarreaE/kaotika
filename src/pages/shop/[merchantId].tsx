@@ -34,8 +34,6 @@ const MerchantPage: React.FC = () => {
           setLoading(true);
           const response = await fetch(`/api/shop/merchants/${merchantId}`);
           const itemsData = await response.json();
-          console.log(itemsData);
-          
           setItems(itemsData);
         } catch (error) {
           console.error('Failed to fetch merchant items:', error);
@@ -105,58 +103,61 @@ const MerchantPage: React.FC = () => {
   if (items) {
     return (
       <Layout>
-  {loading && <Loading />}
-  <div className="mt-8 text-center">
-    <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
-      <h2 className="text-xl font-semibold">Balance</h2>
-      <div className="text-lg text-green-600">
-        ${player?.gold}
-      </div>
-    </div>
-
-    <h1>Data for {merchantId}</h1>
-
-    {/* Iterate through each collection in inventory */}
-      {items[0] && Object.keys(items[0]).length > 0 ? (
-        Object.keys(items[0]).map((collectionName) => (
-          <div key={collectionName}>
-            <h2 className="text-2xl font-semibold mt-6">{collectionName}</h2>
-
-            {/* Render items for this collection */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {items[0][collectionName].map((item: any, index: React.Key | null | undefined) => (
-                <div
-                  key={index}
-                  className="border rounded-lg shadow-md p-4 flex flex-col items-center"
-                >
-                  <img
-                    src={item.image || "/placeholder.jpg"}
-                    alt={item.name || "Unnamed Item"}
-                    className="w-full h-40 object-cover rounded-md mb-4"
-                  />
-                  <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
-                  <div className="text-red-700">Price: ${item.value || "N/A"}</div>
-                  <div className="text-sm text-gray-500 my-2">
-                    {item.description || "No description available"}
-                  </div>
-                  <button
-                    className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    onClick={() => handleBuy(item, player)}
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              ))}
+        {loading && <Loading />}
+        <div className="mt-8 text-center">
+          <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
+            <h2 className="text-xl font-semibold">Balance</h2>
+            <div className="text-lg text-green-600">
+              ${player?.gold}
             </div>
           </div>
-        ))
-      ) : (
-        <p>No items available for this merchant.</p>
-      )}
-    </div>
-  </Layout>
+
+          <h1>Data for {merchantId}</h1>
+
+          {items && items.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(items[0]).map(([category, data]) => {
+                if (!Array.isArray(data)) return null;
+
+                return (
+                  <div key={category}>
+                    <h2 className="text-xl font-semibold mb-4">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {data.map((item: any, index: React.Key | null | undefined) => (
+                        <div
+                          key={index}
+                          className="border rounded-lg shadow-md p-4 flex flex-col items-center"
+                        >
+                          <img
+                            src={item.image || "/placeholder.jpg"}
+                            alt={item.name || "Unnamed Item"}
+                            className="w-full h-40 object-cover rounded-md mb-4"
+                          />
+                          <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
+                          <div className="text-red-700">Price: ${item.value || "N/A"}</div>
+                          <div className="text-sm text-gray-500 my-2">
+                            {item.description || "No description available"}
+                          </div>
+                          <button
+                            className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            onClick={() => handleBuy(item, player)}
+                          >
+                            Buy Now
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>No items available for this merchant.</p>
+          )}
+        </div>
+      </Layout>
     );
-  }  
+    }  
 };
 
 export default MerchantPage;
