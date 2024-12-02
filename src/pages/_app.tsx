@@ -12,9 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       email: "jon.pazos@ikasle.aeg.eus",
       image: "",
     },
-    expires: "2025-12-31T23:59:59.999Z",
-    accessToken: "fake-access-token",
-    refreshToken: "fake-refresh-token",
+    expires: "2025-12-31T23:59:59.999",
+    accessToken: "",
+    refreshToken: "",
     email: "jon.pazos@ikasle.aeg.eus",
   };
 
