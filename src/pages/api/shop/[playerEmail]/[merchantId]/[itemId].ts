@@ -10,11 +10,17 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
   const transferItemToPlayer = async (playerEmail: any, merchantId: any, itemId: any) => {
     try {
 
+      const collectionName = `merchant_${merchantId}`;
+      const model = mongoose.models[collectionName];
+      if (!model) {
+        throw new Error(`Model for collection "${collectionName}" not found.`);
+      }
       const player = await mongoose.connection.collection('players').findOne({email: playerEmail})
       const collection = `merchant_${merchantId}`;
       console.log(collection);      
 
-      const item = await mongoose.connection.collection(collection).findOneAndDelete({ name: itemId });
+      const item = await model.findOne({ name: itemId });
+      
       console.log(item);
       
       if (!item?.value) {
