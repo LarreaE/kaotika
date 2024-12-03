@@ -14,6 +14,7 @@ import {
 import { Player } from '@/_common/interfaces/Player';
 import { Task } from '@/_common/interfaces/Task';
 import KaotikaButton from '@/components/KaotikaButton';
+import ItemDisplay from '@/components/shop/ItemDisplay';
 
 
 const MerchantPage: React.FC = () => {
@@ -21,10 +22,13 @@ const MerchantPage: React.FC = () => {
     const router = useRouter();
     const { merchantId } = router.query;
    
-    const [items, setItems] = useState<any>({});
+    const [items, setItems] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [player, setPlayer] = useState<Player>();
     const [error, setError] = useState<string | null>(null);
+    const [cartItems, setCartItems] = useState<any>([]);
+    const [availableMoney, setAvailableMoney] = useState<number | undefined>(0);
+
 
     useEffect(() => {
       if (status === 'loading' || !session || !merchantId) return;
@@ -59,6 +63,7 @@ const MerchantPage: React.FC = () => {
               const response = await res.json();
               console.log(response.data)
               setPlayer(response.data);
+              
             } else if (res.status === 404) {
               const response = await res.json();
             } else {
@@ -75,6 +80,14 @@ const MerchantPage: React.FC = () => {
       }
     }, [session]);
 
+    useEffect(() => {
+      setAvailableMoney(player?.gold)
+      console.log(availableMoney);
+    }, [player])
+    useEffect(() => {
+      console.log(availableMoney);
+    }, [availableMoney])
+    
   const handleBuy = async(item:any, player:any) => {
     console.log(item);
     if (player.gold >= item.value) {
@@ -107,6 +120,49 @@ const MerchantPage: React.FC = () => {
     }
   }
 
+  const handleAddToCart = async(item:any, player:any) => {
+    
+    if (cartItems.some((cartItem:item) => cartItem._id === item._id)) {
+      console.log("already inside");
+      
+    } else {
+      if (availableMoney) {
+        if (availableMoney >= item.value) {
+          console.log("Available");
+          cartItems.push(item);
+          console.log(cartItems);
+          setAvailableMoney(availableMoney - item.value)
+        } else {
+          console.log("Unavaliable");
+        }
+      } else {
+        console.log("NO MONEY AVAILABLE"); 
+      }
+    }
+  }
+
+  const emptyCart = () => {
+    setCartItems([]);
+    setAvailableMoney(player?.gold)
+  }
+  interface item {
+      _id: number,
+      name: string,
+      image: string,
+      value: number,
+  }
+  const removeItem = (item: item) => {
+    if (availableMoney) {
+      setCartItems((cartItems: item[]) => cartItems.filter((cartItem: item) => cartItem._id !== item._id));
+      setAvailableMoney(availableMoney + item.value) 
+    } else {
+      console.log("available money undefined");
+    }
+  };
+
+  const calculateTotalPrice = () => 
+      cartItems.reduce((total:any, item:item) => total + item.value, 0);
+
   if (!session) return null;
 
   if (error) return <div className="text-4xl text-center">{error}</div>;
@@ -124,7 +180,6 @@ const MerchantPage: React.FC = () => {
           </div>
 
           <h1>Data for {merchantId}</h1>
-
           {items && items.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(items[0]).map(([category, data]) => {
@@ -155,6 +210,12 @@ const MerchantPage: React.FC = () => {
                           >
                             Buy Now
                           </button>
+                          <button
+                            className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            onClick={() => handleAddToCart(item, player)}
+                          >
+                            Add to Cart
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -166,6 +227,7 @@ const MerchantPage: React.FC = () => {
             <p>No items available for this merchant.</p>
           )}
         </div>
+        <ItemDisplay items={cartItems} emptyCart={emptyCart} removeItem={removeItem} calculateTotalPrice={calculateTotalPrice}/>
       </Layout>
     );
     }  
