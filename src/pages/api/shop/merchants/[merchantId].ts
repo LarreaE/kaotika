@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '../../../../DB/mongoose/config';
 import {isDifferentDay} from '../../../../helpers/isDifferentDay'
 import { getRandomItems } from '@/helpers/getRandomItems';
-  
+import {transformStringPlural, transformStringSingular} from '@/helpers/transformString'
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
   const { merchantId } = req.query;
@@ -33,28 +33,30 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       
       let inventory: any = {};
 
+      console.log("Collections to fetch: ", collectionsToFetch);
+
       for (const collection of collectionsToFetch) {
-        console.log("Collections to fetch: ", collectionsToFetch);
         console.log("Collection:", collection)
         
-        const randomItems = await getRandomItems(collection, itemsPerCollection);
+        const fix = transformStringPlural(collection);
+        
+        const randomItems = await getRandomItems(fix, itemsPerCollection);
 
         inventory[collection] = randomItems;
-        merchantItems = merchantItems.concat(randomItems);
-      
+        merchantItems = merchantItems.concat(randomItems);      
       }
       
-        
-      // const model = mongoose.models[merchantName];
-      // if (!model) {
-      //   throw new Error(`Model for collection "${merchantName}" not found.`);
-      // }
+      const fix = transformStringSingular(merchantName)
+      const model = mongoose.models[fix];
+      if (!model) {
+        throw new Error(`Model for collection "${merchantName}" not found.`);
+      }
       
       const merchantCollection = db.collection(`merchant_${merchantName}`);
 
       // delete collection
-      await merchantCollection.deleteMany({});
-
+      await model.deleteMany({});
+      
       // insert new items
       await merchantCollection.insertOne(inventory);
   

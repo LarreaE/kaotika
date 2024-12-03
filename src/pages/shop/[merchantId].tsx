@@ -18,60 +18,74 @@ const MerchantPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<any | null>(null); // Estado para el objeto seleccionado
 
-  useEffect(() => {
-    if (status === 'loading' || !session || !merchantId) return;
-
-    const fetchShopItems = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/shop/merchants/${merchantId}`);
-        const itemsData = await response.json();
-        setItems(itemsData);
-      } catch (error) {
-        console.error('Failed to fetch merchant items:', error);
-        setError('Failed to fetch merchant items');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShopItems();
-  }, [merchantId, session, status]);
-
-  useEffect(() => {
-    if (session?.user?.email) {
-      const fetchPlayerData = async () => {
+    useEffect(() => {
+      if (status === 'loading' || !session || !merchantId) return;
+      
+      const fetchShopItems = async () => {
         try {
           setLoading(true);
-          const res = await fetch(`/api/player/check-registration?email=${session.user.email}`);
-          if (res.status === 200) {
-            const response = await res.json();
-            setPlayer(response.data);
-          } else {
-            setError('Failed to fetch player data');
-          }
+          const response = await fetch(`/api/shop/merchants/${merchantId}`);
+          const itemsData = await response.json();
+          console.log(itemsData);
+          
+          setItems(itemsData);
         } catch (error) {
-          console.error('Failed to fetch player data:', error);
-          setError('Failed to fetch player data');
+          console.error('Failed to fetch merchant items:', error);
         } finally {
-          setLoading(false);
+            if (player) {
+              setLoading(false); // player is slower to fetch 
+            }
         }
       };
-
-      fetchPlayerData();
-    }
-  }, [session]);
+    
+      fetchShopItems();
+    }, [merchantId]);
+  
+    useEffect(() => {
+      if (session?.user?.email) {
+        const fetchPlayerData = async () => {
+          try {
+            setLoading(true);
+            const res = await fetch(`/api/player/check-registration?email=${session.user?.email}`);
+            if (res.status === 200) {
+              const response = await res.json();
+              console.log(response.data)
+              setPlayer(response.data);
+            } else if (res.status === 404) {
+              const response = await res.json();
+            } else {
+              setError('An error occurred while checking registration');
+            }
+          } catch (error) {
+            setError('An error occurred while checking registration');
+          } finally {
+            setLoading(false);
+          }
+        };
+  
+        fetchPlayerData();
+      }
+    }, [session]);
 
   const handleBuy = async (item: any, player: any) => {
     if (player?.gold >= item.value) {
       try {
         setLoading(true);
-        await fetch(`/api/shop/${player.email}/${merchantId}/${item.name}`);
-        // Actualiza el oro del jugador después de la compra
-        setPlayer((prevPlayer: any) => ({
-          ...prevPlayer,
-          gold: prevPlayer.gold - item.value,
-        }));
+
+        if (player.gold >= item.value ) {
+          const res = await fetch(`/api/shop/${player.email}/${merchantId}/${item.name}`);
+          if (res.status === 200) {
+            const response = await res.json();
+            console.log(response)
+            setPlayer(response);
+          } else if (res.status === 404) {
+            console.log(error);
+          } else {
+            setError('An error occurred while checking registration');
+          }
+        }
+
+        
       } catch (error) {
         console.error('Failed to complete purchase:', error);
         setError('Failed to complete purchase');
