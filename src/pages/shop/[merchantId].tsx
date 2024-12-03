@@ -34,6 +34,8 @@ const MerchantPage: React.FC = () => {
           setLoading(true);
           const response = await fetch(`/api/shop/merchants/${merchantId}`);
           const itemsData = await response.json();
+          console.log(itemsData);
+          
           setItems(itemsData);
         } catch (error) {
           console.error('Failed to fetch merchant items:', error);

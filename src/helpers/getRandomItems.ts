@@ -5,7 +5,12 @@ export const getRandomItems = async (collectionName: string, count: number) => {
   if (!model) {
     throw new Error(`Model for collection "${collectionName}" not found.`);
   }
-  const items = await model.find({});
-  const shuffled = items.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
+  try {
+    const items = await model.find({ isUnique: { $ne: true } });
+    const shuffled = items.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  } catch (error) {
+    console.error('Error fetching items:', error);
+    throw error;
+  }
 };
