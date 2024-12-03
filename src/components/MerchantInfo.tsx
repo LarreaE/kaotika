@@ -7,7 +7,7 @@ interface MerchantInfoProps {
 
 const MerchantInfo: React.FC<MerchantInfoProps> = ({ merchantImage, merchantName }) => {
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center p-4 text-black">
       <img
         src={merchantImage || "/placeholder-merchant.jpg"}
         alt={merchantName || "Merchant"}
