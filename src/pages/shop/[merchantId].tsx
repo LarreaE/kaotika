@@ -81,7 +81,16 @@ const MerchantPage: React.FC = () => {
         setLoading(true);
 
         if (player.gold >= item.value ) {
-          await fetch(`/api/shop/${player.email}/${merchantId}/${item.name}`);
+          const res = await fetch(`/api/shop/${player.email}/${merchantId}/${item.name}`);
+          if (res.status === 200) {
+            const response = await res.json();
+            console.log(response)
+            setPlayer(response);
+          } else if (res.status === 404) {
+            console.log(error);
+          } else {
+            setError('An error occurred while checking registration');
+          }
         }
 
         
