@@ -1,21 +1,14 @@
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { Key, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import Loading from '../../components/Loading';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell
-} from "@nextui-org/table";
 import { Player } from '@/_common/interfaces/Player';
-import { Task } from '@/_common/interfaces/Task';
-import KaotikaButton from '@/components/KaotikaButton';
-import ItemDisplay from '@/components/shop/ItemDisplay';
 
+import MerchantInfo from '@/components/MerchantInfo';
+import ItemStats from '@/components/ItemStats';
+import ItemCard from '@/components/ItemCard';
+import ItemDisplay from '@/components/shop/ItemDisplay';
 
 const MerchantPage: React.FC = () => {
     const { data: session, status } = useSession();
@@ -28,6 +21,7 @@ const MerchantPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [cartItems, setCartItems] = useState<any>([]);
     const [availableMoney, setAvailableMoney] = useState<number | undefined>(0);
+    const [selectedItem, setSelectedItem] = useState<any | null>(null); // Estado para el objeto seleccionado
 
 
     useEffect(() => {
@@ -110,13 +104,13 @@ const MerchantPage: React.FC = () => {
 
         
       } catch (error) {
-        setError('An error occurred with the purchase');
+        console.error('Failed to complete purchase:', error);
+        setError('Failed to complete purchase');
       } finally {
         setLoading(false);
       }
     } else {
       console.log("Unavaliable");
-
     }
   }
 
@@ -165,51 +159,52 @@ const MerchantPage: React.FC = () => {
 
   if (!session) return null;
 
-  if (error) return <div className="text-4xl text-center">{error}</div>;
+  return (
+    <Layout>
+      {loading && <Loading />}
+      <div className="flex mt-8">
+        {/* Franja izquierda */}
+        <div className="w-1/4 bg-orange-100 shadow-lg p-4">
+          <MerchantInfo
+            merchantImage='/sellers/seller1.png'
+            merchantName={`Merchant ${merchantId}`}
+          />
+          <div className="mt-6">
+            <ItemStats selectedItem={selectedItem} />
+          </div>
+        </div>
 
-  if (items) {
-    return (
-      <Layout>
-        {loading && <Loading />}
-        <div className="mt-8 text-center">
+        {/* Contenido principal */}
+        <div className="w-3/4 p-4">
+          {error && <div className="text-red-600">{error}</div>}
           <div className="fixed top-32 right-4 bg-white shadow-lg p-4 rounded-md border">
             <h2 className="text-xl font-semibold">Balance</h2>
-            <div className="text-lg text-green-600">
-              ${player?.gold}
-            </div>
+            <div className="text-lg text-green-600">${player?.gold || 0}</div>
           </div>
-
-          <h1>Data for {merchantId}</h1>
-          {items && items.length > 0 ? (
+          <h1 className="text-center text-2xl font-bold mb-4">
+            Items for Merchant {merchantId}
+          </h1>
+          {items.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(items[0]).map(([category, data]) => {
                 if (!Array.isArray(data)) return null;
 
                 return (
                   <div key={category}>
-                    <h2 className="text-xl font-semibold mb-4">{category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+                    <h2 className="text-xl font-semibold mb-4">
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {data.map((item: any, index: React.Key | null | undefined) => (
                         <div
                           key={index}
-                          className="border rounded-lg shadow-md p-4 flex flex-col items-center"
+                          onMouseEnter={() => setSelectedItem(item)} // Actualiza el objeto seleccionado al hacer hover
                         >
-                          <img
-                            src={item.image || "/placeholder.jpg"}
-                            alt={item.name || "Unnamed Item"}
-                            className="w-full h-40 object-cover rounded-md mb-4"
+                          <ItemCard
+                            item={item}
+                            player={player}
+                            handleBuy={() => handleBuy(item, player)}
                           />
-                          <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
-                          <div className="text-red-700">Price: ${item.value || "N/A"}</div>
-                          <div className="text-sm text-gray-500 my-2">
-                            {item.description || "No description available"}
-                          </div>
-                          <button
-                            className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                            onClick={() => handleBuy(item, player)}
-                          >
-                            Buy Now
-                          </button>
                           <button
                             className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                             onClick={() => handleAddToCart(item, player)}
@@ -227,10 +222,10 @@ const MerchantPage: React.FC = () => {
             <p>No items available for this merchant.</p>
           )}
         </div>
+      </div>
         <ItemDisplay items={cartItems} emptyCart={emptyCart} removeItem={removeItem} calculateTotalPrice={calculateTotalPrice}/>
-      </Layout>
-    );
-    }  
+    </Layout>
+  );
 };
 
 export default MerchantPage;
