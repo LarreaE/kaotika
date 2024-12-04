@@ -13,3 +13,10 @@ export const transformStringSingular = (str:string) => {
     const remainingString = str.slice(1);
     return firstLetterUpperCase + remainingString;
 }
+
+export const transformStringSingularToPlural = (str:string) => {
+    if (str.length === 0) return str;  
+    const firstLetterLowerCase = str.charAt(0).toLowerCase(); 
+    const remainingString = 's';
+    return str + remainingString;
+}
