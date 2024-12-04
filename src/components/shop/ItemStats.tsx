@@ -10,13 +10,14 @@ import { Ring } from '@/_common/interfaces/Ring';
 import { Shield } from '@/_common/interfaces/Shield';
 import isModifier from '@/helpers/IsModifier';
 import { Attribute } from '@/_common/interfaces/Attribute';
+import { Modifier } from '@/_common/interfaces/Modifier';
 
 type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield; 
 
 interface ItemStatsProps {
   selectedItem: Item | null; 
-  atributtes: Attribute;
-  playerLevel: number; // Agregamos el nivel del jugador
+  atributtes: Modifier | undefined;
+  playerLevel: number | undefined;
 }
 
 const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, atributtes, playerLevel }) => {

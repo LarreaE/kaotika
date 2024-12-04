@@ -9,9 +9,10 @@ interface ItemCardProps {
   };
   player: any; // Ajusta el tipo según tu interfaz de Player
   handleBuy: (item: any, player: any) => void;
+  handleAddToCart: (item: any, player: any) => void;
 }
 
-const ItemCard: React.FC<ItemCardProps> = ({ item, player, handleBuy }) => {
+const ItemCard: React.FC<ItemCardProps> = ({ item, player, handleBuy,handleAddToCart }) => {
   return (
     <div className="border rounded-lg shadow-md p-4 flex flex-col items-center">
       <img
@@ -19,9 +20,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, player, handleBuy }) => {
         alt={item.name || "Unnamed Item"}
         className="w-full h-40 object-cover rounded-md mb-4"
       />
-      <strong className="text-lg mb-2">{item.name || "Unnamed Item"}</strong>
-      <div className="text-red-700">Price: ${item.value || "N/A"}</div>
-      <div className="text-sm text-gray-500 my-2">
+      <strong className="text-lg mb-2 text-white">{item.name || "Unnamed Item"}</strong>
+      <div className="text-yellow-400">Price: ${item.value || "N/A"}</div>
+      <div className="text-sm text-gray-300 my-2">
         {item.description || "No description available"}
       </div>
       <button
@@ -29,6 +30,12 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, player, handleBuy }) => {
         onClick={() => handleBuy(item, player)}
       >
         Buy Now
+      </button>
+      <button
+        className="mt-auto bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        onClick={() => handleAddToCart(item, player)}
+      >
+        Add to Cart
       </button>
     </div>
   );
