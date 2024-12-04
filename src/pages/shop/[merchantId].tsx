@@ -5,10 +5,12 @@ import Layout from '../../components/Layout';
 import Loading from '../../components/Loading';
 import { Player } from '@/_common/interfaces/Player';
 
-import MerchantInfo from '@/components/MerchantInfo';
-import ItemStats from '@/components/ItemStats';
-import ItemCard from '@/components/ItemCard';
+import MerchantInfo from '@/components/shop/MerchantInfo';
+import ItemStats from '@/components/shop/ItemStats';
+import ItemCard from '@/components/shop/ItemCard';
 import ItemDisplay from '@/components/shop/ItemDisplay';
+import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
+import { Modifier } from '@/_common/interfaces/Modifier';
 
 const MerchantPage: React.FC = () => {
     const { data: session, status } = useSession();
@@ -21,7 +23,9 @@ const MerchantPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [cartItems, setCartItems] = useState<any>([]);
     const [availableMoney, setAvailableMoney] = useState<number | undefined>(0);
-    const [selectedItem, setSelectedItem] = useState<any | null>(null); // Estado para el objeto seleccionado
+    const [selectedItem, setSelectedItem] = useState<any | null>(null);
+    const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
+
 
 
     useEffect(() => {
@@ -73,15 +77,14 @@ const MerchantPage: React.FC = () => {
         fetchPlayerData();
       }
     }, [session]);
-
-    useEffect(() => {
-      setAvailableMoney(player?.gold)
-      console.log(availableMoney);
-    }, [player])
-    useEffect(() => {
-      console.log(availableMoney);
-    }, [availableMoney])
     
+    useEffect(() => {
+      if(player) {
+      calculateAllAttributes(player, setCurrentAttributes);
+      setAvailableMoney(player?.gold)
+      }
+    }, [player])
+
   const handleBuy = async(item:any, player:any) => {
     console.log(item);
     if (player.gold >= item.value) {
@@ -175,7 +178,7 @@ const MerchantPage: React.FC = () => {
             merchantName={`Merchant ${merchantId}`}
           />
           <div className="">
-            <ItemStats selectedItem={selectedItem} />
+            <ItemStats selectedItem={selectedItem} atributtes={currentAttributes} playerLevel={player?.level}/>
           </div>
         </div>
 
