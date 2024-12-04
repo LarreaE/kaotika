@@ -1,13 +1,25 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Loading from "../Loading";
+import { useSession } from "next-auth/react";
 
 interface CartProps {
     Items: any
 }
 const Cart: React.FC<CartProps> = ({ Items }) => {
   
+  const { data: session, status } = useSession();
   const [items, setItems] = useState(Items);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
+
+  useEffect(() => {
+    //update the Items    
+    setItems(Items);
+    setLoading(false);
+  }, [Items])
+  
   
   const updateQuantity = (id:any, delta:any) => {
     setItems((prevItems:any) =>
@@ -20,19 +32,47 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
   };
 
   const calculateTotal = () =>
-    items.reduce((total:any, item:any) => total + item.price * item.quantity, 0);
+    items.reduce((total:any, item:any) => total + item.value , 0);
  
   const removeItem = (id:any) => {
-    setItems((prevItems:any) => prevItems.filter((item:any) => item.id !== id));
+    setItems((prevItems:any) => prevItems.filter((item:any) => item._id !== id));
   };
 
   
-  const finalizePurchase = () => {
-    setItems([]); 
-  };
+  const handleBuy = async(items:any[]) => {
+  
+    if (session) {
+      try {
+        setLoading(true);
+
+        const simplifiedItems = items.map(({ type, name }) => ({ type, name }));
+        const encodedItems = encodeURIComponent(JSON.stringify(simplifiedItems));
+
+        const res = await fetch(`/api/shop/checkout/${session.email}/${encodedItems}`);
+        if (res.status === 200) {
+          const response = await res.json();
+          setItems([]);
+          console.log(response)
+        } else if (res.status === 404) {
+          setError(error);
+          console.log(error);
+        } else {
+          setError('An error occurred while purchasing');
+        }
+      } catch (error) {
+        console.error('Failed to complete purchase:', error);
+        setError('Failed to complete purchase');
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
 
   return (
-    <div className="max-w-full mx-auto mt-10 p-6 bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg rounded-lg">
+    <>
+    {loading && <Loading/>}
+    {error && <div className="text-red-600">{error}</div>}
+      <div className="max-w-full mx-auto mt-10 p-6 bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
         Epic Cart
       </h1>
@@ -46,34 +86,11 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
               className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border"
             >
               <span className="text-gray-800 font-semibold p-4">{item.name}</span>
-              {item.type === "ingredient" ? (
-                <div className="flex items-center space-x-4">
-                  <button
-                    data-testid={`remove_unit_${item.id}`}
-                    className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition"
-                    onClick={() => updateQuantity(item.id, -1)}
-                  >
-                    -
-                  </button>
-                  <span data-testid={`ingredient_qty_${item.id}`} className="text-gray-800 font-medium">
-                    {item.quantity}
-                  </span>
-                  <button
-                    data-testid={`add_unit_${item.id}`}
-                    className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition"
-                    onClick={() => updateQuantity(item.id, 1)}
-                  >
-                    +
-                  </button>
-                </div>
-              ) : (
-                <span className="text-gray-600">Qty: {item.quantity}</span>
-              )}
-              <span className="text-gray-800 font-semibold p-4">{item.quantity * item.price}</span>
+              <span className="text-gray-800 font-semibold p-4">{item.value}</span>
               <button
                 data-testid={`remove_item_${item.id}`}
                 className="px-6 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition m-4"
-                onClick={() => removeItem(item.id)}
+                onClick={() => removeItem(item._id)}
               >
                 Remove Item
               </button>
@@ -87,13 +104,14 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
         <button
 					data-testid={'end_purchase'}
           className="w-full mt-6 py-2 bg-green-500 text-white text-lg font-bold rounded-lg hover:bg-green-600 transition"
-          onClick={finalizePurchase}
+          onClick={() => handleBuy(items)}
         >
           Purchase Items
         </button>
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 
