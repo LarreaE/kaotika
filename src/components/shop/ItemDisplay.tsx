@@ -12,10 +12,11 @@ interface Props {
   emptyCart: () => void;
   removeItem: (item: Item) => void;
   calculateTotalPrice: () => number ;
+  goToCheckout: () => void;
 
 }
 
-const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateTotalPrice }) => {
+const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateTotalPrice, goToCheckout }) => {
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-900 to-gray-700">
       <div className="w-11/12 max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-600">
@@ -27,6 +28,7 @@ const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateT
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {items.map((item: Item) => (
                 <div
+                  onClick={() => removeItem(item)} // Fix applied here
                   key={item._id}
                   className="flex items-center bg-gray-700 rounded-lg p-4 shadow-md border border-gray-600 hover:bg-gray-600 transition"
                 >
@@ -40,7 +42,6 @@ const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateT
                     <p className="text-gray-400">Value: {item.value} gold</p>
                   </div>
                   <button
-                    onClick={() => removeItem(item)} // Fix applied here
                     className="ml-auto bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Remove
@@ -52,13 +53,13 @@ const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateT
         </div>
         <span>Price: {calculateTotalPrice()}</span>
         <button
-          onClick={emptyCart}
+          onClick={() => emptyCart()}
           className="mt-4 w-full py-2 bg-gray-700 text-gray-100 font-semibold rounded-md shadow hover:bg-gray-600 transition"
         >
           Remove All
         </button>
         <button
-          onClick={emptyCart}
+          onClick={() => goToCheckout()}
           className="mt-4 w-full py-2 bg-gray-700 text-gray-100 font-semibold rounded-md shadow hover:bg-gray-600 transition"
         >
           Checkout
