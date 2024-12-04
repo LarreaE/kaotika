@@ -55,8 +55,8 @@ const MerchantPage: React.FC = () => {
             const res = await fetch(`/api/player/check-registration?email=${session.user?.email}`);
             if (res.status === 200) {
               const response = await res.json();
-              console.log(response.data)
-              setPlayer(response.data);
+              console.log(response)
+              setPlayer(response);
               
             } else if (res.status === 404) {
               const response = await res.json();
