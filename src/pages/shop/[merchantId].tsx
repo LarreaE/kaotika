@@ -11,6 +11,7 @@ import ItemCard from '@/components/ItemCard';
 import ItemDisplay from '@/components/shop/ItemDisplay';
 
 const MerchantPage: React.FC = () => {
+
     const { data: session, status } = useSession();
     const router = useRouter();
     const { merchantId } = router.query;
@@ -154,6 +155,11 @@ const MerchantPage: React.FC = () => {
     }
   };
 
+  const goToCheckout = () => {
+    const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
+    router.push(`/shop/checkout?cart=${encodedCartItems}`);
+  };
+
   const calculateTotalPrice = () => 
       cartItems.reduce((total:any, item:item) => total + item.value, 0);
 
@@ -228,7 +234,7 @@ const MerchantPage: React.FC = () => {
           )}
         </div>
       </div>
-        <ItemDisplay items={cartItems} emptyCart={emptyCart} removeItem={removeItem} calculateTotalPrice={calculateTotalPrice}/>
+        <ItemDisplay items={cartItems} emptyCart={emptyCart} removeItem={removeItem} calculateTotalPrice={calculateTotalPrice} goToCheckout={goToCheckout}/>
     </Layout>
   );
 };
