@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
 import {Player} from '@/DB/mongoose/models/models'
 import { transformStringSingular } from '@/helpers/transformString';
+
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
 interface Item {
@@ -13,6 +14,7 @@ interface Item {
 }
 interface Player {
   gold: number,
+  inventory: any,
 }
 const decreasePurchasedGold = (player:Player, item:Item) =>{
   player.gold -= item.value;
@@ -20,7 +22,7 @@ const decreasePurchasedGold = (player:Player, item:Item) =>{
 
   const { playerEmail, items } = req.query;
 
-  const transferItemToPlayer = async (player: any, itemType: any, itemId: any) => {
+  const transferItemToPlayer = async (player: Player, itemType: string, itemId: string) => {
     try {
 
       const collectionName = transformStringSingular(itemType);      
