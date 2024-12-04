@@ -57,6 +57,12 @@ const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateT
         >
           Remove All
         </button>
+        <button
+          onClick={emptyCart}
+          className="mt-4 w-full py-2 bg-gray-700 text-gray-100 font-semibold rounded-md shadow hover:bg-gray-600 transition"
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );
