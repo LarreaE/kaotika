@@ -16,15 +16,23 @@ import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 
 const MerchantPage: React.FC = () => {
+
+  interface item {
+    _id: number,
+    name: string,
+    image: string,
+    value: number,
+}
+
   const { data: session, status } = useSession();
   const router = useRouter();
   const { merchantId } = router.query;
 
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [player, setPlayer] = useState<Player>();
   const [error, setError] = useState<string | null>(null);
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<any>([]);
   const [availableMoney, setAvailableMoney] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
@@ -62,8 +70,8 @@ const MerchantPage: React.FC = () => {
           );
           if (res.status === 200) {
             const response = await res.json();
-            console.log(response.data);
-            setPlayer(response.data);
+            console.log(response);
+            setPlayer(response);
           } else if (res.status === 404) {
             const response = await res.json();
           } else {
@@ -118,7 +126,7 @@ const MerchantPage: React.FC = () => {
   };
 
   const handleAddToCart = (item: any, player: any) => {
-    if (cartItems.some((cartItem) => cartItem._id === item._id)) {
+    if (cartItems.some((cartItem:item) => cartItem._id === item._id)) {
       console.log('already inside');
     } else {
       if (availableMoney >= item.value) {
@@ -137,15 +145,22 @@ const MerchantPage: React.FC = () => {
     setAvailableMoney(player?.gold || 0);
   };
 
-  const removeItem = (item: any) => {
-    setCartItems((cartItems) =>
-      cartItems.filter((cartItem) => cartItem._id !== item._id)
-    );
-    setAvailableMoney((prev) => prev + item.value);
+  const removeItem = (item: item) => {
+    if (availableMoney) {
+      setCartItems((cartItems: item[]) => cartItems.filter((cartItem: item) => cartItem._id !== item._id));
+      setAvailableMoney(availableMoney + item.value) 
+    } else {
+      console.log("available money undefined");
+    }
+  };
+
+  const goToCheckout = () => {
+    const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
+    router.push(`/shop/checkout?cart=${encodedCartItems}`);
   };
 
   const calculateTotalPrice = () =>
-    cartItems.reduce((total, item) => total + item.value, 0);
+    cartItems.reduce((total:number, item:item) => total + item.value, 0);
 
   if (!session) return null;
 
@@ -201,6 +216,7 @@ const MerchantPage: React.FC = () => {
         emptyCart={emptyCart}
         removeItem={removeItem}
         calculateTotalPrice={calculateTotalPrice}
+        goToCheckout={goToCheckout}
       />
     </Layout>
   );
