@@ -162,14 +162,19 @@ const MerchantPage: React.FC = () => {
   return (
     <Layout>
       {loading && <Loading />}
-      <div className="flex mt-8">
+      <div className="flex">
         {/* Franja izquierda */}
-        <div className="w-1/4 bg-orange-100 shadow-lg p-4">
+        <div
+          className="w-[30%] bg-orange-100 shadow-lg p-4 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/images/pergamino.jpg')",
+          }}
+        >
           <MerchantInfo
-            merchantImage='/sellers/seller1.png'
+            merchantImage="/images/sellers/seller1.png"
             merchantName={`Merchant ${merchantId}`}
           />
-          <div className="mt-6">
+          <div className="">
             <ItemStats selectedItem={selectedItem} />
           </div>
         </div>
