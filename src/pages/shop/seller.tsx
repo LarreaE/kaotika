@@ -121,6 +121,20 @@ const Shop = () => {
               />
             </div>
           </div>
+          {/* Contenedor para los botones para que se vea correctamente uno al lado del otro */}
+          <div className="flex flex-row items-center justify-center gap-x-4 mt-16">
+            {/* aqui va ha estar el boton para ver con mas detalle el objeto que tengas seleccionado */}
+            <button 
+              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+              Ver detalles
+            </button>
+
+            {/* aqui va ha estar el boton para vvender el objeto aqui se calculara el precio base entre 3 */}
+            <button 
+              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+              Vender por 312
+            </button>
+          </div>
         </div>
 
         {/* aqui va ha estar el inventario en el que vas a poder seleccionar los objetos para luego venderlos */}
