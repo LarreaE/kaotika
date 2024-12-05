@@ -119,6 +119,7 @@ const MerchantPage: React.FC = () => {
 
   return (
     <Layout>
+      {loading && <Loading/>}
   <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
     <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
       <div className="flex space-x-4">

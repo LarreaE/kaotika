@@ -41,9 +41,6 @@ const Header: React.FC = () => {
       <Link href="/shop">
         <span className={router.pathname == "/shop" ? "text-4xl mx-6 underline" :"text-4xl mx-6 hover:underline"}>Aivan's Shop</span>
       </Link>
-      <Link href="/shop/seller">
-        <span className={router.pathname == "/shop/seller" ? "text-4xl mx-6 underline" :"text-4xl mx-6 hover:underline"}>Seller's Shop</span>
-      </Link>
     </nav>);
   }
 
