@@ -8,14 +8,14 @@ import Head from "next/head";
 function MyApp({ Component, pageProps }: AppProps) {
   const mockSession = {
     user: {
-      name: "Ion Pazos",
-      email: "jon.pazos@ikasle.aeg.eus",
+      name: "ENEKO LARREA PEREZ",
+      email: "eneko.larrea@ikasle.aeg.eus",
       image: "",
     },
     expires: "2025-12-31T23:59:59.999",
     accessToken: "",
     refreshToken: "",
-    email: "jon.pazos@ikasle.aeg.eus",
+    email: "eneko.larrea@ikasle.aeg.eus",
   };
 
   return (

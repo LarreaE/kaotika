@@ -14,14 +14,16 @@ import ItemDisplay from '@/components/shop/ItemDisplay';
 import ItemCarousel from '@/components/shop/ItemCarousel'; // Importa el nuevo componente
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
+import { transformStringLowerPlural } from '@/helpers/transformString';
 
-const MerchantPage: React.FC = () => {
+const MerchantPage = () => {
 
-  interface item {
+  interface Item {
     _id: number,
     name: string,
     image: string,
     value: number,
+    type: string,
 }
 
   const { data: session, status } = useSession();
@@ -59,7 +61,7 @@ const MerchantPage: React.FC = () => {
 
     fetchShopItems();
   }, [merchantId]);
-
+  
   useEffect(() => {
     if (session?.user?.email) {
       const fetchPlayerData = async () => {
@@ -95,48 +97,75 @@ const MerchantPage: React.FC = () => {
     }
   }, [player]);
 
-  const handleBuy = async (item: any, player: any) => {
+  const checkItemInsidePlayer = (item: Item, player: any): boolean => {
+
+    const type = transformStringLowerPlural(item.type);
+
+    if (player.inventory[type]) {
+      const foundItem = player.inventory[type].find((inventoryItem: Item) => inventoryItem.name === item.name);        
+      return !!foundItem
+    } else {
+        console.log(`Category "${type}" does not exist in the inventory.`);
+        return false;
+    }
+};
+
+  const handleBuy = async (item: Item, player: Player) => {
+    setError(null)
     console.log(item);
     if (player.gold >= item.value) {
       console.log('Available');
-      try {
-        setLoading(true);
-
-        const res = await fetch(
-          `/api/shop/${player.email}/${merchantId}/${item.name}`
-        );
-        if (res.status === 200) {
-          const response = await res.json();
-          console.log(response);
-          setPlayer(response);
-        } else if (res.status === 404) {
-          console.log(error);
-        } else {
-          setError('An error occurred while checking registration');
+      if (!checkItemInsidePlayer(item,player)) {
+        try {
+          setLoading(true);
+  
+          const res = await fetch(
+            `/api/shop/${player.email}/${merchantId}/${item.name}`
+          );
+          if (res.status === 200) {
+            const response = await res.json();
+            console.log(response);
+            setPlayer(response);
+            setCartItems([]);
+          } else if (res.status === 404) {
+            console.log(error);
+          } else {
+            setError('An error occurred while checking registration');
+          }
+        } catch (error) {
+          console.error('Failed to complete purchase:', error);
+          setError('Failed to complete purchase');
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Failed to complete purchase:', error);
-        setError('Failed to complete purchase');
-      } finally {
-        setLoading(false);
+      } else {
+        console.log("player already has this item");
+        setError('Item already in inventory');
       }
     } else {
       console.log('Unavailable');
     }
   };
 
-  const handleAddToCart = (item: any, player: any) => {
-    if (cartItems.some((cartItem:item) => cartItem._id === item._id)) {
-      console.log('already inside');
-    } else {
-      if (availableMoney >= item.value) {
-        console.log('Available');
-        setCartItems([...cartItems, item]);
-        console.log(cartItems);
-        setAvailableMoney(availableMoney - item.value);
+  const handleAddToCart = (item: Item, player: Player) => {
+    setError(null)
+    if (!checkItemInsidePlayer(item,player)) {
+      if (cartItems.some((cartItem:Item) => cartItem._id === item._id)) {
+        console.log('already inside');
       } else {
-        console.log('Unavailable');
+        
+        if (availableMoney >= item.value) {
+          console.log('Available');
+          setCartItems([...cartItems, item]);
+          console.log(cartItems);
+          setAvailableMoney(availableMoney - item.value);
+        } else {
+          console.log('Unavailable');
+        }
       }
+    } else {
+      console.log("Item already in inventory");
+      setError('Item already in inventory');
     }
   };
 
@@ -145,9 +174,9 @@ const MerchantPage: React.FC = () => {
     setAvailableMoney(player?.gold || 0);
   };
 
-  const removeItem = (item: item) => {
+  const removeItem = (item: Item) => {
     if (availableMoney) {
-      setCartItems((cartItems: item[]) => cartItems.filter((cartItem: item) => cartItem._id !== item._id));
+      setCartItems((cartItems: Item[]) => cartItems.filter((cartItem: Item) => cartItem._id !== item._id));
       setAvailableMoney(availableMoney + item.value) 
     } else {
       console.log("available money undefined");
@@ -160,7 +189,7 @@ const MerchantPage: React.FC = () => {
   };
 
   const calculateTotalPrice = () =>
-    cartItems.reduce((total:number, item:item) => total + item.value, 0);
+    cartItems.reduce((total:number, item:Item) => total + item.value, 0);
 
   if (!session) return null;
 
@@ -199,8 +228,6 @@ const MerchantPage: React.FC = () => {
 
         {/* Contenido principal */}
         <div className="w-3/4 p-4">
-          {error && <div className="text-red-600">{error}</div>}
-
           {/* Usamos el nuevo componente ItemCarousel */}
           <ItemCarousel
             items={allItems}
@@ -208,7 +235,9 @@ const MerchantPage: React.FC = () => {
             handleBuy={handleBuy}
             handleAddToCart={handleAddToCart}
             setSelectedItem={setSelectedItem}
+            error={error}
           />
+
         </div>
       </div>
       <ItemDisplay
