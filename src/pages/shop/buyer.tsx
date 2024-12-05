@@ -32,6 +32,7 @@ const MerchantPage: React.FC = () => {
     image: string,
     value: number,
     type: string,
+    description: string,
 }
 
   const { data: session, status } = useSession();
@@ -118,50 +119,101 @@ const MerchantPage: React.FC = () => {
 
   return (
     <Layout>
-      {loading && <Loading />}
-      <div className="flex">
-        {/* Franja izquierda */}
-        <div
-          className="w-[30%] bg-orange-100 shadow-lg p-4 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/images/pergamino.jpg')",
-          }}
-        >
-          <MerchantInfo
-            merchantImage="/images/sellers/seller1.png"
-            merchantName={`Merchant Buyer`}
+  <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
+    <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
+      <div className="flex space-x-4">
+        <div className="relative w-1/4">
+          <img
+            src="/images/shop/cartel_colgante.png"
+            alt="hanging sign small"
+            className="w-full h-3/4"
           />
-        </div>
-        <div className="w-3/4 p-4">
-          {error && <div className="text-red-600">{error}</div>}
-        </div>
-        <div className="">
-        {selectedItem ? (
-            <>
-            <div 
-                className="flex items-center justify-center aspect-square w-40 bg-black/30"  style={{'border': '3px ridge #000000'}}
-            >
-                {selectedItem.image && (
-                <img
-                    src={selectedItem.image} 
-                    alt={selectedItem.name || "Selected Item"}
-                    className="object-contain max-w-full max-h-full"
-                />
-                )}
-            </div>
-
-            <button
-                onClick={() => handleSell(selectedItem)}
-                className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-lg"
-            >
-                Sell Item
+          <div className="relative inset-0 -top-24 flex items-center justify-center">
+            <button onClick={() => router.push('/shop')}>
+              <img
+                src="/images/shop/flecha_retroceso.png"
+                alt="back arrow"
+                className="w-16 h-16 cursor-pointer"
+              />
             </button>
-            </>
-        ) : (
-            <p>Select an item to proceed.</p>
-        )}
+          </div>
         </div>
-        <div className="">
+        <div className="relative w-3/4">
+          <img
+            src="/images/shop/cartel_colgante.png"
+            alt="hanging sign"
+            className="w-full"
+          />
+          <div className="relative inset-0 -top-24 flex items-center justify-center">
+            <p className="text-white text-6xl font-bold">The Buyer</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <img
+          src="/images/shop/seller.png"
+          alt="seller"
+          className="w-full"
+        />
+      </div>
+    </div>
+    {selectedItem ? (
+      <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
+        <div className="w-3/5 h-4/6 p-4 bg-black bg-opacity-70 flex flex-col items-center rounded-2xl shadow-lg border-4 border-sepia">
+          <div className="w-full text-center bg-medievalSepia py-2 rounded-t-2xl">
+            <p className="text-black text-4xl font-bold">
+              {selectedItem?.name || 'Sellect any item'}
+            </p>
+          </div>
+          <div className="w-3/5 mt-4 border-4 border-sepia rounded-xl overflow-hidden shadow-md bg-white">
+            {selectedItem?.image ? (
+              <img
+                src={selectedItem.image}
+                alt={selectedItem.name || 'Selected Item'}
+                className="w-full h-auto"
+              />
+            ) : (
+              <p className="text-gray-500 text-center p-4">
+                Any item selected
+              </p>
+            )}
+          </div>
+          <div className="w-full mt-4 text-center">
+            <p className="text-white text-3xl font-medium">
+              {selectedItem?.description || 'Without description'}
+            </p>
+          </div>
+          {selectedItem && (
+            <div className="w-auto -bottom-12 mt-auto text-center bg-medievalSepia py-1 px-2 rounded-2xl flex flex-row items-center justify-center relative">
+              <p className="text-black text-4xl font-bold mr-2">{selectedItem.value}</p>
+              <img
+                src="/images/shop/gold.png"
+                alt="gold coin"
+                className="w-12 h-12 ml-2"
+              />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-row items-center justify-center gap-x-4 mt-16">
+          <button 
+            className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+            View details
+          </button>
+          {selectedItem && (
+            <button 
+              onClick={() => handleSell(selectedItem)}
+              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+              Sell for {Math.floor(selectedItem.value / 3)}
+            </button>
+          )}
+        </div>
+      </div>
+    ) : (
+      <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
+
+      </div>
+    )}
+    <div className="w-4/12 bg-emerald-700 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
             {
                 player &&  <div className="grid grid-cols-8 grid-rows-8 flex-grow">
                 {
@@ -273,8 +325,9 @@ const MerchantPage: React.FC = () => {
                 </div>
             }
         </div>
-      </div>
-    </Layout>
+  </div>
+</Layout>
+
   );
 };
 
