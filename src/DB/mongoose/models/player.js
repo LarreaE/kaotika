@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { model } from 'mongoose';
 import { type } from 'os';
 const Schema = mongoose.Schema;
 
@@ -26,7 +26,7 @@ const BaseEquipmentSchema = new Schema({
 });
 
 // Weapon Schema
-const WeaponSchema = new Schema({
+export const WeaponSchema = new Schema({
   base_percentage: { type: Number },
   die_faces: { type: Number },
   die_modifier: { type: Number },
@@ -37,7 +37,7 @@ const WeaponSchema = new Schema({
 });
 
 // Armor Schema
-const ArmorSchema = new Schema({
+export const ArmorSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -45,7 +45,7 @@ const ArmorSchema = new Schema({
 });
 
 // Artifact Schema
-const ArtifactSchema = new Schema({
+export const ArtifactSchema = new Schema({
   ...BaseEquipmentSchema.obj,
 });
 
@@ -68,7 +68,7 @@ const PotionSchema = new Schema({
 });
 
 // Shield Schema
-const ShieldSchema = new Schema({
+export const ShieldSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -76,7 +76,7 @@ const ShieldSchema = new Schema({
 });
 
 // Helmet Schema
-const HelmetSchema = new Schema({
+export const HelmetSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -84,7 +84,7 @@ const HelmetSchema = new Schema({
 });
 
 // Boot Schema
-const BootSchema = new Schema({
+export const BootSchema = new Schema({
   defense: { type: Number },
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
@@ -92,7 +92,7 @@ const BootSchema = new Schema({
 });
 
 // Ring Schema
-const RingSchema = new Schema({
+export const RingSchema = new Schema({
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
   ...BaseEquipmentSchema.obj,
@@ -212,18 +212,30 @@ const playerSchema = new Schema({
 });
 
 // Models
-export const Player = mongoose.model('Player', playerSchema);
-export const Weapon = mongoose.model("Weapon", WeaponSchema);
-export const Armor = mongoose.model("Armor", ArmorSchema);
-export const Artifact = mongoose.model("Artifact", ArtifactSchema);
-export const Potion = mongoose.model("Potion", PotionSchema);
-export const Helmet = mongoose.model("Helmet", HelmetSchema);
-export const Shield = mongoose.model("Shield", ShieldSchema);
-export const Boot = mongoose.model("Boot", BootSchema);
-export const Ring = mongoose.model("Ring", RingSchema);
-export const HealingPotion = mongoose.model("HealingPotion", HealingPotionSchema);
-export const EnhancerPotion = mongoose.model("EnhancerPotion", EnhancerPotionSchema);
-export const Equipment = mongoose.model(
-  "Equipment",
-  EquipmentSchema
-);
+const Player = mongoose.models.Player || mongoose.model('Player', playerSchema);
+const Weapon = mongoose.models.Weapon || mongoose.model("Weapon", WeaponSchema);
+const Armor = mongoose.models.Armor || mongoose.model("Armor", ArmorSchema);
+const Artifact = mongoose.models.Artifact || mongoose.model("Artifact", ArtifactSchema);
+const Potion = mongoose.models.Potion || mongoose.model("Potion", PotionSchema);
+const Helmet = mongoose.models.Helmet || mongoose.model("Helmet", HelmetSchema);
+const Shield = mongoose.models.Shield || mongoose.model("Shield", ShieldSchema);
+const Boot = mongoose.models.Boot || mongoose.model("Boot", BootSchema);
+const Ring = mongoose.models.Ring || mongoose.model("Ring", RingSchema);
+const HealingPotion = mongoose.models.HealingPotion || mongoose.model("HealingPotion", HealingPotionSchema);
+const EnhancerPotion = mongoose.models.EnhancerPotion || mongoose.model("EnhancerPotion", EnhancerPotionSchema);
+const Equipment = mongoose.models.Equipment || mongoose.model("Equipment",EquipmentSchema);
+
+export {
+  Player,
+  Weapon,
+  Armor,
+  Artifact,
+  Potion,
+  Helmet,
+  Shield,
+  Boot,
+  Ring,
+  HealingPotion,
+  EnhancerPotion,
+  Equipment,
+}

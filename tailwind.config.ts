@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { nextui } from "@nextui-org/react";
+import customUtilities from "./src/plugins/customUtilities";
 
 const config: Config = {
   content: [
@@ -30,8 +31,11 @@ const config: Config = {
       borderColor: {
         sepia: '#cda882'
       },
+      rotate: {
+        'y-180': '180deg',
+      },
     },
   },
-  plugins: [nextui()],
+  plugins: [nextui(),customUtilities],
 };
 export default config;

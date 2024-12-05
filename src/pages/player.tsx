@@ -82,15 +82,15 @@ const PlayerPage = () => {
           setLoading(true);
           const res = await fetch(`/api/player/check-registration?email=${session.user?.email}`);
           if (res.status === 200) {
-            const response = await res.json();
-            setCurrentEquipment(response.data.equipment);
-            console.log(response.data)
-            setPlayer(response.data);
+            const response = await res.json();            
+            setCurrentEquipment(response.equipment);
+            console.log(response)
+            setPlayer(response);
             setIsRegistered(true);
           } else if (res.status === 404) {
             const response = await res.json();
             setIsRegistered(false);
-            setProfiles(response.data.profiles);
+            setProfiles(response.profiles);
           } else {
             setError('An error occurred while checking registration');
           }
