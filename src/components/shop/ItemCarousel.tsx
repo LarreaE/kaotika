@@ -8,6 +8,7 @@ interface ItemCarouselProps {
   handleBuy: (item: any, player: any) => void;
   handleAddToCart: (item: any, player: any) => void;
   setSelectedItem: React.Dispatch<React.SetStateAction<any | null>>;
+  error: string | null;
 }
 
 const ItemCarousel: React.FC<ItemCarouselProps> = ({
@@ -16,6 +17,7 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
   handleBuy,
   handleAddToCart,
   setSelectedItem,
+  error,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
 
@@ -63,6 +65,7 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
                 handleBuy={() => handleBuy(item, player)}
                 handleAddToCart={() => handleAddToCart(item, player)}
               />
+            {error && <div className="text-red-600 justify-center ">{error}</div>}
             </div>
           ))}
         </div>

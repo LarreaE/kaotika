@@ -24,7 +24,7 @@ import AntidotePotionTooltip from '@/components/tooltips/AntidotePotionTooltip';
 import EnhancerPotionTooltip from '@/components/tooltips/EnhancerPotionTooltip';
 import { GRID_NUMBER } from '@/constants/constants';
 
-const MerchantPage: React.FC = () => {
+const MerchantPage = () => {
 
   interface item {
     _id: string,

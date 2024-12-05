@@ -5,6 +5,7 @@ interface Item {
   name: string;
   image: string;
   value: number;
+  type: string;
 }
 
 interface Props {
