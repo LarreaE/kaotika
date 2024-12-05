@@ -12,6 +12,8 @@ interface Item {
     name:string,
     value:number,
     isUnique: boolean,
+    isActive: boolean,
+
 }
 interface Player {
   gold: number,
@@ -49,7 +51,10 @@ interface Player {
       if (!item) {
         throw new Error('Item not found or already sold');
       }
-      
+      if (item.isUnique) {
+        console.log(`${item.name} is unique, changing isActive to add it into the available loot pool`);
+        await model.updateOne({name: item.name}, {$set: {isActive: true}})
+      }  
       removeItemFromInventory(player,collectionName,itemId);      
       payPlayer(player, item);
 
