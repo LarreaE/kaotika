@@ -10,19 +10,16 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 interface Item {
     type:string,
     name:string,
-    value:number
+    value:number,
+    isUnique: boolean,
 }
 interface Player {
   gold: number,
-  inventory: any,
-}
-const decreasePurchasedGold = (player:Player, item:Item) =>{
-  player.gold -= item.value;
 }
 
   const { playerEmail, items } = req.query;
 
-  const transferItemToPlayer = async (player: Player, itemType: string, itemId: string) => {
+  const transferItemAndPayPlayer = async (player: Player, itemType: string, itemId: string) => {
     try {
 
       const collectionName = transformStringSingular(itemType);      
@@ -37,19 +34,7 @@ const decreasePurchasedGold = (player:Player, item:Item) =>{
         throw new Error('Item not found or already sold');
       }
   
-      if (player?.gold < item.value.value) {
-        throw new Error('Insufficient gold');
-      }
-  
-      const type = `${item.type}s`
-      console.log(type);
-      
-      await player?.inventory[type].push(item);
-      decreasePurchasedGold(player,item);
-    
-      console.log('Item purchased successfully:', item.name,":", item.value );
-      
-      return player;
+
     } catch (error) {
       console.error('Error transferring item to player:', error);
       throw error;
@@ -64,18 +49,17 @@ const decreasePurchasedGold = (player:Player, item:Item) =>{
     const player = await Player.findOne({ email: playerEmail });
   
     const itemsArr = Array.isArray(items) ? items[0] : items;
-    const itemsObj: Item[] = JSON.parse(decodeURIComponent(itemsArr));
-    console.log(itemsObj);
+    const itemObj: Item = JSON.parse(decodeURIComponent(itemsArr));
+    console.log(itemObj);
   
     let newPlayer = player;
   
-    for (const item of itemsObj) {
-      try {
-        newPlayer = await transferItemToPlayer(newPlayer, item.type, item.name);
-      } catch (error) {
+    try {
+        newPlayer = await transferItemAndPayPlayer(newPlayer, itemObj.type, itemObj.name);
+    } catch (error) {
         console.error('Purchase failed:', error);
-      }
     }
+    
   
     console.log(newPlayer);
   

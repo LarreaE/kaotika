@@ -8,7 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
   const { playerEmail, merchantId ,itemId } = req.query;
 
-  const transferItemToPlayer = async (playerEmail: any, merchantId: any, itemId: any) => {
+  const transferItemToPlayer = async (playerEmail: string | string[], merchantId: string , itemId: string | string[]) => {
     try {
 
       const collectionName = transformStringSingular(merchantId);
@@ -102,7 +102,9 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
   try {
 
-    await transferItemToPlayer(playerEmail, merchantId, itemId)
+    const merchantName = Array.isArray(merchantId) ? merchantId[0] : merchantId;
+
+    await transferItemToPlayer(playerEmail, merchantName, itemId)
       .then((updatedPlayer) => {
         console.log('Player updated:', playerEmail , itemId);
         res.status(200).json(updatedPlayer)
