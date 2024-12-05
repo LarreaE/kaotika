@@ -14,9 +14,9 @@ export const transformStringSingular = (str:string) => {
     return firstLetterUpperCase + remainingString;
 }
 
-export const transformStringSingularToPlural = (str:string) => {
+export const transformStringLowerPlural= (str:string) => {
     if (str.length === 0) return str;  
-    const firstLetterLowerCase = str.charAt(0).toLowerCase(); 
-    const remainingString = 's';
-    return str + remainingString;
+    const firstLetterUpperCase = str.charAt(0).toLowerCase(); 
+    const remainingString = str.slice(1) + "s";
+    return firstLetterUpperCase + remainingString;
 }

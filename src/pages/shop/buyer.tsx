@@ -96,6 +96,7 @@ const MerchantPage: React.FC = () => {
         setError('Failed to sell');
       } finally {
         setLoading(false);
+        setSelectedItem(null);
       }
   };
 
@@ -193,7 +194,7 @@ const MerchantPage: React.FC = () => {
                 {
                 player?.inventory.shields.map(shield => {
                     return (
-                    <div key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
+                    <div onClick={() => selectItem(shield)} key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
                         <Droppable id={40}  type='inventory' children={<Draggable id={shield._id} tooltip={<DefenseTooltip element={shield} equiped={player?.equipment.shield}/>} position='bottom' type={[`${shield.min_lvl <= player?.level ? shield.type : null}`, 'inventory']} element={shield} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
                     </div>
                     )
@@ -202,7 +203,7 @@ const MerchantPage: React.FC = () => {
                 {
                 player?.inventory.artifacts.map(artifact => {
                     return (
-                    <div key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
+                    <div onClick={() => selectItem(artifact)} key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
                         <Droppable id={50}  type='inventory' children={<Draggable id={artifact._id} tooltip={<CommonTooltip element={artifact} equiped={player?.equipment.artifact}/>} position='bottom' type={[`${artifact.min_lvl <= player?.level ? artifact.type : null}`, 'inventory']} element={artifact} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
                     </div>
                     )
@@ -211,7 +212,7 @@ const MerchantPage: React.FC = () => {
                 {
                 player?.inventory.boots.map(boot => {
                     return (
-                    <div key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
+                    <div onClick={() => selectItem(boot)} key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
                         <Droppable id={1}  type='inventory' children={<Draggable id={boot._id} tooltip={<DefenseTooltip element={boot} equiped={player?.equipment.boot}/>} position='bottom' type={[`${boot.min_lvl <= player?.level ? boot.type : null}`, 'inventory']} element={boot} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
                     </div>
                     )
@@ -220,7 +221,7 @@ const MerchantPage: React.FC = () => {
                 {
                 player?.inventory.rings.map(ring => {
                     return (
-                    <div key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
+                    <div onClick={() => selectItem(ring)} key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
                         <Droppable id={1}  type='inventory' children={<Draggable id={ring._id} tooltip={<CommonTooltip element={ring} equiped={player?.equipment.ring}/>} position='bottom' type={[`${ring.min_lvl <= player?.level ? ring.type : null}`, 'inventory']} element={ring} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
                     </div>
                     )

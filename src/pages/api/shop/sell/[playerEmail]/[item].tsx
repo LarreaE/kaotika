@@ -3,7 +3,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
 import {Player} from '@/DB/mongoose/models/models'
-import { transformStringSingular } from '@/helpers/transformString';
+import { transformStringLowerPlural, transformStringPlural, transformStringSingular } from '@/helpers/transformString';
 
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
@@ -17,7 +17,22 @@ interface Player {
   gold: number,
 }
 
-  const { playerEmail, items } = req.query;
+  const { playerEmail, item } = req.query;
+
+  const removeItemFromInventory = (player: any, types:string, name:string) => {
+    const type = transformStringLowerPlural(types);
+    if (player.inventory[type]) {
+        player.inventory[type] = player.inventory[type].filter((item: { name: string; }) => item.name !== name);
+        console.log(`Item with ID ${name} has been removed from ${type}.`);
+    } else {
+        console.log(`Category "${type}" does not exist in the inventory.`);
+    }
+  }
+
+  const payPlayer = (player: Player, item:Item) => {
+      player.gold += (Math.floor(item.value/3))
+      console.log(`Player gained "${Math.floor(item.value/3)}" gold.`);
+  }
 
   const transferItemAndPayPlayer = async (player: Player, itemType: string, itemId: string) => {
     try {
@@ -28,12 +43,17 @@ interface Player {
       if (!model) {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
-      console.log(model);
-      const item = await model.findOne({name: itemId});      
+      console.log("MODEL: ", model);
+      const item = await model.findOne({name: itemId});
+      
       if (!item) {
         throw new Error('Item not found or already sold');
       }
-  
+      
+      removeItemFromInventory(player,collectionName,itemId);      
+      payPlayer(player, item);
+
+      return player;
 
     } catch (error) {
       console.error('Error transferring item to player:', error);
@@ -41,28 +61,25 @@ interface Player {
     }
   };
 
-  if (!items || !playerEmail) {
-    return res.status(400).json({ error: "Item Id , itemtype or playerEmail is required." });
+  if (!item || !playerEmail) {
+    return res.status(400).json({ error: "Item or playerEmail is required." });
   }
 
   try {
     const player = await Player.findOne({ email: playerEmail });
   
-    const itemsArr = Array.isArray(items) ? items[0] : items;
+    const itemsArr = Array.isArray(item) ? item[0] : item;
     const itemObj: Item = JSON.parse(decodeURIComponent(itemsArr));
-    console.log(itemObj);
+    console.log(itemObj.name);
   
     let newPlayer = player;
   
     try {
         newPlayer = await transferItemAndPayPlayer(newPlayer, itemObj.type, itemObj.name);
     } catch (error) {
-        console.error('Purchase failed:', error);
+        console.error('Sellment failed:', error);
     }
     
-  
-    console.log(newPlayer);
-  
     //patch player with updated inventory
     const updatedPlayer = await Player.findOneAndUpdate(
       { _id: player?._id },
