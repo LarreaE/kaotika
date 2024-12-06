@@ -24,7 +24,7 @@ import AntidotePotionTooltip from '@/components/tooltips/AntidotePotionTooltip';
 import EnhancerPotionTooltip from '@/components/tooltips/EnhancerPotionTooltip';
 import { GRID_NUMBER } from '@/constants/constants';
 
-const MerchantPage = () => {
+const MerchantPage: React.FC = () => {
 
   interface item {
     _id: string,
@@ -37,6 +37,7 @@ const MerchantPage = () => {
 
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { merchantId } = router.query;
 
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +45,7 @@ const MerchantPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [availableMoney, setAvailableMoney] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<item | null>(null);
+  const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -72,6 +74,13 @@ const MerchantPage = () => {
       fetchPlayerData();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (player) {
+      calculateAllAttributes(player, setCurrentAttributes);
+      setAvailableMoney(player?.gold || 0);
+    }
+  }, [player]);
 
 
   const handleSell = async (item: item) => {
@@ -122,41 +131,23 @@ const MerchantPage = () => {
       {loading && <Loading/>}
   <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
     <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
-      <div className="flex space-x-4">
-        <div className="relative w-1/4">
-          <img
-            src="/images/shop/cartel_colgante.png"
-            alt="hanging sign small"
-            className="w-full h-3/4"
+    <div 
+          style={{
+            backgroundImage: "url('/images/pergamino.jpg')",
+          }}
+        >
+          <MerchantInfo
+            merchantImage="/images/sellers/seller1.png"
+            merchantName={`Merchant ${merchantId}`}
           />
-          <div className="relative inset-0 -top-24 flex items-center justify-center">
-            <button onClick={() => router.push('/shop')}>
-              <img
-                src="/images/shop/flecha_retroceso.png"
-                alt="back arrow"
-                className="w-16 h-16 cursor-pointer"
-              />
-            </button>
+          <div className="">
+            <ItemStats className="rounded-3xl"
+              selectedItem={selectedItem}
+              atributtes={currentAttributes}
+              player={player}
+            />
           </div>
         </div>
-        <div className="relative w-3/4">
-          <img
-            src="/images/shop/cartel_colgante.png"
-            alt="hanging sign"
-            className="w-full"
-          />
-          <div className="relative inset-0 -top-24 flex items-center justify-center">
-            <p className="text-white text-6xl font-bold">The Buyer</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <img
-          src="/images/shop/seller.png"
-          alt="seller"
-          className="w-full"
-        />
-      </div>
     </div>
     {selectedItem ? (
       <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
@@ -214,11 +205,22 @@ const MerchantPage = () => {
 
       </div>
     )}
-    <div className="w-4/12 bg-emerald-700 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
-            {
-                player &&  <div className="grid grid-cols-8 grid-rows-8 flex-grow">
-                {
-                player?.inventory.helmets.map(helmet => {
+    <div className="w-4/12 bg-black bg-opacity-70 flex flex-col items-center rounded-3xl shadow-lg">
+            {player && (
+              <div className="w-2/5 h-auto p-2 bg-medievalSepia flex items-center justify-between rounded-2xl shadow-lg mb-4 self-end mr-4">
+                <div className="text-black text-2xl font-bold">Gold</div>
+                <div className="flex items-center">
+                  <p className="text-black text-3xl font-bold">{player.gold}</p>
+                  <img
+                    src="/images/shop/gold.png"
+                    alt="gold coin"
+                    className="w-8 h-8 ml-2"
+                  />
+                </div>
+              </div>
+            )}
+            {player &&  <div className="grid grid-cols-8 grid-rows-8 flex-grow">
+                {player?.inventory.helmets.map(helmet => {
                     return (
                     <div onClick={() => selectItem(helmet)} key={helmet._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
                         <Droppable id={10}  type='inventory' children={<Draggable id={helmet._id} tooltip={<DefenseTooltip element={helmet} equiped={player.equipment.helmet}/>} position='bottom' type={[`${helmet.min_lvl <= player.level ? helmet.type : null}`, 'inventory']} element={helmet} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
