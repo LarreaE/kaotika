@@ -47,6 +47,20 @@ const MerchantPage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<item | null>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
 
+  const [isConfirming, setIsConfirming] = useState<boolean>(false);
+  const [confirmationDetails, setConfirmationDetails] = useState<{ currentGold: number; newGold: number; item: item | null } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = () => {
+      setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+      setIsModalOpen(false);
+  };
+
+
+
   useEffect(() => {
     if (session?.user?.email) {
       const fetchPlayerData = async () => {
@@ -84,36 +98,48 @@ const MerchantPage: React.FC = () => {
 
 
   const handleSell = async (item: item) => {
-      console.log('Available');
-      try {
+    if (!item || !player) return;
+
+    try {
         setLoading(true);
         const encodedItem = encodeURIComponent(JSON.stringify(item));
+        const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
 
-        const res = await fetch(
-          `/api/shop/sell/${player?.email}/${encodedItem}`
-        );
         if (res.status === 200) {
-          const response = await res.json();
-          console.log(response);
-          setPlayer(response);
-        } else if (res.status === 404) {
-          console.log(error);
+            const response = await res.json();
+            setPlayer(response); // Actualiza los datos del jugador
+            setAvailableMoney(response.gold); // Actualiza el oro disponible
+            setSelectedItem(null); // Deselecciona el objeto vendido
         } else {
-          setError('An error occurred while checking registration');
+            setError('Failed to sell');
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Failed to complete sell:', error);
         setError('Failed to sell');
-      } finally {
+    } finally {
         setLoading(false);
-        setSelectedItem(null);
-      }
-  };
+        setIsConfirming(false);
+        setConfirmationDetails(null);
+    }
+};
+
 
   const selectItem = (item: item) => {
     console.log(item);
     setSelectedItem(item);
-};
+  };
+
+  const initiateSell = (item: item) => {
+    if (!player) return;
+    const sellValue = Math.floor(item.value / 3);
+    setConfirmationDetails({
+        currentGold: player.gold,
+        newGold: player.gold + sellValue,
+        item,
+    });
+    setIsConfirming(true);
+  };
+
 
   if (!session) return null;
 
@@ -126,8 +152,35 @@ const MerchantPage: React.FC = () => {
     });
   }
 
+
   return (
     <Layout>
+      {isConfirming && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+            <div className="bg-white p-6 rounded-xl shadow-lg text-center w-96">
+                <h2 className="text-2xl font-bold mb-4">Confirm Sale</h2>
+                {confirmationDetails && (
+                    <>
+                        <p className="mb-2">Current Gold: <strong>{confirmationDetails.currentGold}</strong></p>
+                        <p className="mb-2">After Sale: <strong>{confirmationDetails.newGold}</strong></p>
+                        <p className="mb-4">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
+                    </>
+                )}
+                <div className="flex justify-around mt-4">
+                    <button
+                        onClick={() => handleSell(confirmationDetails?.item!)}
+                        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800">
+                        Confirm
+                    </button>
+                    <button
+                        onClick={() => setIsConfirming(false)}
+                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-800">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+      )}
       {loading && <Loading/>}
   <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
     <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
@@ -193,10 +246,11 @@ const MerchantPage: React.FC = () => {
           </button>
           {selectedItem && (
             <button 
-              onClick={() => handleSell(selectedItem)}
+              onClick={() => initiateSell(selectedItem)}
               className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
               Sell for {Math.floor(selectedItem.value / 3)}
             </button>
+        
           )}
         </div>
       </div>
