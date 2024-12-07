@@ -9,6 +9,7 @@ import { Player } from '@/_common/interfaces/Player';
 
 import MerchantInfo from '@/components/shop/MerchantInfo';
 import ItemStats from '@/components/shop/ItemStats';
+import ItemBaseStats from '@/components/shop/ItemBaseStats';
 import ItemCard from '@/components/shop/ItemCard';
 import ItemDisplay from '@/components/shop/ItemDisplay';
 import ItemCarousel from '@/components/shop/ItemCarousel'; // Importa el nuevo componente
@@ -26,14 +27,23 @@ import { GRID_NUMBER } from '@/constants/constants';
 
 const MerchantPage: React.FC = () => {
 
-  interface item {
-    _id: string,
-    name: string,
-    image: string,
-    value: number,
-    type: string,
-    description: string,
-}
+  interface Item {
+    _id: string;
+    name: string;
+    image: string;
+    value: number;
+    type: string;
+    description: string;
+    stats?: {
+      intelligence?: number;
+      dexterity?: number;
+      constitution?: number;
+      insanity?: number;
+      charisma?: number;
+      strength?: number;
+    };
+  }
+  
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -155,18 +165,14 @@ const MerchantPage: React.FC = () => {
     <Layout>
       {isModalOpen && selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia">
-            {/* Botón de cierre */}
+          <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
               X
             </button>
-
-            {/* Contenido del modal */}
             <div className="flex flex-row gap-6">
-              {/* ItemStats a la izquierda */}
-              <div className="w-1/3 flex items-center justify-center bg-black bg-opacity-70 rounded-xl p-4">
+              <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
                 <ItemStats
                   className="rounded-3xl border-sepia border-2 w-full"
                   selectedItem={selectedItem}
@@ -174,40 +180,31 @@ const MerchantPage: React.FC = () => {
                   player={player}
                 />
               </div>
-
-              {/* Imagen */}
-              <div className="w-1/3 flex items-center justify-center bg-black bg-opacity-50 rounded-lg p-4">
+              <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
                 <img
                   src={selectedItem.image}
                   alt={selectedItem.name}
                   className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
                 />
               </div>
-
-              {/* Detalles */}
               <div className="w-1/3 flex flex-col justify-center items-center text-center">
-                <h2 className="text-4xl font-bold text-white mb-4">{selectedItem.name}</h2>
-                <p className="text-white text-lg mb-6">{selectedItem.description}</p>
-
-                {/* Estadísticas del objeto */}
-                {selectedItem.type === "weapon" && (
-                  <ul className="text-white text-md mb-4">
-                    {/* <li>Attack: {selectedItem.stats?.attack}</li>
-                    <li>Durability: {selectedItem.stats?.durability}</li>
-                    Agrega más stats según sea necesario */}
-                  </ul>
+                <p className="text-white text-2xl mb-6 p-2">{selectedItem.description}</p>
+                {selectedItem ? (
+                  <ItemBaseStats selectedItem={selectedItem} player={player} />
+                ) : (
+                  <div className="text-center text-gray-500 italic">
+                    Selecciona un elemento para ver sus estadísticas.
+                  </div>
                 )}
-
-                {/* Botones de acción */}
-                <div className="flex space-x-4 mt-auto">
-                {selectedItem && (
-                  <button 
-                    onClick={() => initiateSell(selectedItem)}
-                    className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-                    Sell for {Math.floor(selectedItem.value / 3)}
-                  </button>
-              
-                )}
+                <div className="flex space-x-4 mt-auto p-2">
+                  {selectedItem && (
+                    <button 
+                      onClick={() => initiateSell(selectedItem)}
+                      className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                      Sell for {Math.floor(selectedItem.value / 3)}
+                    </button>
+                
+                  )}
                 </div>
               </div>
             </div>
@@ -218,14 +215,14 @@ const MerchantPage: React.FC = () => {
 
     {isConfirming && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-        <div className="bg-medievalSepia p-6 rounded-xl shadow-lg text-center w-96 border-2 border-sepia">
-          <h2 className="text-2xl font-bold text-black mb-4">Confirm Sale</h2>
+        <div className="bg-black p-6 rounded-xl shadow-lg text-center w-2/5 border-2 border-sepia">
+          <h2 className="text-6xl font-bold text-white mb-4">Confirm Sale</h2>
           {confirmationDetails && (
             <>
-              <p className="mb-2 text-black">
+              <p className="mb-2 text-3xl text-white">
                 Gold: <strong>{confirmationDetails.currentGold}</strong> ➡ <strong>{confirmationDetails.newGold}</strong>
               </p>
-              <p className="mb-4 text-black">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
+              <p className="mb-4 text-3xl text-white">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
             </>
           )}
           <div className="flex justify-around mt-4">
@@ -246,7 +243,6 @@ const MerchantPage: React.FC = () => {
 
     {loading && <Loading />}
     <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-      {/* Columna izquierda */}
       <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
         <div
           style={{
