@@ -51,16 +51,6 @@ const MerchantPage: React.FC = () => {
   const [confirmationDetails, setConfirmationDetails] = useState<{ currentGold: number; newGold: number; item: item | null } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleViewDetails = () => {
-      setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-      setIsModalOpen(false);
-  };
-
-
-
   useEffect(() => {
     if (session?.user?.email) {
       const fetchPlayerData = async () => {
@@ -121,7 +111,15 @@ const MerchantPage: React.FC = () => {
         setIsConfirming(false);
         setConfirmationDetails(null);
     }
-};
+  };
+
+  const handleViewDetails = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+      setIsModalOpen(false);
+  };
 
 
   const selectItem = (item: item) => {
@@ -155,36 +153,102 @@ const MerchantPage: React.FC = () => {
 
   return (
     <Layout>
-      {isConfirming && (
+      {isModalOpen && selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-            <div className="bg-white p-6 rounded-xl shadow-lg text-center w-96">
-                <h2 className="text-2xl font-bold mb-4">Confirm Sale</h2>
-                {confirmationDetails && (
-                    <>
-                        <p className="mb-2">Current Gold: <strong>{confirmationDetails.currentGold}</strong></p>
-                        <p className="mb-2">After Sale: <strong>{confirmationDetails.newGold}</strong></p>
-                        <p className="mb-4">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
-                    </>
+          <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia">
+            {/* Botón de cierre */}
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
+              X
+            </button>
+
+            {/* Contenido del modal */}
+            <div className="flex flex-row gap-6">
+              {/* ItemStats a la izquierda */}
+              <div className="w-1/3 flex items-center justify-center bg-black bg-opacity-70 rounded-xl p-4">
+                <ItemStats
+                  className="rounded-3xl border-sepia border-2 w-full"
+                  selectedItem={selectedItem}
+                  atributtes={currentAttributes}
+                  player={player}
+                />
+              </div>
+
+              {/* Imagen */}
+              <div className="w-1/3 flex items-center justify-center bg-black bg-opacity-50 rounded-lg p-4">
+                <img
+                  src={selectedItem.image}
+                  alt={selectedItem.name}
+                  className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
+                />
+              </div>
+
+              {/* Detalles */}
+              <div className="w-1/3 flex flex-col justify-center items-center text-center">
+                <h2 className="text-4xl font-bold text-white mb-4">{selectedItem.name}</h2>
+                <p className="text-white text-lg mb-6">{selectedItem.description}</p>
+
+                {/* Estadísticas del objeto */}
+                {selectedItem.type === "weapon" && (
+                  <ul className="text-white text-md mb-4">
+                    {/* <li>Attack: {selectedItem.stats?.attack}</li>
+                    <li>Durability: {selectedItem.stats?.durability}</li>
+                    Agrega más stats según sea necesario */}
+                  </ul>
                 )}
-                <div className="flex justify-around mt-4">
-                    <button
-                        onClick={() => handleSell(confirmationDetails?.item!)}
-                        className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-800">
-                        Confirm
-                    </button>
-                    <button
-                        onClick={() => setIsConfirming(false)}
-                        className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-800">
-                        Cancel
-                    </button>
+
+                {/* Botones de acción */}
+                <div className="flex space-x-4 mt-auto">
+                {selectedItem && (
+                  <button 
+                    onClick={() => initiateSell(selectedItem)}
+                    className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                    Sell for {Math.floor(selectedItem.value / 3)}
+                  </button>
+              
+                )}
                 </div>
+              </div>
             </div>
+          </div>
         </div>
       )}
-      {loading && <Loading/>}
-  <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-    <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
-    <div 
+
+
+    {isConfirming && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+        <div className="bg-medievalSepia p-6 rounded-xl shadow-lg text-center w-96 border-2 border-sepia">
+          <h2 className="text-2xl font-bold text-black mb-4">Confirm Sale</h2>
+          {confirmationDetails && (
+            <>
+              <p className="mb-2 text-black">
+                Gold: <strong>{confirmationDetails.currentGold}</strong> ➡ <strong>{confirmationDetails.newGold}</strong>
+              </p>
+              <p className="mb-4 text-black">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
+            </>
+          )}
+          <div className="flex justify-around mt-4">
+            <button
+              onClick={() => handleSell(confirmationDetails?.item!)}
+              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+              Confirm
+            </button>
+            <button
+              onClick={() => setIsConfirming(false)}
+              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {loading && <Loading />}
+    <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
+      {/* Columna izquierda */}
+      <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
+        <div
           style={{
             backgroundImage: "url('/images/pergamino.jpg')",
           }}
@@ -194,14 +258,15 @@ const MerchantPage: React.FC = () => {
             merchantName={`Merchant ${merchantId}`}
           />
           <div className="">
-            <ItemStats className="rounded-3xl"
+            <ItemStats
+              className="rounded-3xl"
               selectedItem={selectedItem}
               atributtes={currentAttributes}
               player={player}
             />
           </div>
         </div>
-    </div>
+      </div>
     {selectedItem ? (
       <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
         <div className="w-3/5 h-4/6 p-4 bg-black bg-opacity-70 flex flex-col items-center rounded-2xl shadow-lg border-4 border-sepia">
@@ -240,7 +305,8 @@ const MerchantPage: React.FC = () => {
           )}
         </div>
         <div className="flex flex-row items-center justify-center gap-x-4 mt-16">
-          <button 
+          <button
+            onClick={handleViewDetails}
             className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
             View details
           </button>
