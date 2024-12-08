@@ -52,7 +52,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
             maxValue={maxValue}
             barColor={barColor}
           />
-        </div>
+        </div> 
       );
     });
   };

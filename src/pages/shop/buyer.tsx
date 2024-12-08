@@ -163,56 +163,54 @@ const MerchantPage: React.FC = () => {
 
   return (
     <Layout>
-      {isModalOpen && selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
-              X
-            </button>
-            <div className="flex flex-row gap-6">
-              <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
-                <ItemStats
-                  className="rounded-3xl border-sepia border-2 w-full"
-                  selectedItem={selectedItem}
-                  atributtes={currentAttributes}
-                  player={player}
-                />
-              </div>
-              <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.name}
-                  className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
-                />
-              </div>
-              <div className="w-1/3 flex flex-col justify-center items-center text-center">
-                <p className="text-white text-2xl mb-6 p-2">{selectedItem.description}</p>
-                {selectedItem ? (
-                  <ItemBaseStats selectedItem={selectedItem} player={player} />
-                ) : (
-                  <div className="text-center text-gray-500 italic">
-                    Selecciona un elemento para ver sus estadísticas.
-                  </div>
-                )}
-                <div className="flex space-x-4 mt-auto p-2">
-                  {selectedItem && (
-                    <button 
-                      onClick={() => initiateSell(selectedItem)}
-                      className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-                      Sell for {Math.floor(selectedItem.value / 3)}
-                    </button>
-                
-                  )}
+    {isModalOpen && selectedItem && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+        <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
+          <button
+            onClick={closeModal}
+            className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
+            X
+          </button>
+          <div className="flex flex-row gap-6">
+            <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
+              <ItemStats
+                className="rounded-3xl border-sepia border-2 w-full"
+                selectedItem={selectedItem}
+                atributtes={currentAttributes}
+                player={player}
+              />
+            </div>
+            <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
+              <img
+                src={selectedItem.image}
+                alt={selectedItem.name}
+                className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
+              />
+            </div>
+            <div className="w-1/3 flex flex-col justify-center items-center text-center">
+              <p className="text-white text-2xl mb-6 p-2">{selectedItem.description}</p>
+              {selectedItem ? (
+                <ItemBaseStats selectedItem={selectedItem} player={player} />
+              ) : (
+                <div className="text-center text-gray-500 italic">
+                  Selecciona un elemento para ver sus estadísticas.
                 </div>
+              )}
+              <div className="flex space-x-4 mt-auto p-2">
+                {selectedItem && (
+                  <button 
+                    onClick={() => initiateSell(selectedItem)}
+                    className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                    Sell for {Math.floor(selectedItem.value / 3)}
+                  </button>
+              
+                )}
               </div>
             </div>
           </div>
         </div>
-      )}
-
-
+      </div>
+    )}
     {isConfirming && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
         <div className="bg-black p-6 rounded-xl shadow-lg text-center w-2/5 border-2 border-sepia">
@@ -243,17 +241,20 @@ const MerchantPage: React.FC = () => {
 
     {loading && <Loading />}
     <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-      <div className="w-3/12 p-4 bg-black bg-opacity-70 flex flex-col items-center">
-        <div
+      <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
+        <div  
+          className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
           style={{
-            backgroundImage: "url('/images/pergamino.jpg')",
+            backgroundImage: "url('/images/pergamino.jpg')", 
           }}
         >
-          <MerchantInfo
-            merchantImage="/images/sellers/seller1.png"
-            merchantName={`Merchant ${merchantId}`}
-          />
-          <div className="">
+          <div className="h-2/6">
+            <MerchantInfo
+              merchantImage="/images/sellers/seller1.png"
+              merchantName={`Merchant ${merchantId}`}
+            />
+          </div>
+          <div className="h-[3/6] w-full pt-[5%]">
             <ItemStats
               className="rounded-3xl"
               selectedItem={selectedItem}
