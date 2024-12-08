@@ -27,7 +27,6 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
     );
   }
 
-  // Lista de atributos a mostrar
   const attributesToDisplay: (keyof Modifier)[] = [
     'intelligence',
     'dexterity',
@@ -37,29 +36,19 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
     'strength',
   ];
 
-  // Función para renderizar las barras de progreso de los atributos
   const renderAttributeProgressBars = () => {
     return attributesToDisplay.map((attrName) => {
       const value = selectedItem.modifiers?.[attrName] || 0;
-
-      // Determinamos si el valor original es negativo
       const isNegative = value < 0;
-
-      // Color de la barra de progreso
       const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
-
-      // Determinamos el valor máximo para la barra (50 por defecto para valores negativos)
       const maxValue = Math.max(Math.abs(value), 50);
-
-      // Mostrar la estadística y formateamos el valor
       const label = `${attrName.toUpperCase()}: ${isNegative ? `-${Math.abs(value)}` : value}`;
 
       return (
         <div key={attrName} className="mb-4">
-          {/* Barra de progreso */}
           <ProgressBar
             label={label}
-            value={Math.abs(value)}  // Siempre pasamos el valor absoluto para la barra
+            value={Math.abs(value)} 
             maxValue={maxValue}
             barColor={barColor}
           />
