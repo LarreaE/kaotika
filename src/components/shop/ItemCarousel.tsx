@@ -5,10 +5,9 @@ import { Player } from '@/_common/interfaces/Player';
 interface ItemCarouselProps {
   items: any[];
   player: Player | undefined;
-  handleBuy: (item: any, player: any) => void;
-  handleAddToCart: (item: any, player: any) => void;
+  handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
+  handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
   setSelectedItem: React.Dispatch<React.SetStateAction<any | null>>;
-  error: string | null;
 }
 
 const ItemCarousel: React.FC<ItemCarouselProps> = ({
@@ -17,7 +16,6 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
   handleBuy,
   handleAddToCart,
   setSelectedItem,
-  error,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
 
@@ -62,10 +60,9 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
               <ItemCard
                 item={item}
                 player={player}
-                handleBuy={() => handleBuy(item, player)}
-                handleAddToCart={() => handleAddToCart(item, player)}
+                handleBuy={handleBuy}
+                handleAddToCart={handleAddToCart}
               />
-            {error && <div className="text-red-600 justify-center ">{error}</div>}
             </div>
           ))}
         </div>

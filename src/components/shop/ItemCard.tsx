@@ -2,17 +2,14 @@
 
 import React, { useState } from "react";
 import ItemDetailsModal from "./ItemDetailsModal"; // Importa el nuevo componente
+import { Player } from "@/_common/interfaces/Player";
 
 interface ItemCardProps {
-  item: {
-    image: string;
-    name: string;
-    value: number;
-    description?: string;
-  };
+  item: any
   player: any; // Ajusta el tipo según tu interfaz de Player
-  handleBuy: (item: any, player: any) => void;
-  handleAddToCart: (item: any, player: any) => void;
+  handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
+  handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
+
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -22,6 +19,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   handleAddToCart,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Función para abrir el modal
   const openModal = () => {
@@ -58,7 +56,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
             className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
             onClick={(e) => {
               e.stopPropagation(); // Evita que el clic en el botón abra el modal
-              handleBuy(item, player);
+              handleBuy(item, player, setError);
             }}
           >
             Buy Now
@@ -67,13 +65,14 @@ const ItemCard: React.FC<ItemCardProps> = ({
             className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
             onClick={(e) => {
               e.stopPropagation(); // Evita que el clic en el botón abra el modal
-              handleAddToCart(item, player);
+              handleAddToCart(item, player, setError);
             }}
           >
             Add to Cart
           </button>
         </div>
       </div>
+      {error && <div className="text-red-600 justify-center ">{error}</div>}
 
       {/* Renderizar el modal si está abierto */}
       {isModalOpen && (

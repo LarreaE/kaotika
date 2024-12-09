@@ -110,7 +110,7 @@ const MerchantPage = () => {
     }
 };
 
-  const handleBuy = async (item: Item, player: Player) => {
+  const handleBuy = async (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null)
     console.log(item);
     if (player.gold >= item.value) {
@@ -147,7 +147,7 @@ const MerchantPage = () => {
     }
   };
 
-  const handleAddToCart = (item: Item, player: Player) => {
+  const handleAddToCart = (item: Item, player: Player,  setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null)
     if (!checkItemInsidePlayer(item,player)) {
       if (cartItems.some((cartItem:Item) => cartItem._id === item._id)) {
@@ -235,7 +235,6 @@ const MerchantPage = () => {
             handleBuy={handleBuy}
             handleAddToCart={handleAddToCart}
             setSelectedItem={setSelectedItem}
-            error={error}
           />
 
         </div>
