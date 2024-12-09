@@ -1,15 +1,15 @@
 // src/components/shop/ItemCard.tsx
 
+"use client"
 import React, { useState } from "react";
-import ItemDetailsModal from "./ItemDetailsModal"; // Importa el nuevo componente
+import ItemDetailsModal from "./ItemDetailsModal";
 import { Player } from "@/_common/interfaces/Player";
 
 interface ItemCardProps {
-  item: any
+  item: any;
   player: any; // Ajusta el tipo según tu interfaz de Player
   handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
   handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
-
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -21,12 +21,10 @@ const ItemCard: React.FC<ItemCardProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Función para abrir el modal
   const openModal = () => {
     setIsModalOpen(true);
   };
-
-  // Función para cerrar el modal
+  
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -34,37 +32,42 @@ const ItemCard: React.FC<ItemCardProps> = ({
   return (
     <>
       <div
-        className="border border-yellow-500 rounded-lg shadow-md p-4 flex flex-col items-center w-full h-60 bg-cover bg-center transform transition duration-300 hover:scale-105 cursor-pointer"
-        style={{
-          backgroundImage: `url('/images/item_background.jpg')`,
-        }}
+        className="relative w-full h-60 p-4 bg-black/60 border border-sepia text-gray-200 rounded shadow-md cursor-pointer 
+                   hover:scale-[1.02] transition-transform duration-200 flex flex-col items-center justify-start"
         onClick={openModal}
       >
+        {/* Esquinas decorativas */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
+
         <img
           src={item.image || "/placeholder.jpg"}
           alt={item.name || "Unnamed Item"}
-          className="w-32 h-32 mb-4 object-contain"
+          className="w-24 h-24 mb-2 object-contain"
         />
-        <strong className="text-lg mb-2 text-white truncate text-center w-full">
+        <strong className="text-gray-200 text-center text-sm font-semibold px-2 truncate w-full">
           {item.name || "Unnamed Item"}
         </strong>
-        <div className="text-yellow-400">
-          Price: ${item.value || "N/A"}
+        <div className="text-gray-300 text-sm font-medium mt-1">
+          Price: {item.value || "N/A"} gold
         </div>
-        <div className="flex space-x-2 mt-auto">
+        
+        <div className="flex space-x-2 mt-auto pt-2">
           <button
-            className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+            className="px-3 py-1 bg-gray-300 text-black text-sm font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
-              e.stopPropagation(); // Evita que el clic en el botón abra el modal
+              e.stopPropagation();
               handleBuy(item, player, setError);
             }}
           >
             Buy Now
           </button>
           <button
-            className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+            className="px-3 py-1 bg-gray-300 text-black text-sm font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
-              e.stopPropagation(); // Evita que el clic en el botón abra el modal
+              e.stopPropagation();
               handleAddToCart(item, player, setError);
             }}
           >
@@ -72,9 +75,9 @@ const ItemCard: React.FC<ItemCardProps> = ({
           </button>
         </div>
       </div>
-      {error && <div className="text-red-600 justify-center ">{error}</div>}
 
-      {/* Renderizar el modal si está abierto */}
+      {error && <div className="text-red-600 text-center mt-2">{error}</div>}
+
       {isModalOpen && (
         <ItemDetailsModal item={item} onClose={closeModal} />
       )}

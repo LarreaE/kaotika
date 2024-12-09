@@ -121,7 +121,7 @@ const ItemDetailsModal: React.FC<ItemDetailsModalProps> = ({ item, onClose }) =>
                   .map(([key, value]) => (
                     <li
                       key={key}
-                      className="flex justify-between px-4 py-2 border-b border-gray-300"
+                      className="flex justify-between px-4 py-2 border-b border-sepia"
                     >
                       <span>{capitalize(key)}</span>
                       <span>{value! > 0 ? `+${value}` : value}</span>

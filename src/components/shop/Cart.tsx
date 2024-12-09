@@ -70,18 +70,18 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
 
       {/* Contenedor principal del estilo tipo Skyrim */}
       <div className="mx-auto mt-10 p-6 max-w-md relative
-                      bg-black/60 border border-gray-300 text-gray-200
+                      bg-black/60 border border-sepia text-gray-200
                       rounded shadow-lg">
 
         {/* Esquinas decorativas simples */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-gray-300"></div>
-        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-gray-300"></div>
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-gray-300"></div>
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-gray-300"></div>
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
         
         {/* Título */}
         <div className="flex justify-center mb-4">
-          <div className="px-4 py-1 bg-black/40 border border-gray-300 uppercase font-bold text-lg tracking-wide">
+          <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-lg tracking-wide">
             Cart
           </div>
         </div>
@@ -122,7 +122,7 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
             <div className="mb-4">
               <span 
                 data-testid={'total_price'} 
-                className="inline-block bg-black/40 border border-gray-300 px-4 py-1 rounded font-bold"
+                className="inline-block bg-black/40 border border-sepia px-4 py-1 rounded font-bold"
               >
                 Total: {calculateTotal()} gold
               </span>

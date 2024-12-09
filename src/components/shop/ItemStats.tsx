@@ -173,7 +173,7 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   const levelColor = itemMinLevel <= player.level ? 'text-green-400' : 'text-red-400';
 
   return (
-    <div className="p-4 bg-gray-900 rounded shadow-md text-white border-2 border-yellow-500">
+    <div className="p-4 bg-gray-900 rounded shadow-md text-white border-2 border-sepia">
       <div className="flex justify-between items-center">
         <h3 className="text-3xl font-semibold">{selectedItem.name}</h3>
         <p className={`text-xl font-semibold ${levelColor}`}>Min lvl: {itemMinLevel}</p>

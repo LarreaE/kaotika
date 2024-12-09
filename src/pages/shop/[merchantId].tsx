@@ -7,9 +7,8 @@ import { Player } from '@/_common/interfaces/Player';
 
 import MerchantInfo from '@/components/shop/MerchantInfo';
 import ItemStats from '@/components/shop/ItemStats';
-import ItemCard from '@/components/shop/ItemCard';
-import CartPreview from '@/components/shop/CartPreview';
 import ItemCarousel from '@/components/shop/ItemCarousel';
+import CartPreview from '@/components/shop/CartPreview';
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { transformStringLowerPlural } from '@/helpers/transformString';
@@ -37,7 +36,7 @@ const MerchantPage = () => {
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
   
-  const [showCartModal, setShowCartModal] = useState<boolean>(false); // Estado para el modal
+  const [showCartModal, setShowCartModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (status === 'loading' || !session || !merchantId) return;
@@ -54,7 +53,7 @@ const MerchantPage = () => {
         console.error('Failed to fetch merchant items:', error);
       } finally {
         if (player) {
-          setLoading(false); // player is slower to fetch
+          setLoading(false);
         }
       }
     };
@@ -116,7 +115,6 @@ const MerchantPage = () => {
       if (!checkItemInsidePlayer(item, player)) {
         try {
           setLoading(true);
-
           const res = await fetch(
             `/api/shop/${player.email}/${merchantId}/${item.name}`
           );
@@ -200,90 +198,100 @@ const MerchantPage = () => {
   }
 
   return (
-<Layout>
-  {loading && <Loading />}
-  
-  <div className="relative">
-    {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
-    <div className="absolute top-4 right-4">
-      <button
-        onClick={() => setShowCartModal(true)}
-        className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
-      >
-        <img 
-          src="/images/shop/basket.png" 
-          alt="Cart" 
-          className="w-12 h-12 object-contain"
-        />
-      </button>
-    </div>
+    <Layout>
+      {loading && <Loading />}
+      <div className="relative">
+        {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
+        <div className="absolute top-4 right-4">
+          <button
+            onClick={() => setShowCartModal(true)}
+            className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
+          >
+            <img 
+              src="/images/shop/basket.png" 
+              alt="Cart" 
+              className="w-12 h-12 object-contain"
+            />
+          </button>
+        </div>
 
-    {/* Contenedor principal con la disposición del merchant */}
-    <div className="flex">
-      {/* Franja izquierda */}
-      <div
-        className="w-[30%] bg-orange-100 shadow-lg p-4 bg-cover bg-center"
-        style={{
-          backgroundImage: "url('/images/pergamino.jpg')",
-        }}
-      >
-        <MerchantInfo
-          merchantImage="/images/sellers/seller1.png"
-          merchantName={`Merchant ${merchantId}`}
-        />
-        <div className="">
-          <ItemStats
-            selectedItem={selectedItem}
-            atributtes={currentAttributes}
-            player={player}
-          />
+        {/* Contenedor principal con la disposición del merchant */}
+        <div className="flex">
+          {/* Franja izquierda con estilo tipo Skyrim */}
+          <div className="w-[30%] p-4 relative bg-black/60 border border-sepia text-gray-200 rounded shadow-lg">
+            {/* Esquinas decorativas */}
+            <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
+            <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
+            
+            {/* Título del Merchant */}
+            <div className="flex justify-center mb-4">
+              <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-lg tracking-wide">
+                Merchant {merchantId}
+              </div>
+            </div>
+            
+            <div className="mb-4 flex justify-center">
+              <img
+                src="/images/sellers/seller1.png"
+                alt={`Merchant ${merchantId}`}
+                className="object-contain h-32"
+              />
+            </div>
+            
+            <div className="border-t border-sepia pt-4">
+              <ItemStats
+                selectedItem={selectedItem}
+                atributtes={currentAttributes}
+                player={player}
+              />
+            </div>
+          </div>
+
+          {/* Contenido principal */}
+          <div className="w-3/4 p-4 mt-10">
+            <ItemCarousel
+              items={allItems}
+              player={player}
+              handleBuy={handleBuy}
+              handleAddToCart={handleAddToCart}
+              setSelectedItem={setSelectedItem}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Contenido principal */}
-      <div className="w-3/4 p-4 mt-10">
-        <ItemCarousel
-          items={allItems}
-          player={player}
-          handleBuy={handleBuy}
-          handleAddToCart={handleAddToCart}
-          setSelectedItem={setSelectedItem}
-
-        />
-      </div>
-    </div>
-  </div>
-
-  {/* Modal del CartPreview */}
-  {showCartModal && (
-    <div 
-      className="fixed inset-0 z-50 flex justify-center items-end bg-black bg-opacity-50"
-      onClick={() => setShowCartModal(false)}
-    >
-      <div 
-        className="bg-transparent w-full md:w-[80%] h-[100%] rounded-t-xl p-4 relative overflow-auto transform transition-transform translate-y-0"
-        style={{ transition: 'transform 0.3s ease-in-out' }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Botón para cerrar el modal */}
-        <button 
-          className="absolute top-[12%] right-[13%] text-gray-400 hover:text-gray-900 z-51"
+      {/* Modal del CartPreview */}
+      {showCartModal && (
+        <div 
+          className="fixed inset-0 z-50 flex justify-center items-end bg-black bg-opacity-50"
           onClick={() => setShowCartModal(false)}
         >
-          X
-        </button>
-        
-        <CartPreview
-          items={cartItems}
-          emptyCart={emptyCart}
-          removeItem={removeItem}
-          calculateTotalPrice={calculateTotalPrice}
-          goToCheckout={goToCheckout}
-        />
-      </div>
-    </div>
-  )}
-</Layout>
+          <div 
+            className="bg-transparent w-full md:w-[80%] h-[100%] rounded-t-xl p-4 relative overflow-auto transform transition-transform translate-y-0"
+            style={{ transition: 'transform 0.3s ease-in-out' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Botón para cerrar el modal */}
+            <button 
+              className="absolute top-[12%] right-[13%] text-gray-400 hover:text-gray-900 z-51"
+              onClick={() => setShowCartModal(false)}
+            >
+              X
+            </button>
+            
+            <CartPreview
+              items={cartItems}
+              emptyCart={emptyCart}
+              removeItem={removeItem}
+              calculateTotalPrice={calculateTotalPrice}
+              goToCheckout={goToCheckout}
+            />
+          </div>
+        </div>
+      )}
+    </Layout>
   );
 };
 
