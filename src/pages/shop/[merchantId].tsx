@@ -219,26 +219,31 @@ const MerchantPage = () => {
     </div>
 
     {/* Contenedor principal con la disposición del merchant */}
-    <div className="flex">
+    <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
       {/* Franja izquierda */}
-      <div
-        className="w-[30%] bg-orange-100 shadow-lg p-4 bg-cover bg-center"
+      <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
+      <div  
+        className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
         style={{
-          backgroundImage: "url('/images/pergamino.jpg')",
+          backgroundImage: "url('/images/pergamino.jpg')", 
         }}
       >
-        <MerchantInfo
-          merchantImage="/images/sellers/seller1.png"
-          merchantName={`Merchant ${merchantId}`}
-        />
-        <div className="">
+        <div className="h-2/6">
+          <MerchantInfo
+            merchantImage="/images/sellers/seller1.png"
+            merchantName={`Merchant ${merchantId}`}
+          />
+        </div>
+        <div className="h-[3/6] w-full pt-[5%]">
           <ItemStats
+            className="rounded-3xl"
             selectedItem={selectedItem}
             atributtes={currentAttributes}
             player={player}
           />
         </div>
       </div>
+    </div>
 
       {/* Contenido principal */}
       <div className="w-3/4 p-4 mt-10">

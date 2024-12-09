@@ -3,6 +3,12 @@ import ItemStats from './ItemStats';
 import ItemBaseStats from './ItemBaseStats';
 
 const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, initiateSell }) => {
+  // Función para iniciar la venta y cerrar el modal
+  const handleSellClick = () => {
+    initiateSell(selectedItem); // Inicia la venta
+    closeModal(); // Cierra el modal después de la venta
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
@@ -44,7 +50,7 @@ const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeMod
             <div className="flex space-x-4 mt-auto p-2">
               {selectedItem && (
                 <button
-                  onClick={() => initiateSell(selectedItem)}
+                  onClick={handleSellClick} // Usamos la nueva función aquí
                   className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
                   Sell for {Math.floor(selectedItem.value / 3)}
                 </button>

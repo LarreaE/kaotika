@@ -1,15 +1,12 @@
-// src/components/shop/ItemCard.tsx
-
 import React, { useState } from "react";
-import ItemDetailsModal from "./ItemDetailsModal"; // Importa el nuevo componente
 import { Player } from "@/_common/interfaces/Player";
+import ItemDetailModal from "./ItemDetailsModal";
 
 interface ItemCardProps {
-  item: any
-  player: any; // Ajusta el tipo según tu interfaz de Player
+  item: any;
+  player: Player; // Ajusta el tipo según tu interfaz de Player
   handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
   handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
-
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -29,6 +26,14 @@ const ItemCard: React.FC<ItemCardProps> = ({
   // Función para cerrar el modal
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  // Se asume que el jugador tiene un campo 'attributes' y definimos 'currentAttributes' 
+  const currentAttributes = player?.attributes || {}; // Puedes ajustar esto según cómo esté estructurada tu interfaz de jugador
+
+  // Aquí pasamos la función 'handleBuy' como 'initiateBuy' al modal
+  const initiateBuy = (selectedItem: any) => {
+    handleBuy(selectedItem, player, setError);
   };
 
   return (
@@ -76,7 +81,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
       {/* Renderizar el modal si está abierto */}
       {isModalOpen && (
-        <ItemDetailsModal item={item} onClose={closeModal} />
+        <ItemDetailModal
+          selectedItem={item} // Pasa el item seleccionado al modal
+          currentAttributes={currentAttributes} // Pasa los atributos actuales del jugador
+          player={player} // Pasa los datos del jugador
+          closeModal={closeModal} // Función para cerrar el modal
+          initiateBuy={initiateBuy} // Función para iniciar la compra
+        />
       )}
     </>
   );

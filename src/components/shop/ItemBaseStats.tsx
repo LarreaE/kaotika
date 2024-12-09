@@ -36,6 +36,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
     'strength',
   ];
 
+  // Función para renderizar los atributos que no son de armas (es decir, otros modificadores)
   const renderAttributeProgressBars = () => {
     return attributesToDisplay.map((attrName) => {
       const value = selectedItem.modifiers?.[attrName] || 0;
@@ -57,8 +58,67 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
     });
   };
 
+  // Renderizar las estadísticas defensivas si el ítem es de tipo Armor, Boot, Helmet o Shield
+  const renderDefensiveStats = () => {
+    if (
+      selectedItem?.type === 'armor' ||
+      selectedItem?.type === 'boot' ||
+      selectedItem?.type === 'helmet' ||
+      selectedItem?.type === 'shield'
+    ) {
+      // Verificamos el tipo y accedemos a las propiedades del item correspondiente
+      let defenseStat = null;
+
+      if (selectedItem.type === 'armor') {
+        const armor = selectedItem as Armor;
+        defenseStat = armor.defense;
+      } else if (selectedItem.type === 'boot') {
+        const boot = selectedItem as Boot;
+        defenseStat = boot.defense;
+      } else if (selectedItem.type === 'helmet') {
+        const helmet = selectedItem as Helmet;
+        defenseStat = helmet.defense;
+      } else if (selectedItem.type === 'shield') {
+        const shield = selectedItem as Shield;
+        defenseStat = shield.defense;
+      }
+
+      return (
+        <div className="mb-4">
+          <div className="text-2xl">
+            <div className="mb-2">Defense: {defenseStat}</div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Renderizar las estadísticas del daño si el ítem es un arma (Weapon)
+  const renderWeaponStats = () => {
+    if (selectedItem?.type === 'weapon') {
+      const weapon = selectedItem as Weapon;
+
+      const damageDisplay = `${weapon.die_num}D${weapon.die_faces} + ${weapon.die_modifier}`;
+      return (
+        <div className="mb-4">
+          <div className="text-2xl">Damage: {damageDisplay}</div>
+          <div className="text-2xl">Base Percentage: {weapon.base_percentage}%</div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="p-4 bg-gray-900 rounded shadow-md text-white border-2 border-yellow-500">
+      {/* Mostrar las estadísticas específicas de la arma si es una Weapon */}
+      {renderWeaponStats()}
+
+      {/* Mostrar estadísticas defensivas si es un Armor, Boot, Helmet o Shield */}
+      {renderDefensiveStats()}
+
+      {/* Renderizar las barras de progreso para los atributos */}
       {renderAttributeProgressBars()}
     </div>
   );
