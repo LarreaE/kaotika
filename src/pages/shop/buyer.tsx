@@ -6,24 +6,18 @@ import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import Loading from '../../components/Loading';
 import { Player } from '@/_common/interfaces/Player';
-
 import MerchantInfo from '@/components/shop/MerchantInfo';
 import ItemStats from '@/components/shop/ItemStats';
 import ItemBaseStats from '@/components/shop/ItemBaseStats';
 import ItemCard from '@/components/shop/ItemCard';
-import ItemDisplay from '@/components/shop/ItemDisplay';
+import ItemDisplay from '@/components/shop/CartPreview';
 import ItemCarousel from '@/components/shop/ItemCarousel'; // Importa el nuevo componente
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
-import Droppable from '@/components/Droppable';
-import Draggable from '@/components/Draggable';
-import DefenseTooltip from '@/components/tooltips/DefenseTooltip';
-import WeaponTooltip from '@/components/tooltips/WeaponTooltip';
-import CommonTooltip from '@/components/tooltips/CommonTooltip';
-import HealingPotionTooltip from '@/components/tooltips/HealingPotionTooltip';
-import AntidotePotionTooltip from '@/components/tooltips/AntidotePotionTooltip';
-import EnhancerPotionTooltip from '@/components/tooltips/EnhancerPotionTooltip';
-import { GRID_NUMBER } from '@/constants/constants';
+import SellItemCard from '@/components/shop/SellItemCard';
+import SellConfirmationModal from '@/components/shop/SellConfirmationModal';
+import SellItemDetailModal from '@/components/shop/SellItemDetailModal';
+import SellInventory from '@/components/shop/SellInventory';
 
 const MerchantPage: React.FC = () => {
 
@@ -164,143 +158,50 @@ const MerchantPage: React.FC = () => {
   return (
     <Layout>
     {isModalOpen && selectedItem && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-        <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
-          <button
-            onClick={closeModal}
-            className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
-            X
-          </button>
-          <div className="flex flex-row gap-6">
-            <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
-              <ItemStats
-                className="rounded-3xl border-sepia border-2 w-full"
-                selectedItem={selectedItem}
-                atributtes={currentAttributes}
-                player={player}
-              />
-            </div>
-            <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
-              <img
-                src={selectedItem.image}
-                alt={selectedItem.name}
-                className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
-              />
-            </div>
-            <div className="w-1/3 flex flex-col justify-center items-center text-center">
-              <p className="text-white text-2xl mb-6 p-2">{selectedItem.description}</p>
-              {selectedItem ? (
-                <ItemBaseStats selectedItem={selectedItem} player={player} />
-              ) : (
-                <div className="text-center text-gray-500 italic">
-                  Selecciona un elemento para ver sus estadísticas.
-                </div>
-              )}
-              <div className="flex space-x-4 mt-auto p-2">
-                {selectedItem && (
-                  <button 
-                    onClick={() => initiateSell(selectedItem)}
-                    className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-                    Sell for {Math.floor(selectedItem.value / 3)}
-                  </button>
-              
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SellItemDetailModal
+        selectedItem={selectedItem}
+        currentAttributes={currentAttributes}
+        player={player}
+        closeModal={closeModal}
+        initiateSell={initiateSell}
+      />
     )}
     {isConfirming && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-        <div className="bg-black p-6 rounded-xl shadow-lg text-center w-2/5 border-2 border-sepia">
-          <h2 className="text-6xl font-bold text-white mb-4">Confirm Sale</h2>
-          {confirmationDetails && (
-            <>
-              <p className="mb-2 text-3xl text-white">
-                Gold: <strong>{confirmationDetails.currentGold}</strong> ➡ <strong>{confirmationDetails.newGold}</strong>
-              </p>
-              <p className="mb-4 text-3xl text-white">Are you sure you want to sell <strong>{confirmationDetails.item?.name}</strong>?</p>
-            </>
-          )}
-          <div className="flex justify-around mt-4">
-            <button
-              onClick={() => handleSell(confirmationDetails?.item!)}
-              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-              Confirm
-            </button>
-            <button
-              onClick={() => setIsConfirming(false)}
-              className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
+      <SellConfirmationModal
+        confirmationDetails={confirmationDetails}
+        handleSell={handleSell}
+        setIsConfirming={setIsConfirming}
+      />
     )}
 
-    {loading && <Loading />}
-    <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-      <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
-        <div  
-          className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
-          style={{
-            backgroundImage: "url('/images/pergamino.jpg')", 
-          }}
-        >
-          <div className="h-2/6">
-            <MerchantInfo
-              merchantImage="/images/sellers/seller1.png"
-              merchantName={`Merchant ${merchantId}`}
-            />
-          </div>
-          <div className="h-[3/6] w-full pt-[5%]">
-            <ItemStats
-              className="rounded-3xl"
-              selectedItem={selectedItem}
-              atributtes={currentAttributes}
-              player={player}
-            />
-          </div>
+  {loading && <Loading />}
+  <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
+    <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
+      <div  
+        className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
+        style={{
+          backgroundImage: "url('/images/pergamino.jpg')", 
+        }}
+      >
+        <div className="h-2/6">
+          <MerchantInfo
+            merchantImage="/images/sellers/seller1.png"
+            merchantName={`Merchant ${merchantId}`}
+          />
+        </div>
+        <div className="h-[3/6] w-full pt-[5%]">
+          <ItemStats
+            className="rounded-3xl"
+            selectedItem={selectedItem}
+            atributtes={currentAttributes}
+            player={player}
+          />
         </div>
       </div>
+    </div>
     {selectedItem ? (
       <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
-        <div className="w-3/5 h-4/6 p-4 bg-black bg-opacity-70 flex flex-col items-center rounded-2xl shadow-lg border-4 border-sepia">
-          <div className="w-full text-center bg-medievalSepia py-2 rounded-t-2xl">
-            <p className="text-black text-4xl font-bold">
-              {selectedItem?.name || 'Sellect any item'}
-            </p>
-          </div>
-          <div className="w-3/5 mt-4 border-4 border-sepia rounded-xl overflow-hidden shadow-md bg-white">
-            {selectedItem?.image ? (
-              <img
-                src={selectedItem.image}
-                alt={selectedItem.name || 'Selected Item'}
-                className="w-full h-auto"
-              />
-            ) : (
-              <p className="text-gray-500 text-center p-4">
-                Any item selected
-              </p>
-            )}
-          </div>
-          <div className="w-full mt-4 text-center">
-            <p className="text-white text-3xl font-medium">
-              {selectedItem?.description || 'Without description'}
-            </p>
-          </div>
-          {selectedItem && (
-            <div className="w-auto -bottom-12 mt-auto text-center bg-medievalSepia py-1 px-2 rounded-2xl flex flex-row items-center justify-center relative">
-              <p className="text-black text-4xl font-bold mr-2">{selectedItem.value}</p>
-              <img
-                src="/images/shop/gold.png"
-                alt="gold coin"
-                className="w-12 h-12 ml-2"
-              />
-            </div>
-          )}
-        </div>
+        <SellItemCard selectedItem={selectedItem} />
         <div className="flex flex-row items-center justify-center gap-x-4 mt-16">
           <button
             onClick={handleViewDetails}
@@ -322,127 +223,26 @@ const MerchantPage: React.FC = () => {
 
       </div>
     )}
-  <div className="w-4/12 bg-black bg-opacity-70 flex flex-col items-center rounded-3xl shadow-lg">
-    {player && (
-      <div className="w-2/5 h-auto p-2 bg-medievalSepia flex items-center justify-between rounded-2xl shadow-lg mb-4 self-end mr-4">
-        <div className="text-black text-2xl font-bold">Gold</div>
-        <div className="flex items-center">
-          <p className="text-black text-3xl font-bold">{player.gold}</p>
-          <img
-            src="/images/shop/gold.png"
-            alt="gold coin"
-            className="w-8 h-8 ml-2"
-          />
+    <div className="w-4/12 bg-black bg-opacity-70 flex flex-col items-center rounded-3xl shadow-lg">
+      {player && (
+        <div className="w-2/5 h-auto p-2 bg-medievalSepia flex items-center justify-between rounded-2xl shadow-lg mb-4 self-end mr-4">
+          <div className="text-black text-2xl font-bold">Gold</div>
+          <div className="flex items-center">
+            <p className="text-black text-3xl font-bold">{player.gold}</p>
+            <img
+              src="/images/shop/gold.png"
+              alt="gold coin"
+              className="w-8 h-8 ml-2"
+            />
+          </div>
         </div>
-      </div>
-    )}
-    {player &&  <div className="grid grid-cols-8 grid-rows-8" style={{ width: 'fit-content', height: 'fit-content' }}>
-        {player?.inventory.helmets.map(helmet => {
-            return (
-            <div onClick={() => selectItem(helmet)} key={helmet._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={10}  type='inventory' children={<Draggable id={helmet._id} position='bottom' type={[`${helmet.min_lvl <= player.level ? helmet.type : null}`, 'inventory']} element={helmet} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.weapons.map(weapon => {
-            return (
-            <div onClick={() => selectItem(weapon)} key={weapon._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={20}  type='inventory' children={<Draggable id={weapon._id} position='bottom' type={[`${weapon.min_lvl <= player?.level ? weapon.type : null}`, 'inventory']} element={weapon} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.armors.map(armor => {
-            return (
-            <div onClick={() => selectItem(armor)} key={armor._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>    
-                <Droppable id={30}  type='inventory' children={<Draggable id={armor._id} position='bottom' type={[`${armor.min_lvl <= player?.level ? armor.type : null}`, 'inventory']} element={armor} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>                      
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.shields.map(shield => {
-            return (
-            <div onClick={() => selectItem(shield)} key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={40}  type='inventory' children={<Draggable id={shield._id} position='bottom' type={[`${shield.min_lvl <= player?.level ? shield.type : null}`, 'inventory']} element={shield} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.artifacts.map(artifact => {
-            return (
-            <div onClick={() => selectItem(artifact)} key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={50}  type='inventory' children={<Draggable id={artifact._id} position='bottom' type={[`${artifact.min_lvl <= player?.level ? artifact.type : null}`, 'inventory']} element={artifact} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.boots.map(boot => {
-            return (
-            <div onClick={() => selectItem(boot)} key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={boot._id} position='bottom' type={[`${boot.min_lvl <= player?.level ? boot.type : null}`, 'inventory']} element={boot} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.rings.map(ring => {
-            return (
-            <div onClick={() => selectItem(ring)} key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={ring._id} position='bottom' type={[`${ring.min_lvl <= player?.level ? ring.type : null}`, 'inventory']} element={ring} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.healing_potions.map(healing => {
-            return (
-            <div key={healing._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={healing._id} position='bottom' type={[`${healing.type}`, 'inventory']} element={healing} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.antidote_potions.map(antidote => {
-            return (
-            <div key={antidote._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={antidote._id} position='bottom' type={[`${antidote.type}`, 'inventory']} element={antidote} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.enhancer_potions.map(enhancer => {
-            return (
-            <div key={enhancer._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={enhancer._id} position='bottom' type={[`${enhancer.type}`, 'inventory']} element={enhancer} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        { 
-        Array.from({
-            length:
-            GRID_NUMBER 
-            - player.inventory.helmets.length 
-            - player.inventory.weapons.length 
-            - player.inventory.armors.length 
-            - player.inventory.shields.length
-            - player.inventory.artifacts.length
-            - player.inventory.boots.length
-            - player.inventory.rings.length
-            - player.inventory.healing_potions.length
-            - player.inventory.antidote_potions.length
-            - player.inventory.enhancer_potions.length
-        }).map((element,index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}><Droppable id={23} type='inventory'  children={null}/></div> ) 
-        }                      
-        </div>
+      )}
+      {player &&  
+        <SellInventory
+          player={player}
+          GRID_NUMBER={64}
+          selectItem={selectItem}
+        />
       }
     </div>
   </div>

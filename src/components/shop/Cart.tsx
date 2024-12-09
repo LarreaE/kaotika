@@ -15,7 +15,6 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
 
 
   useEffect(() => {
-    //update the Items    
     setItems(Items);
     setLoading(false);
   }, [Items])
