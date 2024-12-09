@@ -1,5 +1,5 @@
-import { calculateMagicResistance } from "./calculateMagicResistance"
-import { mockAttributes, mockEmptyAttributes } from "./mockAttributes"
+import { calculateMagicResistance } from "../helpers/calculateMagicResistance"
+import { mockAttributes, mockEmptyAttributes } from "../helpers/mockAttributes"
 
 describe('Calculate Magic Resistance INT + CHAR', () => {
 	it('should calculate magic resistance correctly', () => {

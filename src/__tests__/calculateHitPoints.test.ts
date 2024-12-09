@@ -1,5 +1,5 @@
-import { calculateHitPoints } from './calculateHitPoints';
-import { mockAttributes, mockEmptyAttributes } from './mockAttributes';
+import { calculateHitPoints } from '../helpers/calculateHitPoints';
+import { mockAttributes, mockEmptyAttributes } from '../helpers/mockAttributes';
 
 describe('Calculate HitPoints  CONS + DEX - INS / 2', () => {
   it('should calculate hit points correctly', () => {

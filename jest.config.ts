@@ -3,14 +3,16 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   
   testMatch: ['**/*.test.ts', '**/*.test.tsx'], // Patrones para encontrar archivos de test
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom', // Entorno simulado para pruebas en navegador
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { isolatedModules: true }], // Configuración de ts-jest directamente aquí
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest', // Transforma archivos JS, JSX, TS y TSX con Babel
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1', // Alias para importar módulos
+    '\\.(css|scss|sass)$': 'identity-obj-proxy', // Mock para estilos
+    '^@/(.*)$': '<rootDir>/src/$1', // Ajusta si usas alias de rutas
   },
-  testEnvironment: 'node', // Cambiar a 'jsdom' si trabajas con React u otras APIs del DOM
-  verbose: true, // Mostrar resultados detallados
+  setupFilesAfterEnv: ['@testing-library/jest-dom'], // Configuración de jest-dom
 };
 
 export default config;

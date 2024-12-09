@@ -1,5 +1,5 @@
-import { calculateDefense } from "./calculateDefense"
-import { mockAttributes, mockEmptyAttributes } from "./mockAttributes";
+import { calculateDefense } from "../helpers/calculateDefense"
+import { mockAttributes, mockEmptyAttributes } from "../helpers/mockAttributes";
 
 describe('Calculate defense DEX + CONS + INT / 2', () => {
 	it('should calculate defense correctly', () => {

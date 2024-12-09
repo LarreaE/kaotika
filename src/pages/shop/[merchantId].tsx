@@ -221,7 +221,7 @@ const MerchantPage = () => {
             <ItemStats
               selectedItem={selectedItem}
               atributtes={currentAttributes}
-              playerLevel={player?.level}
+              player={player}
             />
           </div>
         </div>
