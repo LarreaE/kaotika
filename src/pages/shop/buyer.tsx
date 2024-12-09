@@ -6,24 +6,10 @@ import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import Loading from '../../components/Loading';
 import { Player } from '@/_common/interfaces/Player';
-
 import MerchantInfo from '@/components/shop/MerchantInfo';
 import ItemStats from '@/components/shop/ItemStats';
-import ItemBaseStats from '@/components/shop/ItemBaseStats';
-import ItemCard from '@/components/shop/ItemCard';
-import ItemDisplay from '@/components/shop/ItemDisplay';
-import ItemCarousel from '@/components/shop/ItemCarousel'; // Importa el nuevo componente
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
-import Droppable from '@/components/Droppable';
-import Draggable from '@/components/Draggable';
-import DefenseTooltip from '@/components/tooltips/DefenseTooltip';
-import WeaponTooltip from '@/components/tooltips/WeaponTooltip';
-import CommonTooltip from '@/components/tooltips/CommonTooltip';
-import HealingPotionTooltip from '@/components/tooltips/HealingPotionTooltip';
-import AntidotePotionTooltip from '@/components/tooltips/AntidotePotionTooltip';
-import EnhancerPotionTooltip from '@/components/tooltips/EnhancerPotionTooltip';
-import { GRID_NUMBER } from '@/constants/constants';
 import SellItemCard from '@/components/shop/SellItemCard';
 import SellConfirmationModal from '@/components/shop/SellConfirmationModal';
 import SellItemDetailModal from '@/components/shop/SellItemDetailModal';
