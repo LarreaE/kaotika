@@ -1,4 +1,4 @@
-import { isDifferentDay } from "./isDifferentDay";
+import { isDifferentDay } from "../helpers/isDifferentDay";
 
 const d1 = new Date('2024-11-29T09:33:05.932+00:00');
 const d2 = new Date('2024-11-30T09:33:05.932+00:00');

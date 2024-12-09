@@ -4,22 +4,20 @@ import Loading from "../Loading";
 import { useSession } from "next-auth/react";
 
 interface CartProps {
-    Items: any
+  Items: any
 }
+
 const Cart: React.FC<CartProps> = ({ Items }) => {
-  
   const { data: session, status } = useSession();
   const [items, setItems] = useState(Items);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
     setItems(Items);
     setLoading(false);
-  }, [Items])
-  
-  
+  }, [Items]);
+
   const updateQuantity = (id:any, delta:any) => {
     setItems((prevItems:any) =>
       prevItems.map((item:any) =>
@@ -37,9 +35,7 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
     setItems((prevItems:any) => prevItems.filter((item:any) => item._id !== id));
   };
 
-  
   const handleBuy = async(items:any[]) => {
-  
     if (session) {
       try {
         setLoading(true);
@@ -53,7 +49,7 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
           setItems([]);
           console.log(response)
         } else if (res.status === 404) {
-          setError(error);
+          setError(error || 'Not found');
           console.log(error);
         } else {
           setError('An error occurred while purchasing');
@@ -69,46 +65,77 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
 
   return (
     <>
-    {loading && <Loading/>}
-    {error && <div className="text-red-600">{error}</div>}
-      <div className="max-w-full mx-auto mt-10 p-6 bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-        Epic Cart
-      </h1>
-      <div className="space-y-4">
-        {items.length === 0 ? (
-          <p data-testid={'empty-cart'} className="text-gray-500 text-center">The Cart is empty.</p>
-        ) : (
-          items.map((item:any) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border"
-            >
-              <span className="text-gray-800 font-semibold p-4">{item.name}</span>
-              <span className="text-gray-800 font-semibold p-4">{item.value}</span>
-              <button
-                data-testid={`remove_item_${item.id}`}
-                className="px-6 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition m-4"
-                onClick={() => removeItem(item._id)}
+      {loading && <Loading />}
+      {error && <div className="text-red-400 text-center font-bold mt-4">{error}</div>}
+
+      {/* Contenedor principal del estilo tipo Skyrim */}
+      <div className="mx-auto mt-10 p-6 max-w-md relative
+                      bg-black/60 border border-sepia text-gray-200
+                      rounded shadow-lg">
+
+        {/* Esquinas decorativas simples */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
+        
+        {/* Título */}
+        <div className="flex justify-center mb-4">
+          <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-lg tracking-wide">
+            Cart
+          </div>
+        </div>
+
+        {/* Contenido */}
+        <div className="space-y-4">
+          {items.length === 0 ? (
+            <p data-testid={'empty-cart'} className="text-center font-medium text-gray-300">
+              The cart is empty...
+            </p>
+          ) : (
+            items.map((item:any) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between p-3 rounded border border-gray-500 bg-black/30 
+                           hover:bg-black/50 transition-colors duration-200"
               >
-                Remove Item
-              </button>
+                <span className="font-semibold">
+                  {item.name}
+                </span>
+                <span className="font-medium">
+                  {item.value} gold
+                </span>
+                <button
+                  data-testid={`remove_item_${item.id}`}
+                  className="px-4 py-1 bg-gray-300 text-black text-sm rounded hover:bg-gray-200 transition"
+                  onClick={() => removeItem(item._id)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+        
+        {items.length > 0 && (
+          <div className="mt-6 text-center">
+            <div className="mb-4">
+              <span 
+                data-testid={'total_price'} 
+                className="inline-block bg-black/40 border border-sepia px-4 py-1 rounded font-bold"
+              >
+                Total: {calculateTotal()} gold
+              </span>
             </div>
-          ))
+            <button
+              data-testid={'end_purchase'}
+              className="w-full py-2 bg-gray-300 text-black font-bold rounded hover:bg-gray-200 transition"
+              onClick={() => handleBuy(items)}
+            >
+              Purchase Items
+            </button>
+          </div>
         )}
-      </div>
-      {items.length > 0 && (
-        <>
-        <span data-testid={'total_price'} className="text-gray-600 text-lg font-bold p-2 text-center">Total amount: {calculateTotal()}</span>
-        <button
-					data-testid={'end_purchase'}
-          className="w-full mt-6 py-2 bg-green-500 text-white text-lg font-bold rounded-lg hover:bg-green-600 transition"
-          onClick={() => handleBuy(items)}
-        >
-          Purchase Items
-        </button>
-        </>
-      )}
       </div>
     </>
   );

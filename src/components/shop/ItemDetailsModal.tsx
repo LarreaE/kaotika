@@ -43,7 +43,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
             {selectedItem ? (
               <ItemBaseStats selectedItem={selectedItem} player={player} />
             ) : (
-              <div className="text-center text-gray-500 italic">
+              <div className="text-center text-gray-500 italic w-full">
                 Selecciona un elemento para ver sus estadísticas.
               </div>
             )}

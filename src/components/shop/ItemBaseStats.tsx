@@ -82,13 +82,20 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
         const shield = selectedItem as Shield;
         defenseStat = shield.defense;
       }
-
+      const attrName = "Defense";
+      const isNegative = defenseStat < 0;
+      const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
+      const maxValue = Math.max(Math.abs(defenseStat), 100);
+      const label = `${attrName.toUpperCase()}: ${isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}`;
       return (
-        <div className="mb-4">
-          <div className="text-2xl">
-            <div className="mb-2">Defense: {defenseStat}</div>
-          </div>
-        </div>
+        <div key={attrName} className="mb-4">
+          <ProgressBar
+            label={label}
+            value={Math.abs(defenseStat)} 
+            maxValue={maxValue}
+            barColor={barColor}
+          />
+        </div> 
       );
     }
     return null;
@@ -111,7 +118,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
   };
 
   return (
-    <div className="p-4 bg-gray-900 rounded shadow-md text-white border-2 border-yellow-500">
+    <div className="w-[100%] p-4 bg-gray-900 rounded shadow-md text-white border-2 border-sepia">
       {/* Mostrar las estadísticas específicas de la arma si es una Weapon */}
       {renderWeaponStats()}
 

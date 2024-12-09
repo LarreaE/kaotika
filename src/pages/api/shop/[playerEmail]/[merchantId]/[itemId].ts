@@ -17,11 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
       const player = await Player.findOne({email: playerEmail})
-
-      console.log(collectionName);
-      console.log(mongoose.models);
       
-      console.log("MODEL:", model);
       console.log(itemId);
 
       const fieldsToSearch = ['rings', 'artifacts', 'weapons','shields','helmets','armors','boots', 'ingredients'];
@@ -62,19 +58,16 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
         throw new Error('Item not found or already sold');
       }
   
-      if (player?.gold < item.value.value) {
-        throw new Error('Insufficient gold');
+      if (player.gold < item.value) {
+        console.log(`player has ${player.gold}G , which is less than the item value: ${item.value}G. purchase could not be complete`);
+        res.status(400).json({ error: 'Insufficient gold' });
+        return;
       }
   
       const type = `${item.type}s`
       console.log(type);
-      
-      console.log(player.inventory);
-      console.log(player.inventory[type]);
-      
+            
       await player?.inventory[type].push(item);
-      
-
 
       console.log(player.inventory[type]);
 

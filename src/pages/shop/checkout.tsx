@@ -10,12 +10,7 @@ const Checkout = () => {
   const { cart } = router.query;
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState([
-    { id: 1, name: "Kaotikal Sword", type: "medieval", quantity: 1, price: 2500 },
-    { id: 2, name: "Elixir of the Traitor", type: "ingredient", quantity: 3, price: 53},
-    { id: 3, name: "Shadows Shield", type: "medieval", quantity: 1, price: 1500 },
-  ]
-  );
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     if (cart) {
