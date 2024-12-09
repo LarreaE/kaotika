@@ -11,7 +11,7 @@ import MerchantInfo from '@/components/shop/MerchantInfo';
 import ItemStats from '@/components/shop/ItemStats';
 import ItemBaseStats from '@/components/shop/ItemBaseStats';
 import ItemCard from '@/components/shop/ItemCard';
-import ItemDisplay from '@/components/shop/ItemDisplay';
+import ItemDisplay from '@/components/shop/CartPreview';
 import ItemCarousel from '@/components/shop/ItemCarousel'; // Importa el nuevo componente
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';

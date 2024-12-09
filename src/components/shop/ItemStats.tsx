@@ -15,7 +15,7 @@ type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
 
 interface ItemStatsProps {
   selectedItem: Item | null;
-  player: Player;
+  player: Player | undefined;
 }
 
 const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
