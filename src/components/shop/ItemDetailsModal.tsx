@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ItemStats from './ItemStats';
 import ItemBaseStats from './ItemBaseStats';
+import BuyConfirmationModal from './BuyConfirmationModal'; // Importar el modal de confirmación
 
 const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, initiateBuy }) => {
-  // Función para iniciar la compra y cerrar el modal
-  const handleBuyClick = () => {
-    initiateBuy(selectedItem); // Inicia la compra
-    closeModal(); // Cierra el modal después de la compra
+  const [isConfirming, setIsConfirming] = useState(false); // Estado para el modal de confirmación
+
+  // Función para abrir el modal de confirmación
+  const openBuyConfirmationModal = () => {
+    setIsConfirming(true);
   };
+
+  // Función para cerrar el modal de confirmación
+  const closeBuyConfirmationModal = () => {
+    setIsConfirming(false);
+  };
+
+  // Datos necesarios para la confirmación
+  const currentGold = player?.gold || 0;
+  const itemPrice = selectedItem?.value || 0;
+  const newGold = currentGold - itemPrice;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="w-4/5 max-w-6xl p-8 rounded-xl shadow-lg relative border-2 border-sepia bg-black bg-opacity-70">
+        {/* Botón de cierre del modal */}
         <button
           onClick={closeModal}
-          className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia">
+          className="absolute top-4 right-4 text-white text-xl font-bold bg-sepia bg-opacity-70 rounded-full px-3 py-1 hover:bg-opacity-90 border-2 border-sepia"
+        >
           X
         </button>
         <div className="flex flex-row gap-6">
@@ -50,15 +64,36 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
             <div className="flex space-x-4 mt-auto p-2">
               {selectedItem && (
                 <button
-                  onClick={handleBuyClick} // Usamos la nueva función aquí
-                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-                  Buy for {Math.floor(selectedItem.value)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openBuyConfirmationModal(); // Abrir el modal de confirmación
+                  }}
+                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                >
+                  Buy for {itemPrice}
                 </button>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal de confirmación de compra */}
+      {isConfirming && (
+        <BuyConfirmationModal
+          confirmationDetails={{
+            currentGold: currentGold,
+            newGold: newGold,
+            item: selectedItem,
+          }}
+          handleBuy={() => {
+            initiateBuy(selectedItem); // Realizar la compra
+            closeBuyConfirmationModal(); // Cerrar el modal de confirmación
+            closeModal(); // Cerrar el modal principal
+          }}
+          setIsConfirming={setIsConfirming} // Para controlar el estado del modal de confirmación
+        />
+      )}
     </div>
   );
 };

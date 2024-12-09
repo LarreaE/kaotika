@@ -140,31 +140,47 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   const { newAttributes, differences } = calculateAttributesManually();
 
   // Función para renderizar las barras de progreso de los atributos
-  const renderAttributeProgressBars = () => {
-    return attributesToDisplay.map((attrName) => {
-      const currentValue = totalAttributesWithCurrentEquipment[attrName] || 0;
-      const newValue = newAttributes[attrName] || 0;
-      const difference = differences[attrName] || 0;
+    // Función para renderizar las barras de progreso de los atributos
+    const renderAttributeProgressBars = () => {
+      return attributesToDisplay.map((attrName) => {
+        const currentValue = totalAttributesWithCurrentEquipment[attrName] || 0;
+        const newValue = newAttributes[attrName] || 0;
+        const difference = differences[attrName] || 0;
+    
+        // Determinar el valor máximo para la barra de progreso
+        const maxValue = Math.max(currentValue, newValue, 400);
+    
+        // Determinar la flecha y el color
+        const arrow = difference > 0 ? '↑' : difference < 0 ? '↓' : '';
+        const arrowColor = difference > 0 ? 'text-green-500' : difference < 0 ? 'text-red-500' : 'text-white';
+    
+        // Crear el label que muestra el atributo y la diferencia
+        const label = (
+          <span className="text-white">
+            {attrName.toUpperCase()}: {newValue} 
+            {difference !== 0
+              ? difference > 0
+                ? ` (+${difference})`
+                : ` (${
+                difference})`
+              : ''}
+              <span className={arrowColor}>{arrow}</span>
+          </span>
+        );
+    
+        return (
+          <div key={attrName} className="mb-4">
+            <div className="flex items-center">
+              {/* Renderiza la barra de progreso */}
+              <ProgressBar label={label} value={newValue} maxValue={maxValue} />
+            </div>
+          </div>
+        );
+      });
+    };
+    
+  
 
-      // Determinar el valor máximo para la barra de progreso
-      const maxValue = Math.max(currentValue, newValue, 100);
-
-      // Crear el label que muestra el atributo y la diferencia
-      const label = `${attrName.toUpperCase()}: ${newValue} ${
-        difference !== 0
-          ? difference > 0
-            ? `(+${difference})`
-            : `(${difference})`
-          : ''
-      }`;
-
-      return (
-        <div key={attrName} className="mb-4">
-          <ProgressBar label={label} value={newValue} maxValue={maxValue} />
-        </div>
-      );
-    });
-  };
 
   // Obtener el nivel mínimo requerido del objeto
   const itemMinLevel = selectedItem.min_lvl || 1;
@@ -172,7 +188,6 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   // Determinar el color según la comparación de niveles
   const levelColor = itemMinLevel <= player.level ? 'text-green-400' : 'text-red-400';
 
-  // Renderizar las estadísticas defensivas si el ítem es de tipo Armor, Boot, Helmet o Shield
   const renderDefensiveStats = () => {
     if (
       selectedItem?.type === 'armor' ||
@@ -180,55 +195,138 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
       selectedItem?.type === 'helmet' ||
       selectedItem?.type === 'shield'
     ) {
-      // Verificamos el tipo y accedemos a las propiedades del item correspondiente
-      let defenseStat = null;
-
-      if (selectedItem.type === 'armor') {
-        const armor = selectedItem as Armor;
-        defenseStat = armor.defense;
-      } else if (selectedItem.type === 'boot') {
-        const boot = selectedItem as Boot;
-        defenseStat = boot.defense;
-      } else if (selectedItem.type === 'helmet') {
-        const helmet = selectedItem as Helmet;
-        defenseStat = helmet.defense;
-      } else if (selectedItem.type === 'shield') {
-        const shield = selectedItem as Shield;
-        defenseStat = shield.defense;
-      }
-      const attrName = "Defense";
-      const isNegative = defenseStat < 0;
+      const currentlyEquippedItem = getCurrentlyEquippedItem();
+      let currentItemDefense = 0;
   
-      const maxValue = Math.max(Math.abs(defenseStat), 100);
-      const label = `${attrName.toUpperCase()}: ${isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}`;
-      return (
-        <div key={attrName} className="mb-4">
-          <ProgressBar
-            label={label}
-            value={Math.abs(defenseStat)} 
-            maxValue={maxValue}
-          />
-        </div> 
+      if (
+        currentlyEquippedItem &&
+        (currentlyEquippedItem.type === 'armor' ||
+          currentlyEquippedItem.type === 'boot' ||
+          currentlyEquippedItem.type === 'helmet' ||
+          currentlyEquippedItem.type === 'shield')
+      ) {
+        currentItemDefense = (currentlyEquippedItem as any).defense || 0;
+      }
+  
+      let selectedItemDefense = 0;
+      if (selectedItem.type === 'armor') {
+        selectedItemDefense = (selectedItem as Armor).defense;
+      } else if (selectedItem.type === 'boot') {
+        selectedItemDefense = (selectedItem as Boot).defense;
+      } else if (selectedItem.type === 'helmet') {
+        selectedItemDefense = (selectedItem as Helmet).defense;
+      } else if (selectedItem.type === 'shield') {
+        selectedItemDefense = (selectedItem as Shield).defense;
+      }
+  
+      const totalCurrentDefense = equipmentTypesToInclude.reduce((total, equipmentType) => {
+        const item = player?.equipment[equipmentType];
+        if (
+          item &&
+          (item.type === 'armor' || item.type === 'boot' || item.type === 'helmet' || item.type === 'shield')
+        ) {
+          total += (item as any).defense || 0;
+        }
+        return total;
+      }, 0);
+  
+      const totalNewDefense = totalCurrentDefense - currentItemDefense + selectedItemDefense;
+  
+      // Calcular la diferencia
+      const defenseDifference = totalNewDefense - totalCurrentDefense;
+  
+      // Determinar la flecha y el color
+      const arrow = defenseDifference > 0 ? '↑' : (defenseDifference < 0 ? '↓' : '');
+      const arrowColor = defenseDifference > 0 ? 'text-green-500' : (defenseDifference < 0 ? 'text-red-500' : 'text-white');
+  
+      // Crear el label con el texto blanco y la flecha
+      const label = (
+        <span className="text-white">
+          DEFENSE: {totalNewDefense} 
+          {defenseDifference !== 0 
+            ? <>
+                {defenseDifference > 0 
+                  ? ` (+${defenseDifference})` 
+                  : ` (${defenseDifference})`}
+              </>
+            : ''}
+            <span className={arrowColor}>{arrow}</span> 
+        </span>
       );
-    }
-    return null;
-  };
-
-  // Renderizar las estadísticas del daño si el ítem es un arma (Weapon)
-  const renderWeaponStats = () => {
-    if (selectedItem?.type === 'weapon') {
-      const weapon = selectedItem as Weapon;
-
-      const damageDisplay = `${weapon.die_num}D${weapon.die_faces} + ${weapon.die_modifier}`;
+  
+      const maxValue = Math.max(totalCurrentDefense, totalNewDefense, 300);
+      const barColor = defenseDifference >= 0 ? 'bg-green-500' : 'bg-red-500';
+  
       return (
         <div className="mb-4">
-          <div className="text-2xl">Damage: {damageDisplay}</div>
-          <div className="text-2xl">Base Percentage: {weapon.base_percentage}%</div>
+          <ProgressBar label={label} value={totalNewDefense} maxValue={maxValue} barColor={barColor} />
         </div>
       );
     }
     return null;
   };
+
+  const renderWeaponStats = () => {
+    if (selectedItem?.type === 'weapon') {
+      const weapon = selectedItem as Weapon;
+  
+      // Cálculo del daño del nuevo ítem
+      const selectedDamageValue = weapon.die_num * weapon.die_faces + weapon.die_modifier;
+      const selectedDamage = `${weapon.die_num}D${weapon.die_faces} + ${weapon.die_modifier}`;
+  
+      const currentlyEquippedItem = getCurrentlyEquippedItem();
+      let currentDamageValue = 0;
+      let currentDamage = '0D0 + 0';
+  
+      if (currentlyEquippedItem?.type === 'weapon') {
+        const equippedWeapon = currentlyEquippedItem as Weapon;
+        // Cálculo del daño del ítem equipado
+        currentDamageValue = equippedWeapon.die_num * equippedWeapon.die_faces + equippedWeapon.die_modifier;
+        currentDamage = `${equippedWeapon.die_num}D${equippedWeapon.die_faces} + ${equippedWeapon.die_modifier}`;
+      }
+  
+      // Comparación de daño (calculando la diferencia)
+      const damageDifference = selectedDamageValue - currentDamageValue;
+      const damageArrow = damageDifference > 0 ? '↑' : (damageDifference < 0 ? '↓' : '');
+      const damageColor = damageDifference > 0 ? 'text-green-500' : (damageDifference < 0 ? 'text-red-500' : 'text-white');
+  
+      // Comparación del porcentaje base
+      const selectedBasePercentage = weapon.base_percentage;
+      const currentlyEquippedBasePercentage = currentlyEquippedItem && 'base_percentage' in currentlyEquippedItem 
+        ? (currentlyEquippedItem as Weapon).base_percentage 
+        : 0;
+      
+      const basePercentageDifference = selectedBasePercentage - currentlyEquippedBasePercentage;
+      const basePercentageArrow = basePercentageDifference > 0 ? '↑' : (basePercentageDifference < 0 ? '↓' : '');
+      const basePercentageColor = basePercentageDifference > 0 ? 'text-green-500' : (basePercentageDifference < 0 ? 'text-red-500' : 'text-white');
+  
+      return (
+        <div className="mb-4">
+          {/* Mostrar el daño comparado */}
+          <div className="text-2xl">
+            <div className="flex items-center">
+              <div>{`Damage: ${currentDamage} -> ${selectedDamage}`}</div>
+              {damageArrow && <span className={damageColor}>{damageArrow}</span>}
+            </div>
+          </div>
+  
+          {/* Mostrar el porcentaje base comparado */}
+          <div className="text-2xl">
+            <div className="flex items-center">
+              <div>{`Base Percentage: ${currentlyEquippedBasePercentage}% -> ${selectedBasePercentage}%`}</div>
+              {basePercentageArrow && <span className={basePercentageColor}>{basePercentageArrow}</span>}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+  
+  
+  
+
+
 
   return (
     <div className="p-4 w-full bg-gray-900 rounded shadow-md text-white border-2 border-sepia">
@@ -236,8 +334,8 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
         <h3 className="text-3xl font-semibold">{selectedItem.name}</h3>
         <p className={`text-xl font-semibold ${levelColor}`}>Min lvl: {itemMinLevel}</p>
       </div>
-      {renderWeaponStats()}
       {renderDefensiveStats()}
+      {renderWeaponStats()}
       {renderAttributeProgressBars()}
     </div>
   );

@@ -1,13 +1,12 @@
-"use client"
 import React, { useState } from "react";
-import ItemDetailsModal from "./ItemDetailsModal";
 import { Player } from "@/_common/interfaces/Player";
+import BuyConfirmationModal from "./BuyConfirmationModal";
 import ItemDetailModal from "./ItemDetailsModal";
 
 interface ItemCardProps {
   item: any;
-  player: any; // Ajusta el tipo según tu interfaz de Player
-  handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
+  player: any;
+  handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>, closeModal: () => void) => void;
   handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
 }
 
@@ -18,28 +17,42 @@ const ItemCard: React.FC<ItemCardProps> = ({
   handleAddToCart,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);  // For Buy Confirmation
   const [error, setError] = useState<string | null>(null);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
-  
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // Se asume que el jugador tiene un campo 'attributes' y definimos 'currentAttributes' 
-  const currentAttributes = player?.attributes || {}; // Puedes ajustar esto según cómo esté estructurada tu interfaz de jugador
+  // Se asume que el jugador tiene un campo 'attributes' y definimos 'currentAttributes'
+  const currentAttributes = player?.attributes || {};
 
-  // Aquí pasamos la función 'handleBuy' como 'initiateBuy' al modal
+  // Función para iniciar la compra
   const initiateBuy = (selectedItem: any) => {
-    handleBuy(selectedItem, player, setError);
+    handleBuy(selectedItem, player, setError, closeModal);  // Pasamos la función para cerrar el modal
   };
+
+  const openBuyConfirmationModal = () => {
+    setIsConfirming(true);
+  };
+
+  const closeBuyConfirmationModal = () => {
+    setIsConfirming(false);
+  };
+
+  // Calcular la cantidad de oro del jugador
+  const currentGold = player?.gold || 0;
+  const itemPrice = item?.value || 0;
+  const newGold = currentGold - itemPrice;
 
   return (
     <>
       <div
-        className="relative w-full h-60 p-4 bg-black/60 border border-sepia text-gray-200 rounded shadow-md cursor-pointer 
+        className="relative w-full h-auto p-4 bg-black/60 border border-sepia text-gray-200 rounded shadow-md cursor-pointer 
                    hover:scale-[1.02] transition-transform duration-200 flex flex-col items-center justify-start"
         onClick={openModal}
       >
@@ -54,25 +67,25 @@ const ItemCard: React.FC<ItemCardProps> = ({
           alt={item.name || "Unnamed Item"}
           className="w-24 h-24 mb-2 object-contain"
         />
-        <strong className="text-gray-200 text-center text-sm font-semibold px-2 truncate w-full">
+        <strong className="text-gray-200 text-center text-3xl font-semibold px-2 truncate w-full">
           {item.name || "Unnamed Item"}
         </strong>
-        <div className="text-gray-300 text-sm font-medium mt-1">
+        <div className="text-gray-300 text-2xl font-medium mt-1">
           Price: {item.value || "N/A"} gold
         </div>
         
         <div className="flex space-x-2 mt-auto pt-2">
           <button
-            className="px-3 py-1 bg-gray-300 text-black text-sm font-bold rounded hover:bg-gray-200 transition"
+            className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
               e.stopPropagation();
-              handleBuy(item, player, setError);
+              openBuyConfirmationModal(); // Open the buy confirmation modal
             }}
           >
             Buy Now
           </button>
           <button
-            className="px-3 py-1 bg-gray-300 text-black text-sm font-bold rounded hover:bg-gray-200 transition"
+            className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
               e.stopPropagation();
               handleAddToCart(item, player, setError);
@@ -87,11 +100,24 @@ const ItemCard: React.FC<ItemCardProps> = ({
 
       {isModalOpen && (
         <ItemDetailModal
-          selectedItem={item} // Pasa el item seleccionado al modal
-          currentAttributes={currentAttributes} // Pasa los atributos actuales del jugador
-          player={player} // Pasa los datos del jugador
-          closeModal={closeModal} // Función para cerrar el modal
-          initiateBuy={initiateBuy} // Función para iniciar la compra
+          selectedItem={item}
+          currentAttributes={currentAttributes}
+          player={player}
+          closeModal={closeModal}
+          initiateBuy={initiateBuy}
+        />
+      )}
+
+      {/* Conditionally render the buy confirmation modal */}
+      {isConfirming && (
+        <BuyConfirmationModal
+          confirmationDetails={{
+            currentGold: currentGold,
+            newGold: newGold,
+            item: item,
+          }}
+          handleBuy={initiateBuy}
+          setIsConfirming={setIsConfirming}
         />
       )}
     </>
