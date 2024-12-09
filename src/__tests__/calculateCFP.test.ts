@@ -1,5 +1,5 @@
-import { calculateCFP } from "./calculateCFP"
-import { mockAttributes, mockEmptyAttributes } from "./mockAttributes"
+import { calculateCFP } from "../helpers/calculateCFP"
+import { mockAttributes, mockEmptyAttributes } from "../helpers/mockAttributes"
 
 describe('Calculate CFP INS', () => {
 	it('should calculate CFP correctly', () => {

@@ -1,5 +1,5 @@
-import { calculateAttack } from "./calculateAttack"
-import { mockAttributes, mockEmptyAttributes } from "./mockAttributes";
+import { calculateAttack } from "../helpers/calculateAttack"
+import { mockAttributes, mockEmptyAttributes } from "../helpers/mockAttributes";
 
 describe('Calculate attack STR - INS / 2', () => {
 	it('should calculate attack correctly', () => {
