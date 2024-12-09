@@ -27,6 +27,7 @@ import { GRID_NUMBER } from '@/constants/constants';
 import SellItemCard from '@/components/shop/SellItemCard';
 import SellConfirmationModal from '@/components/shop/SellConfirmationModal';
 import SellItemDetailModal from '@/components/shop/SellItemDetailModal';
+import SellInventory from '@/components/shop/SellInventory';
 
 const MerchantPage: React.FC = () => {
 
@@ -183,31 +184,31 @@ const MerchantPage: React.FC = () => {
       />
     )}
 
-    {loading && <Loading />}
-    <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-      <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
-        <div  
-          className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
-          style={{
-            backgroundImage: "url('/images/pergamino.jpg')", 
-          }}
-        >
-          <div className="h-2/6">
-            <MerchantInfo
-              merchantImage="/images/sellers/seller1.png"
-              merchantName={`Merchant ${merchantId}`}
-            />
-          </div>
-          <div className="h-[3/6] w-full pt-[5%]">
-            <ItemStats
-              className="rounded-3xl"
-              selectedItem={selectedItem}
-              atributtes={currentAttributes}
-              player={player}
-            />
-          </div>
+  {loading && <Loading />}
+  <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
+    <div className="w-3/12 bg-black bg-opacity-70 flex flex-col items-center">
+      <div  
+        className="w-full h-full p-4 bg-black bg-opacity-70 flex flex-col items-center"
+        style={{
+          backgroundImage: "url('/images/pergamino.jpg')", 
+        }}
+      >
+        <div className="h-2/6">
+          <MerchantInfo
+            merchantImage="/images/sellers/seller1.png"
+            merchantName={`Merchant ${merchantId}`}
+          />
+        </div>
+        <div className="h-[3/6] w-full pt-[5%]">
+          <ItemStats
+            className="rounded-3xl"
+            selectedItem={selectedItem}
+            atributtes={currentAttributes}
+            player={player}
+          />
         </div>
       </div>
+    </div>
     {selectedItem ? (
       <div className="w-5/12 bg-red-900 bg-opacity-10 flex flex-col items-center rounded-3xl shadow-lg">
         <SellItemCard selectedItem={selectedItem} />
@@ -232,127 +233,26 @@ const MerchantPage: React.FC = () => {
 
       </div>
     )}
-  <div className="w-4/12 bg-black bg-opacity-70 flex flex-col items-center rounded-3xl shadow-lg">
-    {player && (
-      <div className="w-2/5 h-auto p-2 bg-medievalSepia flex items-center justify-between rounded-2xl shadow-lg mb-4 self-end mr-4">
-        <div className="text-black text-2xl font-bold">Gold</div>
-        <div className="flex items-center">
-          <p className="text-black text-3xl font-bold">{player.gold}</p>
-          <img
-            src="/images/shop/gold.png"
-            alt="gold coin"
-            className="w-8 h-8 ml-2"
-          />
+    <div className="w-4/12 bg-black bg-opacity-70 flex flex-col items-center rounded-3xl shadow-lg">
+      {player && (
+        <div className="w-2/5 h-auto p-2 bg-medievalSepia flex items-center justify-between rounded-2xl shadow-lg mb-4 self-end mr-4">
+          <div className="text-black text-2xl font-bold">Gold</div>
+          <div className="flex items-center">
+            <p className="text-black text-3xl font-bold">{player.gold}</p>
+            <img
+              src="/images/shop/gold.png"
+              alt="gold coin"
+              className="w-8 h-8 ml-2"
+            />
+          </div>
         </div>
-      </div>
-    )}
-    {player &&  <div className="grid grid-cols-8 grid-rows-8" style={{ width: 'fit-content', height: 'fit-content' }}>
-        {player?.inventory.helmets.map(helmet => {
-            return (
-            <div onClick={() => selectItem(helmet)} key={helmet._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={10}  type='inventory' children={<Draggable id={helmet._id} position='bottom' type={[`${helmet.min_lvl <= player.level ? helmet.type : null}`, 'inventory']} element={helmet} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.weapons.map(weapon => {
-            return (
-            <div onClick={() => selectItem(weapon)} key={weapon._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={20}  type='inventory' children={<Draggable id={weapon._id} position='bottom' type={[`${weapon.min_lvl <= player?.level ? weapon.type : null}`, 'inventory']} element={weapon} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.armors.map(armor => {
-            return (
-            <div onClick={() => selectItem(armor)} key={armor._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>    
-                <Droppable id={30}  type='inventory' children={<Draggable id={armor._id} position='bottom' type={[`${armor.min_lvl <= player?.level ? armor.type : null}`, 'inventory']} element={armor} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>                      
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.shields.map(shield => {
-            return (
-            <div onClick={() => selectItem(shield)} key={shield._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={40}  type='inventory' children={<Draggable id={shield._id} position='bottom' type={[`${shield.min_lvl <= player?.level ? shield.type : null}`, 'inventory']} element={shield} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.artifacts.map(artifact => {
-            return (
-            <div onClick={() => selectItem(artifact)} key={artifact._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={50}  type='inventory' children={<Draggable id={artifact._id} position='bottom' type={[`${artifact.min_lvl <= player?.level ? artifact.type : null}`, 'inventory']} element={artifact} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.boots.map(boot => {
-            return (
-            <div onClick={() => selectItem(boot)} key={boot._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={boot._id} position='bottom' type={[`${boot.min_lvl <= player?.level ? boot.type : null}`, 'inventory']} element={boot} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.rings.map(ring => {
-            return (
-            <div onClick={() => selectItem(ring)} key={ring._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={ring._id} position='bottom' type={[`${ring.min_lvl <= player?.level ? ring.type : null}`, 'inventory']} element={ring} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.healing_potions.map(healing => {
-            return (
-            <div key={healing._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={healing._id} position='bottom' type={[`${healing.type}`, 'inventory']} element={healing} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.antidote_potions.map(antidote => {
-            return (
-            <div key={antidote._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={antidote._id} position='bottom' type={[`${antidote.type}`, 'inventory']} element={antidote} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.enhancer_potions.map(enhancer => {
-            return (
-            <div key={enhancer._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={enhancer._id} position='bottom' type={[`${enhancer.type}`, 'inventory']} element={enhancer} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        { 
-        Array.from({
-            length:
-            GRID_NUMBER 
-            - player.inventory.helmets.length 
-            - player.inventory.weapons.length 
-            - player.inventory.armors.length 
-            - player.inventory.shields.length
-            - player.inventory.artifacts.length
-            - player.inventory.boots.length
-            - player.inventory.rings.length
-            - player.inventory.healing_potions.length
-            - player.inventory.antidote_potions.length
-            - player.inventory.enhancer_potions.length
-        }).map((element,index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}><Droppable id={23} type='inventory'  children={null}/></div> ) 
-        }                      
-        </div>
+      )}
+      {player &&  
+        <SellInventory
+          player={player}
+          GRID_NUMBER={64}
+          selectItem={selectItem}
+        />
       }
     </div>
   </div>
