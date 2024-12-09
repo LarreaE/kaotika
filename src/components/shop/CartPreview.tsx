@@ -17,10 +17,10 @@ interface Props {
 
 }
 
-const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateTotalPrice, goToCheckout }) => {
+const CartPreview: React.FC<Props> = ({ items, emptyCart, removeItem, calculateTotalPrice, goToCheckout }) => {
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-b from-gray-900 to-gray-700">
-      <div className="w-11/12 max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-600">
+    <div className="flex justify-center items-center h-screen bg-transparent">
+      <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-600">
         <h2 className="text-2xl font-semibold text-gray-100 mb-4 text-center">Inventory</h2>
         <div className="h-96 overflow-y-auto p-4 bg-gray-900 rounded-lg border border-gray-700 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
           {items.length === 0 ? (
@@ -70,4 +70,4 @@ const ItemDisplay: React.FC<Props> = ({ items, emptyCart, removeItem, calculateT
   );
 };
 
-export default ItemDisplay;
+export default CartPreview;

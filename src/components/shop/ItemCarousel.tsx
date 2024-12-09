@@ -35,18 +35,18 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
           disabled={currentPage === 0}
-          className="text-2xl ml-[2%] z-30"
+          className="text-2xl ml-[2%] z-30 hover:bg-gray-600 transition rounded"
         >
-          back
+          Back
         </button>
         <button
           onClick={() =>
             setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
           }
           disabled={currentPage >= totalPages - 1}
-          className="text-2xl ml-[90%]"
+          className="text-2xl ml-[90%] hover:bg-gray-600 transition rounded"
         >
-          next
+          Next
         </button>
       </div>
 
