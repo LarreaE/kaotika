@@ -60,7 +60,7 @@ const MerchantPage = () => {
     };
 
     fetchShopItems();
-  }, [merchantId, status, session, player]);
+  }, [merchantId]);
 
   useEffect(() => {
     if (session?.user?.email) {
