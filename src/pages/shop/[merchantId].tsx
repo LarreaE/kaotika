@@ -201,7 +201,24 @@ const MerchantPage = () => {
     <Layout>
       {loading && <Loading />}
       <div className="relative">
-        {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
+        {/* Botón para regresar */}
+        <button 
+          onClick={() => router.back()}
+          className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
+        >
+          ←
+        </button>
+
+        {/* Contenedor principal con la disposición del merchant */}
+        <div className="flex">
+          {/* Franja izquierda con estilo tipo Skyrim */}
+          <div className="w-[30%] p-4 relative bg-black/60 border border-sepia text-gray-200 rounded shadow-lg">
+            {/* Esquinas decorativas */}
+            <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
+            <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
+             {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
         <div className="absolute top-4 right-4">
           <button
             onClick={() => setShowCartModal(true)}
@@ -214,16 +231,6 @@ const MerchantPage = () => {
             />
           </button>
         </div>
-
-        {/* Contenedor principal con la disposición del merchant */}
-        <div className="flex">
-          {/* Franja izquierda con estilo tipo Skyrim */}
-          <div className="w-[30%] p-4 relative bg-black/60 border border-sepia text-gray-200 rounded shadow-lg">
-            {/* Esquinas decorativas */}
-            <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
-            <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
-            <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
             
             {/* Título del Merchant */}
             <div className="flex justify-center mb-4">
@@ -250,7 +257,7 @@ const MerchantPage = () => {
           </div>
 
           {/* Contenido principal */}
-          <div className="w-3/4 p-4 mt-10">
+          <div className="w-3/4 p-4">
             <ItemCarousel
               items={allItems}
               player={player}
