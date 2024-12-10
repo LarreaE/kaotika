@@ -76,16 +76,16 @@ const ItemCard: React.FC<ItemCardProps> = ({
         
         <div className="flex space-x-2 mt-auto pt-2">
           <button
-            className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
+             className="bg-black bg-opacity-70 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
             onClick={(e) => {
               e.stopPropagation();
-              openBuyConfirmationModal(); // Open the buy confirmation modal
+              openBuyConfirmationModal();
             }}
           >
             Buy Now
           </button>
           <button
-            className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
+             className="bg-black bg-opacity-70 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
             onClick={(e) => {
               e.stopPropagation();
               handleAddToCart(item, player, setError);
