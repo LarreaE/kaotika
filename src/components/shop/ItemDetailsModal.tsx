@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
 import ItemStats from './ItemStats';
 import ItemBaseStats from './ItemBaseStats';
-import BuyConfirmationModal from './BuyConfirmationModal'; // Importar el modal de confirmación
+import BuyConfirmationModal from './BuyConfirmationModal';
+import NotEnoughMoneyModal from './ NotEnoughMoneyModal';
 
 const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, initiateBuy }) => {
   const [isConfirming, setIsConfirming] = useState(false); // Estado para el modal de confirmación
+  const [error, setError] = useState<string | null>(null); // Estado para el modal de error
 
-  // Función para abrir el modal de confirmación
   const openBuyConfirmationModal = () => {
-    setIsConfirming(true);
+    const currentGold = player?.gold || 0;
+    const itemPrice = selectedItem?.value || 0;
+
+    if (currentGold >= itemPrice) {
+      setIsConfirming(true);
+    } else {
+      setError("You don't have enough gold to buy this item.");
+    }
   };
 
-  // Función para cerrar el modal de confirmación
   const closeBuyConfirmationModal = () => {
     setIsConfirming(false);
   };
 
-  // Datos necesarios para la confirmación
+  const closeErrorModal = () => {
+    setError(null);
+  };
+
   const currentGold = player?.gold || 0;
   const itemPrice = selectedItem?.value || 0;
   const newGold = currentGold - itemPrice;
@@ -66,7 +76,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    openBuyConfirmationModal(); // Abrir el modal de confirmación
+                    openBuyConfirmationModal(); // Abrir el modal de confirmación o mostrar error
                   }}
                   className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                 >
@@ -94,6 +104,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
           setIsConfirming={setIsConfirming} // Para controlar el estado del modal de confirmación
         />
       )}
+      {error && <NotEnoughMoneyModal errorMessage={error} closeModal={closeErrorModal} />}
     </div>
   );
 };

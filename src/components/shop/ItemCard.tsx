@@ -2,12 +2,22 @@ import React, { useState } from "react";
 import { Player } from "@/_common/interfaces/Player";
 import BuyConfirmationModal from "./BuyConfirmationModal";
 import ItemDetailModal from "./ItemDetailsModal";
+import NotEnoughMoneyModal from "./ NotEnoughMoneyModal";
 
 interface ItemCardProps {
   item: any;
   player: any;
-  handleBuy: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>, closeModal: () => void) => void;
-  handleAddToCart: (item: any, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => void;
+  handleBuy: (
+    item: any,
+    player: Player,
+    setError: React.Dispatch<React.SetStateAction<string | null>>,
+    closeModal: () => void
+  ) => void;
+  handleAddToCart: (
+    item: any,
+    player: Player,
+    setError: React.Dispatch<React.SetStateAction<string | null>>
+  ) => void;
 }
 
 const ItemCard: React.FC<ItemCardProps> = ({
@@ -17,7 +27,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
   handleAddToCart,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false);  // For Buy Confirmation
+  const [isConfirming, setIsConfirming] = useState(false); // For Buy Confirmation
   const [error, setError] = useState<string | null>(null);
 
   const openModal = () => {
@@ -28,26 +38,37 @@ const ItemCard: React.FC<ItemCardProps> = ({
     setIsModalOpen(false);
   };
 
-  // Se asume que el jugador tiene un campo 'attributes' y definimos 'currentAttributes'
-  const currentAttributes = player?.attributes || {};
+  const closeErrorModal = () => {
+    setError(null);
+  };
 
-  // Función para iniciar la compra
+  const currentAttributes = player?.attributes || {};
+  const currentGold = player?.gold || 0;
+  const itemPrice = item?.value || 0;
+
   const initiateBuy = (selectedItem: any) => {
-    handleBuy(selectedItem, player, setError, closeModal);  // Pasamos la función para cerrar el modal
+    handleBuy(selectedItem, player, setError, closeModal);
   };
 
   const openBuyConfirmationModal = () => {
-    setIsConfirming(true);
+    if (currentGold >= itemPrice) {
+      setIsConfirming(true);
+    } else {
+      setError("You don't have enough gold to buy this item.");
+    }
   };
 
   const closeBuyConfirmationModal = () => {
     setIsConfirming(false);
   };
 
-  // Calcular la cantidad de oro del jugador
-  const currentGold = player?.gold || 0;
-  const itemPrice = item?.value || 0;
-  const newGold = currentGold - itemPrice;
+  const addToCart = () => {
+    if (currentGold >= itemPrice) {
+      handleAddToCart(item, player, setError);
+    } else {
+      setError("You don't have enough gold to add this item to the cart.");
+    }
+  };
 
   return (
     <>
@@ -73,13 +94,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
         <div className="text-gray-300 text-2xl font-medium mt-1">
           Price: {item.value || "N/A"} gold
         </div>
-        
+
         <div className="flex space-x-2 mt-auto pt-2">
           <button
             className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
               e.stopPropagation();
-              openBuyConfirmationModal(); // Open the buy confirmation modal
+              openBuyConfirmationModal();
             }}
           >
             Buy Now
@@ -88,15 +109,13 @@ const ItemCard: React.FC<ItemCardProps> = ({
             className="px-3 py-1 bg-gray-300 text-black text-xl font-bold rounded hover:bg-gray-200 transition"
             onClick={(e) => {
               e.stopPropagation();
-              handleAddToCart(item, player, setError);
+              addToCart();
             }}
           >
             Add to Cart
           </button>
         </div>
       </div>
-
-      {error && <div className="text-red-600 text-center mt-2">{error}</div>}
 
       {isModalOpen && (
         <ItemDetailModal
@@ -108,17 +127,20 @@ const ItemCard: React.FC<ItemCardProps> = ({
         />
       )}
 
-      {/* Conditionally render the buy confirmation modal */}
       {isConfirming && (
         <BuyConfirmationModal
           confirmationDetails={{
             currentGold: currentGold,
-            newGold: newGold,
+            newGold: currentGold - itemPrice,
             item: item,
           }}
           handleBuy={initiateBuy}
           setIsConfirming={setIsConfirming}
         />
+      )}
+
+      {error && (
+        <NotEnoughMoneyModal errorMessage={error} closeModal={closeErrorModal} />
       )}
     </>
   );
