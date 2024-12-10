@@ -43,8 +43,13 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
       const isNegative = value < 0;
       const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
       const maxValue = Math.max(Math.abs(value), 50);
-      const label = `${attrName.toUpperCase()}: ${isNegative ? `-${Math.abs(value)}` : value}`;
-
+      
+      const label = (
+        <span className="text-white">
+          {attrName.toUpperCase()}: {isNegative ? `-${Math.abs(value)}` : value}
+        </span>
+      );
+  
       return (
         <div key={attrName} className="mb-4">
           <ProgressBar
@@ -57,6 +62,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
       );
     });
   };
+  
 
   // Renderizar las estadísticas defensivas si el ítem es de tipo Armor, Boot, Helmet o Shield
   const renderDefensiveStats = () => {
@@ -86,7 +92,11 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
       const isNegative = defenseStat < 0;
       const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
       const maxValue = Math.max(Math.abs(defenseStat), 100);
-      const label = `${attrName.toUpperCase()}: ${isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}`;
+      const label = (
+        <span className="text-white">
+          {attrName.toUpperCase()}: {isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}
+        </span>
+      );
       return (
         <div key={attrName} className="mb-4">
           <ProgressBar
