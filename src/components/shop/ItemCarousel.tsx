@@ -37,7 +37,7 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
           disabled={currentPage === 0}
           className="text-2xl ml-[2%] z-30 hover:bg-gray-600 transition rounded"
         >
-          Back
+          ←
         </button>
         <button
           onClick={() =>
@@ -46,7 +46,7 @@ const ItemCarousel: React.FC<ItemCarouselProps> = ({
           disabled={currentPage >= totalPages - 1}
           className="text-2xl ml-[90%] hover:bg-gray-600 transition rounded"
         >
-          Next
+          →
         </button>
       </div>
 

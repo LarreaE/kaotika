@@ -174,6 +174,13 @@ const MerchantPage: React.FC = () => {
         
         {/* Lateral Izquierdo con estilo Skyrim (bordes sepia, botones antiguos) */}
         <div className="w-3/12 relative p-4 bg-black/60 text-gray-200 rounded shadow-lg border-sepia border-2 flex flex-col items-center">
+                {/* Botón para regresar */}
+                <button 
+          onClick={() => router.back()}
+          className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
+        >
+          ←
+        </button>
           {/* Esquinas decorativas */}
           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-sepia"></div>
           <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-sepia"></div>
