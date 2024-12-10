@@ -67,7 +67,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       const type = `${item.type}s`
       console.log(type);
             
-      await player?.inventory[type].push(item);
+      await player?.inventory[type].push(item._id);
 
       console.log(player.inventory[type]);
 

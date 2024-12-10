@@ -31,10 +31,11 @@ const MerchantPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [player, setPlayer] = useState<Player>();
   const [error, setError] = useState<string | null>(null);
-  const [cartItems, setCartItems] = useState<any>([]);
+  const [cartItems, setCartItems] = useState<{ item: Item; quantity: number }[]>([]);
   const [availableMoney, setAvailableMoney] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
+  
   
   const [showCartModal, setShowCartModal] = useState<boolean>(false);
 
@@ -98,14 +99,20 @@ const MerchantPage = () => {
 
   const checkItemInsidePlayer = (item: Item, player: any): boolean => {
     const type = transformStringLowerPlural(item.type);
+  
+    if (item.type === 'ingredient') {
+      return false;
+    }
+  
     if (player.inventory[type]) {
-      const foundItem = player.inventory[type].find((inventoryItem: Item) => inventoryItem.name === item.name);
+      const foundItem = player.inventory[type].find((inventoryItem: Item) => inventoryItem._id === item._id);
       return !!foundItem;
     } else {
       console.log(`Category "${type}" does not exist in the inventory.`);
       return false;
     }
   };
+  
 
   const handleBuy = async (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null)
@@ -142,27 +149,53 @@ const MerchantPage = () => {
       console.log('Unavailable');
     }
   };
-
-  const handleAddToCart = (item: Item, player: Player,  setError: React.Dispatch<React.SetStateAction<string | null>>) => {
-    setError(null)
-    if (!checkItemInsidePlayer(item,player)) {
-      if (cartItems.some((cartItem:Item) => cartItem._id === item._id)) {
-        console.log('already inside');
+  
+  const handleDecreaseQuantity = (item: Item) => {
+    const existingItemIndex = cartItems.findIndex(
+      (cartItem) => cartItem.item._id === item._id
+    );
+  
+    if (existingItemIndex !== -1) {
+      const updatedCartItems = [...cartItems];
+      const currentQuantity = updatedCartItems[existingItemIndex].quantity;
+  
+      if (currentQuantity > 1) {
+        updatedCartItems[existingItemIndex].quantity -= 1;
       } else {
-        if (availableMoney >= item.value) {
-          console.log('Available');
-          setCartItems([...cartItems, item]);
-          console.log(cartItems);
-          setAvailableMoney(availableMoney - item.value);
-        } else {
-          console.log('Unavailable');
-        }
+        updatedCartItems.splice(existingItemIndex, 1); // Eliminar el ítem completamente si la cantidad es 1
       }
-    } else {
-      console.log("Item already in inventory");
-      setError('Item already in inventory');
+  
+      setCartItems(updatedCartItems);
+      setAvailableMoney((prev) => prev + item.value); // Sumamos el valor de un ítem al dinero disponible
     }
   };
+  
+  
+
+  const handleAddToCart = (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
+    setError(null);
+  
+    const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.item._id === item._id);
+  
+    if (item.type === 'ingredient') {
+      if (existingItemIndex !== -1) {
+        const updatedCartItems = [...cartItems];
+        updatedCartItems[existingItemIndex].quantity += 1; // Incrementamos la cantidad
+        setCartItems(updatedCartItems);
+      } else {
+        setCartItems([...cartItems, { item, quantity: 1 }]); // Añadimos el item por primera vez
+      }
+      setAvailableMoney((prev) => prev - item.value); // Restamos el valor del item al dinero disponible
+    } else {
+      if (existingItemIndex === -1 && !checkItemInsidePlayer(item, player)) {
+        setCartItems([...cartItems, { item, quantity: 1 }]); // Añadimos el item por primera vez
+        setAvailableMoney((prev) => prev - item.value); // Restamos el valor del item al dinero disponible
+      } else {
+        setError('Item already in inventory'); // Si ya tiene el item en su inventario
+      }
+    }
+};
+
 
   const emptyCart = () => {
     setCartItems([]);
@@ -170,13 +203,16 @@ const MerchantPage = () => {
   };
 
   const removeItem = (item: Item) => {
-    if (availableMoney !== undefined) {
-      setCartItems((cartItems: Item[]) => cartItems.filter((cartItem: Item) => cartItem._id !== item._id));
-      setAvailableMoney(availableMoney + item.value);
-    } else {
-      console.log("available money undefined");
-    }
+    // Filtramos el carrito para eliminar todos los ítems que coincidan
+    const updatedCartItems = cartItems.filter(
+      (cartItem) => cartItem.item._id !== item._id
+    );
+  
+    setCartItems(updatedCartItems);
+    setAvailableMoney((prev) => prev + item.value * (item.quantity || 1)); // Añadir el valor de todos los ítems eliminados
   };
+  
+  
 
   const goToCheckout = () => {
     const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
@@ -184,7 +220,8 @@ const MerchantPage = () => {
   };
 
   const calculateTotalPrice = () =>
-    cartItems.reduce((total: number, item: Item) => total + item.value, 0);
+    cartItems.reduce((total, cartItem) => total + cartItem.item.value * cartItem.quantity, 0);
+  
 
   if (!session) return null;
 
@@ -309,6 +346,9 @@ const MerchantPage = () => {
               calculateTotalPrice={calculateTotalPrice}
               goToCheckout={goToCheckout}
               onClose={onClose}
+              handleAddToCart={handleAddToCart}
+              handleDecreaseQuantity={handleDecreaseQuantity}
+              player={player}  // Pass player here
             />
           </div>
         </div>
