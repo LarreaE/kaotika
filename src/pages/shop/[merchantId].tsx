@@ -196,6 +196,9 @@ const MerchantPage = () => {
       }
     });
   }
+  const onClose = () => {
+    setShowCartModal(false);
+  };
 
   return (
     <Layout>
@@ -220,16 +223,26 @@ const MerchantPage = () => {
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
              {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
         <div className="absolute top-4 right-4">
-          <button
-            onClick={() => setShowCartModal(true)}
-            className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
+        <button
+          onClick={() => setShowCartModal(true)}
+          className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="w-10 h-10" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="#ba9b61" 
+            strokeWidth="1" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
           >
-            <img 
-              src="/images/shop/basket.png" 
-              alt="Cart" 
-              className="w-12 h-12 object-contain"
-            />
-          </button>
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a1 1 0 0 0 .99.8h9.72a1 
+                    1 0 0 0 .98-.8L23 6H6"></path>
+          </svg>
+        </button>
         </div>
             
             {/* Título del Merchant */}
@@ -295,6 +308,7 @@ const MerchantPage = () => {
               removeItem={removeItem}
               calculateTotalPrice={calculateTotalPrice}
               goToCheckout={goToCheckout}
+              onClose={onClose}
             />
           </div>
         </div>
