@@ -47,10 +47,11 @@ describe('API Route - Instant buy item', () => {
   });
 
   it('should return 400 if parameters are missing', async () => {
+    //arrange
     req.query = {};
-
+    //act
     await handler(req as NextApiRequest, res as NextApiResponse);
-
+    //assert
     expect(res.status).toHaveBeenCalledWith(400);
     expect(jsonMock).toHaveBeenCalledWith({
       error: 'Item Id , itemtype or playerEmail is required.',
@@ -58,8 +59,7 @@ describe('API Route - Instant buy item', () => {
   });
 
   it('should check if the player has enough money in server side', async () => {
-    //mocks
-
+    //arrange
     req = {
         query: {
           playerEmail: 'test@example.com',
@@ -97,9 +97,10 @@ describe('API Route - Instant buy item', () => {
     inventory: { shields: [mockItem] },
     });
 
+    //act
     await handler(req as NextApiRequest, res as NextApiResponse);
 
-    //verify
+    //assert
     expect(transformStringSingular).toHaveBeenCalledWith('weaponsmith');
     expect(Player.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
     expect(mockModel.aggregate).toHaveBeenCalledWith(expect.any(Array));
@@ -112,8 +113,7 @@ describe('API Route - Instant buy item', () => {
 
   it('should transfer item to the player (weapon)', async () => {
 
-    //mocks
-
+    //arrange
     const mockPlayer = {
       _id: 'player123',
       email: 'test@example.com',
@@ -143,8 +143,10 @@ describe('API Route - Instant buy item', () => {
     inventory: { weapons: [mockItem] },
     });
 
+    //act
     await handler(req as NextApiRequest, res as NextApiResponse);
 
+    //assert
     expect(transformStringSingular).toHaveBeenCalledWith('weaponsmith');
     expect(Player.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
     expect(mockModel.aggregate).toHaveBeenCalledWith(expect.any(Array));
@@ -165,7 +167,7 @@ describe('API Route - Instant buy item', () => {
   });
 
   it('should transfer item to the player (boots)', async () => {
-
+    //arange
     req = {
         query: {
           playerEmail: 'test@example.com',
@@ -202,8 +204,10 @@ describe('API Route - Instant buy item', () => {
       inventory: { boots: [mockItem] },
     });
 
+    //act
     await handler(req as NextApiRequest, res as NextApiResponse);
 
+    //assert
     expect(transformStringSingular).toHaveBeenCalledWith('armorsmith');
     expect(Player.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
     expect(mockModel.aggregate).toHaveBeenCalledWith(expect.any(Array));

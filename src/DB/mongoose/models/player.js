@@ -172,17 +172,17 @@ const ingredientSchema = new Schema({
 });
 
 const inventorySchema = new Schema({
-  helmets: [HelmetSchema],
-  weapons: [WeaponSchema],
-  armors: [ArmorSchema],
-  shields: [ShieldSchema],
-  artifacts: [ArtifactSchema],
-  boots: [BootSchema],
-  rings: [RingSchema],
-  ingredients: [ingredientSchema],
-  antidote_potions: [PotionSchema],
-  healing_potions: [HealingPotionSchema],
-  enhancer_potions: [EnhancerPotionSchema]
+  helmets: {type: Schema.Types.ObjectId, ref: "Helmet", default: "1"},
+  weapons: {type: Schema.Types.ObjectId, ref: "Weapon", default: "1"},
+  armors: {type: Schema.Types.ObjectId, ref: "Armor", default: "1"},
+  shields: {type: Schema.Types.ObjectId, ref: "Shield", default: "1"},
+  artifacts: {type: Schema.Types.ObjectId, ref: "Artifact", default: "1"},
+  boots: {type: Schema.Types.ObjectId, ref: "Boot", default: "1"},
+  rings: {type: Schema.Types.ObjectId, ref: "Ring", default: "1"},
+  ingredients: {type: Schema.Types.ObjectId, ref: "Ingredient", default: "1"},
+  //antidote_potions: {type: Schema.Types.ObjectId, ref: "Antidote", default: "1"},
+  //healing_potions: {type: Schema.Types.ObjectId, ref: "Healing", default: "1"},
+  //enhancer_potions: {type: Schema.Types.ObjectId, ref: "Helmet", default: "1"}
 }, { _id: false });
 
 const playerSchema = new Schema({
