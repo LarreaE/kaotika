@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
 import { Player } from '@/DB/mongoose/models/models'
 import { transformStringPlural, transformStringSingular } from '@/helpers/transformString';
+import populatePlayer from '@/helpers/populatePlayer';
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { playerEmail, merchantId, itemId } = req.query;
@@ -84,7 +85,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       console.log('Item purchased successfully:', item.value);
-      res.status(200).json(updatedPlayer);
+      const populatedPlayer = await populatePlayer(updatedPlayer._id)
+      res.status(200).json(populatedPlayer);
 
     } catch (error) {
       console.error('Error transferring item to player:', error);

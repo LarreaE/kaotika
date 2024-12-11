@@ -10,6 +10,7 @@ import { Ring } from '@/_common/interfaces/Ring';
 import { Shield } from '@/_common/interfaces/Shield';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { Player } from '@/_common/interfaces/Player';
+import populatePlayer from '@/helpers/populatePlayer';
 
 type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
 
@@ -57,7 +58,8 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
     for (const attr of attributesToDisplay) {
       totalAttributes[attr] = player.attributes[attr] || 0;
     }
-
+    console.log(player);
+    
     // Sumar los modificadores de los ítems equipados relevantes
     for (const equipmentType of equipmentTypesToInclude) {
       const item = player.equipment[equipmentType];

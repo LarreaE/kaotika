@@ -118,6 +118,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         console.log('updatedPlayer:', updatedPlayer);
 
         const popul = await populatePlayer(updatedPlayer._id);
+        console.log(popul);
+        
         res.status(200).json(popul);
 
     } catch (error) {

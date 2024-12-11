@@ -671,7 +671,7 @@ const PlayerPage = () => {
                       )
                     })
                   }
-                  {
+                  {/* {
                     player.inventory.healing_potions.map(healing => {
                       return (
                         <div key={healing._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
@@ -697,7 +697,7 @@ const PlayerPage = () => {
                         </div>
                       )
                     })
-                  }
+                  } */}
                   { 
                     Array.from({
                       length:
@@ -709,9 +709,9 @@ const PlayerPage = () => {
                       - player.inventory.artifacts.length
                       - player.inventory.boots.length
                       - player.inventory.rings.length
-                      - player.inventory.healing_potions.length
-                      - player.inventory.antidote_potions.length
-                      - player.inventory.enhancer_potions.length
+                      // - player.inventory.healing_potions.length
+                      // - player.inventory.antidote_potions.length
+                      // - player.inventory.enhancer_potions.length
                     }).map((element,index) => <div key={index} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}><Droppable id={23} type='inventory'  children={null}/></div> ) 
                   }                      
                 </div>
