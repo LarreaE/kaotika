@@ -11,7 +11,7 @@ const inventorySchema = new Schema({
   });
 
 export const weaponsmithSchema = new Schema({
-    invetory: { type: inventorySchema },
+    inventory: { type: inventorySchema },
   });
 
 

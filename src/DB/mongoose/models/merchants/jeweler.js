@@ -10,6 +10,6 @@ const inventorySchema = new Schema({
   });
 
 export const jewelerSchema = new Schema({
-    invetory: { type: inventorySchema },
+    inventory: { type: inventorySchema },
   });
 

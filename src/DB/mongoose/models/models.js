@@ -13,6 +13,7 @@ import {armorsmithSchema} from "./merchants/armorsmith"
 import {jewelerSchema} from "./merchants/jeweler";
 import {alchemistSchema} from "./merchants/alchemist";
 import {weaponsmithSchema} from "./merchants/weaponsmith";
+import {dateSchema} from "./date"
 
 
 //merchants
@@ -37,6 +38,7 @@ const Modifier = mongoose.models.Modifier || mongoose.model('Modifier', modifier
 //player
 const Player = mongoose.models.Player || mongoose.model("Player", PlayerSchema);
 
+console.log(mongoose.models);
 
 export {
     Armorsmith,

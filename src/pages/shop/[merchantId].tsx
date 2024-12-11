@@ -12,7 +12,7 @@ import CartPreview from '@/components/shop/CartPreview';
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { transformStringLowerPlural } from '@/helpers/transformString';
-import populatePlayer from '@/helpers/playerPopulate';
+import populatePlayer from '@/helpers/populatePlayer';
 
 const MerchantPage = () => {
 
