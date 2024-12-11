@@ -12,6 +12,7 @@ import CartPreview from '@/components/shop/CartPreview';
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { transformStringLowerPlural } from '@/helpers/transformString';
+import populatePlayer from '@/helpers/playerPopulate';
 
 const MerchantPage = () => {
 
@@ -73,6 +74,7 @@ const MerchantPage = () => {
             const response = await res.json();
             console.log(response);
             setPlayer(response);
+            populatePlayer(player?._id);
           } else if (res.status === 404) {
             const response = await res.json();
           } else {
