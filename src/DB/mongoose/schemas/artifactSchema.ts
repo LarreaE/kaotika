@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const artifactSchema = new mongoose.Schema({
+export const artifactSchema = new mongoose.Schema({
     name: { type: String},
     description: { type: String },
     type: { type: String },
@@ -17,5 +17,3 @@ const artifactSchema = new mongoose.Schema({
     min_lvl: { type: Number},
     profiles: [{ type: mongoose.Schema.Types.ObjectId}],
 });
-
-export default mongoose.models.Artifact || mongoose.model("Artifact", artifactSchema);

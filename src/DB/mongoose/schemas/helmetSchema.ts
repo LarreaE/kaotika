@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const helmetSchema = new mongoose.Schema({
+export const helmetSchema = new mongoose.Schema({
   name: { type: String },
   description: { type: String },
   type: { type: String },
@@ -19,5 +19,3 @@ const helmetSchema = new mongoose.Schema({
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
 });
-
-export default mongoose.models.Helmet || mongoose.model('Helmet', helmetSchema);

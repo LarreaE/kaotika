@@ -10,7 +10,7 @@ import "./bootSchema";
 import "./ringSchema";
 import "./ingredientSchema";
 
-const PlayerSchema = new mongoose.Schema({
+export const PlayerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   nickname: { type: String, required: true },
   avatar: { type: String, required: true },
@@ -50,5 +50,3 @@ const PlayerSchema = new mongoose.Schema({
   },
   tasks: [{ type: Object }],
 }, { timestamps: true }); // Agrega campos createdAt y updatedAt automáticamente
-
-export default mongoose.models.Player || mongoose.model("Player", PlayerSchema);

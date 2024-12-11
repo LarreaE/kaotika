@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const weaponSchema = new mongoose.Schema({
+export const weaponSchema = new mongoose.Schema({
     name: { type: String },
     description: { type: String },
     type: { type: String },
@@ -22,5 +22,3 @@ const weaponSchema = new mongoose.Schema({
     isUnique: { type: Boolean },
     isActive: { type: Boolean },
 });
-
-export default mongoose.models.Weapon || mongoose.model('Weapon', weaponSchema);

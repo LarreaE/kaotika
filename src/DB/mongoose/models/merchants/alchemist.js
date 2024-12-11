@@ -16,10 +16,6 @@ const inventorySchema = new Schema({
     ingredients: { type: ingredientSchema },
   });
 
-const alchemistSchema = new Schema({
+export const alchemistSchema = new Schema({
     invetory: { type: inventorySchema },
   });
-
-export const Alchemist = mongoose.models.Alchemist || mongoose.model('Alchemist', alchemistSchema, 'merchant_alchemist');
-export const Ingredient = mongoose.models.Ingredient || mongoose.model('Ingredient', ingredientSchema);
-

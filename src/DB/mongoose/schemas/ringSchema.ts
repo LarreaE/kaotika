@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ringSchema = new mongoose.Schema({
+export const ringSchema = new mongoose.Schema({
     name: { type: String},
     description: { type: String},
     type: { type: String},
@@ -18,5 +18,3 @@ const ringSchema = new mongoose.Schema({
     isUnique: { type: Boolean},
     isActive: { type: Boolean},
   });
-
-  export default mongoose.models.Ring || mongoose.model('Ring', ringSchema);

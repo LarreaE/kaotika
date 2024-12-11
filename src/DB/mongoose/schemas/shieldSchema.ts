@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const shieldSchema = new mongoose.Schema({
+export const shieldSchema = new mongoose.Schema({
   name: { type: String },
   description: { type: String },
   type: { type: String },
@@ -20,4 +20,3 @@ const shieldSchema = new mongoose.Schema({
   isActive: { type: Boolean },
 });
 
-export default mongoose.models.Shield || mongoose.model('Shield', shieldSchema);

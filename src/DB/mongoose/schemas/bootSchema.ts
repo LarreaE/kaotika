@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const bootSchema = new mongoose.Schema({
+export const bootSchema = new mongoose.Schema({
   name: { type: String },
   description: { type: String },
   type: { type: String },
@@ -19,5 +19,3 @@ const bootSchema = new mongoose.Schema({
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
 });
-
-export default mongoose.models.Boot || mongoose.model('Boot', bootSchema);
