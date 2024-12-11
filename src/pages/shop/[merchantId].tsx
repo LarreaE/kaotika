@@ -180,18 +180,19 @@ const MerchantPage = () => {
     if (item.type === 'ingredient') {
       if (existingItemIndex !== -1) {
         const updatedCartItems = [...cartItems];
-        updatedCartItems[existingItemIndex].quantity += 1; // Incrementamos la cantidad
+        updatedCartItems[existingItemIndex].quantity += 1;
         setCartItems(updatedCartItems);
       } else {
-        setCartItems([...cartItems, { item, quantity: 1 }]); // Añadimos el item por primera vez
+        setCartItems([...cartItems, { item, quantity: 1 }]);
       }
-      setAvailableMoney((prev) => prev - item.value); // Restamos el valor del item al dinero disponible
-    } else {
+      setAvailableMoney((prev) => prev - item.value);
+    } 
+    else {
       if (existingItemIndex === -1 && !checkItemInsidePlayer(item, player)) {
-        setCartItems([...cartItems, { item, quantity: 1 }]); // Añadimos el item por primera vez
-        setAvailableMoney((prev) => prev - item.value); // Restamos el valor del item al dinero disponible
+        setCartItems([...cartItems, { item, quantity: 1 }]);
+        setAvailableMoney((prev) => prev - item.value);
       } else {
-        setError('Item already in inventory'); // Si ya tiene el item en su inventario
+        setError('Item already in inventory');
       }
     }
 };
@@ -203,19 +204,20 @@ const MerchantPage = () => {
   };
 
   const removeItem = (item: Item) => {
-    // Filtramos el carrito para eliminar todos los ítems que coincidan
     const updatedCartItems = cartItems.filter(
       (cartItem) => cartItem.item._id !== item._id
     );
   
     setCartItems(updatedCartItems);
-    setAvailableMoney((prev) => prev + item.value * (item.quantity || 1)); // Añadir el valor de todos los ítems eliminados
+    setAvailableMoney((prev) => prev + item.value * (item.quantity || 1));
   };
   
   
 
   const goToCheckout = () => {
     const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
+    console.log(encodedCartItems);
+    
     router.push(`/shop/checkout?cart=${encodedCartItems}`);
   };
 

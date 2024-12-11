@@ -35,7 +35,7 @@ const Checkout = () => {
   }
   return (
     <Layout>
-    <Cart Items={items}/>
+      <Cart Items={items}/>
     </Layout>
   )
 }
