@@ -1,15 +1,15 @@
 import mongoose, { mongo } from 'mongoose';
-import {RingSchema, ArtifactSchema} from '../player'
+import { ringSchema } from '../../schemas/ringSchema';
+import { artifactSchema } from '../../schemas/artifactSchema';
 const Schema = mongoose.Schema;
 
 // Main Equipment and Potions Schema
 const inventorySchema = new Schema({
-    artifacts: { type: ArtifactSchema },
-    rings: { type: RingSchema },
+    artifacts: { type: artifactSchema },
+    rings: { type: ringSchema },
   });
 
-const jewelerSchema = new Schema({
-    invetory: { type: inventorySchema },
+export const jewelerSchema = new Schema({
+    inventory: { type: inventorySchema },
   });
 
-export const Jeweler = mongoose.models.Jeweler || mongoose.model('Jeweler', jewelerSchema, 'merchant_jeweler');

@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
-import {HelmetSchema, ArmorSchema, BootSchema} from '../player'
+import {helmetSchema} from '../../schemas/helmetSchema';
+import { armorSchema } from '../../schemas/armorSchema';
+import {bootSchema} from '../../schemas/bootSchema';
 const Schema = mongoose.Schema;
 
 // Main Equipment and Potions Schema
 const inventorySchema = new Schema({
-    helmets: { type: HelmetSchema },
-    armors: { type: ArmorSchema },
-    boots: { type: BootSchema },
+    helmets: { type: helmetSchema },
+    armors: { type: armorSchema },
+    boots: { type: bootSchema },
   });
 
-const armorsmithSchema = new Schema({
-    invetory: { type: inventorySchema },
+export const armorsmithSchema = new Schema({
+    inventory: { type: inventorySchema },
   });
 
-export const Armorsmith = mongoose.models.Armorsmith || mongoose.model('Armorsmith', armorsmithSchema, 'merchant_armorsmith');

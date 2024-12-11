@@ -1,16 +1,17 @@
 import mongoose from 'mongoose';
-import {WeaponSchema, ShieldSchema} from '../player'
+import { weaponSchema } from '../../schemas/weaponSchema';
+import { shieldSchema } from '../../schemas/shieldSchema';
+
 const Schema = mongoose.Schema;
 
 // Main Equipment and Potions Schema
 const inventorySchema = new Schema({
-    weapons: { type: WeaponSchema },
-    shields: { type: ShieldSchema },
+    weapons: { type: weaponSchema },
+    shields: { type: shieldSchema },
   });
 
-const weaponsmithSchema = new Schema({
-    invetory: { type: inventorySchema },
+export const weaponsmithSchema = new Schema({
+    inventory: { type: inventorySchema },
   });
 
-export const Weaponsmith = mongoose.models.Weaponsmith || mongoose.model('Weaponsmith', weaponsmithSchema, 'merchant_weaponsmith');
 
