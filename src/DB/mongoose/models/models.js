@@ -1,4 +1,5 @@
-import armorSchema from "../schemas/armorSchema";
+import mongoose from "mongoose";
+import {armorSchema} from "../schemas/armorSchema";
 import { artifactSchema } from "../schemas/artifactSchema";
 import { bootSchema } from "../schemas/bootSchema";
 import { helmetSchema } from "../schemas/helmetSchema";

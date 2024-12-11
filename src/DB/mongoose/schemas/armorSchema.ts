@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const schema = mongoose.Schema;
 
-const armorSchema = new schema({
+export const armorSchema = new schema({
   name: { type: String, required: true },
   description: { type: String },
   type: { type: String },
@@ -22,7 +22,3 @@ const armorSchema = new schema({
   isUnique: { type: Boolean },
   isActive: { type: Boolean },
 });
-console.log(mongoose);
-
-
-export default armorSchema;

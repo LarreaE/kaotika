@@ -11,12 +11,15 @@ Helmet,
 Shield,
 Boot,
 Ring,
+Player,
 	
 	} from '@/DB/mongoose/models/models';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	try {
+
+		const players = await Player.find()
 		const wepons = await Weapon.find()
 		const shields = await Shield.find()
 		const helmets = await Helmet.find()
@@ -24,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const boots = await Boot.find()
 		const artifacts = await Artifact.find()
 		const rings = await Ring.find()
-		const equipment = {wepons,shields,helmets,armors,boots,artifacts,rings}
+		const equipment = { players,wepons,shields,helmets,armors,boots,artifacts,rings}
         res.status(200).json(equipment);
 
 	} catch (error) {
