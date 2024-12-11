@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import handler from '@/pages/api/shop/[playerEmail]/[merchantId]/[itemId]';
 import mongoose from '@/DB/mongoose/config';
-import { Player, Weapon, Shield, Alchemist, Weaponsmith } from '@/DB/mongoose/models/models';
+import { Player } from '@/DB/mongoose/models/models';
 import { transformStringSingular } from '@/helpers/transformString';
 
 // Mock dependencies

@@ -78,32 +78,6 @@ const SellInventory: React.FC<InventoryProps> = ({ player, GRID_NUMBER, selectIt
             )
         })
         }
-        {
-        player?.inventory.healing_potions.map(healing => {
-            return (
-            <div key={healing._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={healing._id} position='bottom' type={[`${healing.type}`, 'inventory']} element={healing} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.antidote_potions.map(antidote => {
-            return (
-            <div key={antidote._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={antidote._id} position='bottom' type={[`${antidote.type}`, 'inventory']} element={antidote} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })
-        }
-        {
-        player?.inventory.enhancer_potions.map(enhancer => {
-            return (
-            <div key={enhancer._id} className="flex justify-center items-center bg-black/30 aspect-square" style={{'border': '3px ridge #000000'}}>
-                <Droppable id={1}  type='inventory' children={<Draggable id={enhancer._id} position='bottom' type={[`${enhancer.type}`, 'inventory']} element={enhancer} tooltipClassName="w-full text-4xl mb-4 border-1 rounded-lg border-sepia bg-black/90" className={undefined} width="150px" border="" />}/>
-            </div>
-            )
-        })}
           {Array.from({
             length:
               GRID_NUMBER -
@@ -113,10 +87,7 @@ const SellInventory: React.FC<InventoryProps> = ({ player, GRID_NUMBER, selectIt
               player.inventory.shields.length -
               player.inventory.artifacts.length -
               player.inventory.boots.length -
-              player.inventory.rings.length -
-              player.inventory.healing_potions.length -
-              player.inventory.antidote_potions.length -
-              player.inventory.enhancer_potions.length,
+              player.inventory.rings.length,
           }).map((_, index) => (
             <div
               key={index}

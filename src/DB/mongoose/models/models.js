@@ -15,6 +15,7 @@ import {alchemistSchema} from "./merchants/alchemist";
 import {weaponsmithSchema} from "./merchants/weaponsmith";
 import {dateSchema} from "./date"
 
+console.log(mongoose.models);
 
 //merchants
 const Armorsmith = mongoose.models.Armorsmith || mongoose.model('Armorsmith', armorsmithSchema, 'merchant_armorsmith');

@@ -74,7 +74,6 @@ const MerchantPage = () => {
             const response = await res.json();
             console.log(response);
             setPlayer(response);
-            populatePlayer(player?._id);
           } else if (res.status === 404) {
             const response = await res.json();
           } else {
