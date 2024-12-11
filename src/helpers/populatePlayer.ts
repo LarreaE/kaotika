@@ -4,8 +4,6 @@ export const populatePlayer = async (playerId: string | undefined) => {
 
     
     const playerPopulated = await Player.findById(playerId).populate('profile').exec();
-
-    console.log(playerPopulated);
     
 
     // Poblamos el equipo

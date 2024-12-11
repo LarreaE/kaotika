@@ -18,25 +18,19 @@ import SellItemCard from '@/components/shop/SellItemCard';
 import SellConfirmationModal from '@/components/shop/SellConfirmationModal';
 import SellItemDetailModal from '@/components/shop/SellItemDetailModal';
 import SellInventory from '@/components/shop/SellInventory';
+import { Armor } from '@/_common/interfaces/Armor';
+import { Artifact } from '@/_common/interfaces/Artifact';
+import { Boot } from '@/_common/interfaces/Boot';
+import { Helmet } from '@/_common/interfaces/Helmet';
+import { Ring } from '@/_common/interfaces/Ring';
+import { Shield } from '@/_common/interfaces/Shield';
+import { Weapon } from '@/_common/interfaces/Weapon';
+import populatePlayer from '@/helpers/populatePlayer';
 
 const MerchantPage: React.FC = () => {
 
-  interface Item {
-    _id: string;
-    name: string;
-    image: string;
-    value: number;
-    type: string;
-    description: string;
-    stats?: {
-      intelligence?: number;
-      dexterity?: number;
-      constitution?: number;
-      insanity?: number;
-      charisma?: number;
-      strength?: number;
-    };
-  }
+  type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
+
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -99,7 +93,7 @@ const MerchantPage: React.FC = () => {
 
       if (res.status === 200) {
         const response = await res.json();
-        setPlayer(response); 
+        setPlayer(response);
         setAvailableMoney(response.gold); 
         setSelectedItem(null);
       } else {
@@ -141,7 +135,7 @@ const MerchantPage: React.FC = () => {
 
   if (!session) return null;
 
-  const allItems: any[] = [];
+  const allItems: Item[] = [];
   if (items.length > 0) {
     Object.entries(items[0]).forEach(([category, data]) => {
       if (Array.isArray(data)) {
@@ -204,9 +198,7 @@ const MerchantPage: React.FC = () => {
 
           <div className="border-t-2 border-sepia pt-4 w-full">
             <ItemStats
-              className="rounded-3xl"
               selectedItem={selectedItem}
-              atributtes={currentAttributes}
               player={player}
             />
           </div>

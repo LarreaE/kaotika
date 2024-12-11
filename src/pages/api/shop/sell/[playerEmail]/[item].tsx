@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
 import {Player} from '@/DB/mongoose/models/models'
 import { transformStringLowerPlural, transformStringPlural, transformStringSingular } from '@/helpers/transformString';
+import populatePlayer from '@/helpers/populatePlayer';
 
 export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
@@ -21,11 +22,11 @@ interface Player {
 
   const { playerEmail, item } = req.query;
 
-  const removeItemFromInventory = (player: any, types:string, name:string) => {
+  const removeItemFromInventory =  async (player: any, types: string, _id: string) => {
     const type = transformStringLowerPlural(types);
     if (player.inventory[type]) {
-        player.inventory[type] = player.inventory[type].filter((item: { name: string; }) => item.name !== name);
-        console.log(`Item with ID ${name} has been removed from ${type}.`);
+        player.inventory[type] = player.inventory[type].filter((item: { _id: string }) => item._id !== _id);
+        console.log(`Item with ID ${_id} has been removed from ${type}.`);
     } else {
         console.log(`Category "${type}" does not exist in the inventory.`);
     }
@@ -45,8 +46,9 @@ interface Player {
       if (!model) {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
-      console.log("MODEL: ", model);
       const item = await model.findOne({name: itemId});
+      console.log('item');
+      console.log(item);
       
       if (!item) {
         throw new Error('Item not found or already sold');
@@ -55,13 +57,13 @@ interface Player {
         console.log(`${item.name} is unique, changing isActive to add it into the available loot pool`);
         await model.updateOne({name: item.name}, {$set: {isActive: true}})
       }  
-      removeItemFromInventory(player,collectionName,itemId);      
+      await removeItemFromInventory(player,collectionName,item._id);      
       payPlayer(player, item);
 
       return player;
 
     } catch (error) {
-      console.error('Error transferring item to player:', error);
+      console.error('Error transferring selling to player:', error);
       throw error;
     }
   };
@@ -91,13 +93,16 @@ interface Player {
       {
         $set: {
           inventory: newPlayer.inventory,
-          gold: newPlayer.gold //set gold
+          gold: newPlayer.gold 
         }
       },
       { returnDocument: 'after' }
     );
-  
-    res.status(200).json(updatedPlayer);
+    console.log('updatedPlayer:');
+    console.log(updatedPlayer);
+    
+    const popul = await populatePlayer(updatedPlayer._id)
+    res.status(200).json(popul);
   
   } catch (error) {
     console.error('Error fetching item data:', error);

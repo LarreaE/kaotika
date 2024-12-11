@@ -21,6 +21,9 @@ export const PlayerSchema = new mongoose.Schema({
     artifact: { type: Schema.Types.ObjectId, ref: 'Artifact' },
     boot: { type: Schema.Types.ObjectId, ref: 'Boot', default: new mongoose.Types.ObjectId('66d99a807518eb499003535f') },
     ring: { type: Schema.Types.ObjectId, ref: 'Ring', default: new mongoose.Types.ObjectId('66a6d6c8dfbffe7e6503970f') },
+    antidote_potion: { type: mongoose.Types.ObjectId, ref: 'PotionAntidote' },
+    healing_potion: { type: mongoose.Types.ObjectId, ref: 'PotionHealing' },
+    enhancer_potion: { type: mongoose.Types.ObjectId, ref: 'PotionEnhancer' }
   },
   inventory: {
     helmets: [{ type: Schema.Types.ObjectId, ref: 'Helmet' }],
@@ -35,9 +38,6 @@ export const PlayerSchema = new mongoose.Schema({
   tasks: [{ type: Object }],
 }, { timestamps: true });
 
-    // antidote_potion: { type: mongoose.Types.ObjectId, ref: 'PotionAntidote' },
-    // healing_potion: { type: mongoose.Types.ObjectId, ref: 'PotionHealing' },
-    // enhancer_potion: { type: mongoose.Types.ObjectId, ref: 'PotionEnhancer' }
  
     // antidote_potions: [{ type: mongoose.Types.ObjectId, ref: 'PotionAntidote' }],
     // healing_potions: [{ type: mongoose.Types.ObjectId, ref: 'PotionHealing' }],
