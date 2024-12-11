@@ -2,13 +2,13 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from '@/DB/mongoose/config';
-import {Player} from '@/DB/mongoose/models/models'
-import { transformStringPlural,transformStringSingular } from '@/helpers/transformString';
-export default async (req: NextApiRequest, res: NextApiResponse)  => {
+import { Player } from '@/DB/mongoose/models/models'
+import { transformStringPlural, transformStringSingular } from '@/helpers/transformString';
+export default async (req: NextApiRequest, res: NextApiResponse) => {
 
-  const { playerEmail, merchantId ,itemId } = req.query;
+  const { playerEmail, merchantId, itemId } = req.query;
 
-  const transferItemToPlayer = async (playerEmail: string | string[], merchantId: string , itemId: string | string[]) => {
+  const transferItemToPlayer = async (playerEmail: string | string[], merchantId: string, itemId: string | string[]) => {
     try {
 
       const collectionName = transformStringSingular(merchantId);
@@ -16,11 +16,11 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       if (!model) {
         throw new Error(`Model for collection "${collectionName}" not found.`);
       }
-      const player = await Player.findOne({email: playerEmail})
-      
+      const player = await Player.findOne({ email: playerEmail })
+
       console.log(itemId);
 
-      const fieldsToSearch = ['rings', 'artifacts', 'weapons','shields','helmets','armors','boots', 'ingredients'];
+      const fieldsToSearch = ['rings', 'artifacts', 'weapons', 'shields', 'helmets', 'armors', 'boots', 'ingredients'];
 
       const items = await model.aggregate([
         {
@@ -53,20 +53,23 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
       const item = items[0];
 
       console.log("ITEM:", item);
-      
+
       if (!item) {
         throw new Error('Item not found or already sold');
       }
-  
+
       if (player.gold < item.value) {
         console.log(`player has ${player.gold}G , which is less than the item value: ${item.value}G. purchase could not be complete`);
         res.status(400).json({ error: 'Insufficient gold' });
         return;
       }
-  
+
       const type = `${item.type}s`
       console.log(type);
-            
+
+      if (!player?.inventory[type]) {
+        player.inventory[type] = [];
+      }
       await player?.inventory[type].push(item._id);
 
       console.log(player.inventory[type]);
@@ -79,7 +82,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
         },
         { returnDocument: 'after' } //return document after
       );
-  
+
       console.log('Item purchased successfully:', item.value);
       res.status(200).json(updatedPlayer);
 
@@ -99,7 +102,7 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
 
     await transferItemToPlayer(playerEmail, merchantName, itemId)
       .then((updatedPlayer) => {
-        console.log('Player updated:', playerEmail , itemId);
+        console.log('Player updated:', playerEmail, itemId);
         res.status(200).json(updatedPlayer)
       })
       .catch((error) => {
@@ -109,5 +112,5 @@ export default async (req: NextApiRequest, res: NextApiResponse)  => {
     console.error('Error fetching item data:', error);
     res.status(500).json({ error: 'Failed to fetch item' });
   }
-  
+
 };
