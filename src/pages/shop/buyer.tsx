@@ -112,6 +112,7 @@ const MerchantPage: React.FC = () => {
           console.log('Server response after sale:', response); // Log para la respuesta del servidor después de cada venta
           setPlayer(response);
           setAvailableMoney(response.gold); // Actualiza el oro disponible después de cada venta
+          setSelectedItem(null)
         } else {
           setError('Failed to sell');
           console.error('Failed to sell. Status:', res.status); // Log para errores de venta
@@ -217,18 +218,30 @@ const MerchantPage: React.FC = () => {
 
           <div className="mb-4 flex justify-center">
             <img
-              src="/images/sellers/seller1.png"
+              src="/images/sellers/buyer.png"
               alt={`Merchant ${merchantId}`}
               className="object-contain h-32"
             />
           </div>
 
-          <div className="border-t-2 border-sepia pt-4 w-full">
-            <ItemStats
-              selectedItem={selectedItem}
-              player={player}
-            />
-          </div>
+          <div className="border-t border-sepia pt-4">
+              {selectedItem?.type === 'ingredient' ? (
+                <div>
+                  <h2 className="text-3xl font-bold mb-4 text-center">{selectedItem.name}</h2>
+                  <p className="text-xl text-center">{selectedItem.description}</p>
+                  <p className="text-xl text-center">
+                    {selectedItem.effects[0].replace(/_/g, ' ')}
+                  </p>
+
+                </div>
+              ) : (
+                <ItemStats
+                  selectedItem={selectedItem}
+                  atributtes={currentAttributes}
+                  player={player}
+                />
+              )}
+            </div>
         </div>
 
         {/* Panel central */}

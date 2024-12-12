@@ -26,43 +26,73 @@ const SellItemDetailModal: React.FC<Props> = ({ selectedItem, currentAttributes,
           X
         </button>
         <div className="flex flex-row gap-6">
-          {/* Estadísticas del ítem */}
-          <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
-            <ItemStats
-              selectedItem={selectedItem}
-              player={player}
-            />
-          </div>
-          {/* Imagen del ítem */}
-          <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
-            <img
-              src={selectedItem?.image}
-              alt={selectedItem?.name || 'Selected Item'}
-              className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
-            />
-          </div>
-          {/* Descripción y acciones */}
-          <div className="w-1/3 flex flex-col justify-center items-center text-center">
-            <p className="text-white text-2xl mb-6 p-2">
-              {selectedItem?.description || 'Selecciona un elemento para ver sus estadísticas.'}
-            </p>
-            {selectedItem ? (
-              <ItemBaseStats selectedItem={selectedItem} player={player} />
-            ) : (
-              <div className="text-center text-gray-500 italic">
-                Selecciona un elemento para ver sus estadísticas.
+          {/* Si el objeto es un ingrediente */}
+          {selectedItem?.type === 'ingredient' ? (
+            <>
+              {/* Imagen del ítem */}
+              <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
+                <img
+                  src={selectedItem?.image}
+                  alt={selectedItem?.name || 'Selected Item'}
+                  className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
+                />
               </div>
-            )}
-            <div className="flex space-x-4 mt-auto p-2">
-              {selectedItem && (
+              {/* Nombre, descripción y botón de venta */}
+              <div className="w-2/3 flex flex-col justify-center items-center text-center">
+                <p className="text-white text-3xl font-bold mb-4">
+                  {selectedItem?.name || 'Unnamed Item'}
+                </p>
+                <p className="text-white text-xl mb-6">
+                  {selectedItem?.description || 'No description available.'}
+                </p>
                 <button
                   onClick={handleSellClick} // Usamos la nueva función aquí
                   className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
                   Sell for {Math.floor(selectedItem.value / 3)}
                 </button>
-              )}
-            </div>
-          </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Estadísticas del ítem */}
+              <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
+                <ItemStats
+                      selectedItem={selectedItem}
+                      player={player}
+                />
+              </div>
+              {/* Imagen del ítem */}
+              <div className="w-1/3 flex items-center justify-center rounded-lg p-4">
+                <img
+                  src={selectedItem?.image}
+                  alt={selectedItem?.name || 'Selected Item'}
+                  className="w-full h-full max-h-96 object-contain rounded-lg shadow-md border-2 border-sepia"
+                />
+              </div>
+              {/* Descripción y acciones */}
+              <div className="w-1/3 flex flex-col justify-center items-center text-center">
+                <p className="text-white text-2xl mb-6 p-2">
+                  {selectedItem?.description || 'Selecciona un elemento para ver sus estadísticas.'}
+                </p>
+                {selectedItem ? (
+                  <ItemBaseStats selectedItem={selectedItem} player={player} />
+                ) : (
+                  <div className="text-center text-gray-500 italic">
+                    Selecciona un elemento para ver sus estadísticas.
+                  </div>
+                )}
+                <div className="flex space-x-4 mt-auto p-2">
+                  {selectedItem && (
+                    <button
+                      onClick={handleSellClick} // Usamos la nueva función aquí
+                      className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                      Sell for {Math.floor(selectedItem.value / 3)}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

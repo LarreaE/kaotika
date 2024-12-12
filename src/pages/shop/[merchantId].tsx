@@ -36,8 +36,8 @@ const MerchantPage = () => {
   const [availableMoney, setAvailableMoney] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
-  
-  
+
+
   const [showCartModal, setShowCartModal] = useState<boolean>(false);
 
   useEffect(() => {
@@ -100,11 +100,11 @@ const MerchantPage = () => {
 
   const checkItemInsidePlayer = (item: Item, player: any): boolean => {
     const type = transformStringLowerPlural(item.type);
-  
+
     if (item.type === 'ingredient') {
       return false;
     }
-  
+
     if (player.inventory[type]) {
       const foundItem = player.inventory[type].find((inventoryItem: Item) => inventoryItem._id === item._id);
       return !!foundItem;
@@ -113,7 +113,6 @@ const MerchantPage = () => {
       return false;
     }
   };
-  
 
   const handleBuy = async (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null)
@@ -150,34 +149,34 @@ const MerchantPage = () => {
       console.log('Unavailable');
     }
   };
-  
+
   const handleDecreaseQuantity = (item: Item) => {
     const existingItemIndex = cartItems.findIndex(
       (cartItem) => cartItem.item._id === item._id
     );
-  
+
     if (existingItemIndex !== -1) {
       const updatedCartItems = [...cartItems];
       const currentQuantity = updatedCartItems[existingItemIndex].quantity;
-  
+
       if (currentQuantity > 1) {
         updatedCartItems[existingItemIndex].quantity -= 1;
       } else {
         updatedCartItems.splice(existingItemIndex, 1); // Eliminar el ítem completamente si la cantidad es 1
       }
-  
+
       setCartItems(updatedCartItems);
       setAvailableMoney((prev) => prev + item.value); // Sumamos el valor de un ítem al dinero disponible
     }
   };
-  
-  
+
+
 
   const handleAddToCart = (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null);
-  
+
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.item._id === item._id);
-  
+
     if (item.type === 'ingredient') {
       if (existingItemIndex !== -1) {
         const updatedCartItems = [...cartItems];
@@ -187,7 +186,7 @@ const MerchantPage = () => {
         setCartItems([...cartItems, { item, quantity: 1 }]);
       }
       setAvailableMoney((prev) => prev - item.value);
-    } 
+    }
     else {
       if (existingItemIndex === -1 && !checkItemInsidePlayer(item, player)) {
         setCartItems([...cartItems, { item, quantity: 1 }]);
@@ -196,7 +195,7 @@ const MerchantPage = () => {
         setError('Item already in inventory');
       }
     }
-};
+  };
 
 
   const emptyCart = () => {
@@ -208,23 +207,23 @@ const MerchantPage = () => {
     const updatedCartItems = cartItems.filter(
       (cartItem) => cartItem.item._id !== item._id
     );
-  
+
     setCartItems(updatedCartItems);
     setAvailableMoney((prev) => prev + item.value * (item.quantity || 1));
   };
-  
-  
+
+
 
   const goToCheckout = () => {
     const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
     console.log(encodedCartItems);
-    
+
     router.push(`/shop/checkout?cart=${encodedCartItems}`);
   };
 
   const calculateTotalPrice = () =>
     cartItems.reduce((total, cartItem) => total + cartItem.item.value * cartItem.quantity, 0);
-  
+
 
   if (!session) return null;
 
@@ -244,8 +243,23 @@ const MerchantPage = () => {
     <Layout>
       {loading && <Loading />}
       <div className="relative">
+        {/* Visualización del oro del jugador en la esquina superior derecha */}
+        {player && (
+          <div className="absolute mt-[70%]top-4 right-4 w-auto p-2 bg-black/40 border-sepia border-2 flex items-center justify-between rounded-lg shadow">
+            <div className="text-white text-2xl font-bold">Gold</div>
+            <div className="flex items-center ml-2">
+              <p className="text-white text-3xl font-bold">{player.gold}</p>
+              <img
+                src="/images/shop/gold.png"
+                alt="gold coin"
+                className="w-8 h-8 ml-2"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Botón para regresar */}
-        <button 
+        <button
           onClick={() => router.back()}
           className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
         >
@@ -261,56 +275,69 @@ const MerchantPage = () => {
             <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
-             {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
-        <div className="absolute top-4 right-4">
-        <button
-          onClick={() => setShowCartModal(true)}
-          className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="w-10 h-10" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="#ba9b61" 
-            strokeWidth="1" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a1 1 0 0 0 .99.8h9.72a1 
-                    1 0 0 0 .98-.8L23 6H6"></path>
-          </svg>
-        </button>
-        </div>
-            
+
+            {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
+            <div className="absolute top-4 right-4">
+              <button
+                onClick={() => setShowCartModal(true)}
+                className="bg-transparent hover:bg-gray-600 transition flex items-center justify-center w-10 h-10 rounded"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-10 h-10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#ba9b61"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a1 1 0 0 0 .99.8h9.72a1 
+                      1 0 0 0 .98-.8L23 6H6"></path>
+                </svg>
+              </button>
+            </div>
+
             {/* Título del Merchant */}
             <div className="flex justify-center mb-4">
               <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-lg tracking-wide">
                 Merchant {merchantId}
               </div>
             </div>
-            
+
             <div className="mb-4 flex justify-center">
-              <img
-                src="/images/sellers/seller1.png"
-                alt={`Merchant ${merchantId}`}
-                className="object-contain h-32"
-              />
+            <img
+              src={`/images/sellers/${merchantId}.png`}
+              alt={`Merchant ${merchantId}`}
+              className="object-contain h-32"
+            />
             </div>
-            
+
             <div className="border-t border-sepia pt-4">
-              <ItemStats
-                selectedItem={selectedItem}
-                atributtes={currentAttributes}
-                player={player}
-              />
+              {selectedItem?.type === 'ingredient' ? (
+                <div>
+                  <h2 className="text-3xl font-bold mb-4 text-center">{selectedItem.name}</h2>
+                  <p className="text-xl text-center">{selectedItem.description}</p>
+                  <p className="text-xl text-center">
+                    {selectedItem.effects[0].replace(/_/g, ' ')}
+                  </p>
+
+                </div>
+              ) : (
+                <ItemStats
+                  selectedItem={selectedItem}
+                  atributtes={currentAttributes}
+                  player={player}
+                />
+              )}
             </div>
+
           </div>
 
           {/* Contenido principal */}
-          <div className="w-3/4 p-4">
+          <div className="w-3/4 p-4 mt-12">
             <ItemCarousel
               items={allItems}
               player={player}
@@ -325,23 +352,23 @@ const MerchantPage = () => {
 
       {/* Modal del CartPreview */}
       {showCartModal && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex justify-center items-end bg-black bg-opacity-50"
           onClick={() => setShowCartModal(false)}
         >
-          <div 
+          <div
             className="bg-transparent w-full md:w-[80%] h-[100%] rounded-t-xl p-4 relative overflow-auto transform transition-transform translate-y-0"
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Botón para cerrar el modal */}
-            <button 
+            <button
               className="absolute top-[12%] right-[13%] text-gray-400 hover:text-gray-900 z-51"
               onClick={() => setShowCartModal(false)}
             >
               X
             </button>
-            
+
             <CartPreview
               items={cartItems}
               emptyCart={emptyCart}
@@ -357,6 +384,7 @@ const MerchantPage = () => {
         </div>
       )}
     </Layout>
+
   );
 };
 
