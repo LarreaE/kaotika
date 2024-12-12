@@ -70,26 +70,28 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
             {/* Descripción */}
             <p className="mb-4 text-xl text-white">{confirmationDetails.item.description}</p>
 
-            {/* Botones de cantidad */}
-            <div className="flex justify-center items-center gap-4 mb-4">
-              <button
-                onClick={onDecrement}
-                className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
-              >
-                -
-              </button>
-              <span className="text-3xl text-white">{quantity}</span>
-              <button
-                onClick={onIncrement}
-                className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
-              >
-                +
-              </button>
-            </div>
-
             <p className="mb-4 text-3xl text-white">
               Total: <strong>{totalCost}</strong> gold
             </p>
+            {/* Botones de cantidad */}
+            {confirmationDetails.item?.type === 'ingredient' && (
+              <div className="flex justify-center items-center gap-4 mb-4">
+                <button
+                  onClick={onDecrement}
+                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                >
+                  -
+                </button>
+                <span className="text-3xl text-white">{quantity}</span>
+                <button
+                  onClick={onIncrement}
+                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                >
+                  +
+                </button>
+              </div>
+
+            )}
           </>
         )}
         <div className="flex justify-around mt-4">
