@@ -308,11 +308,11 @@ const MerchantPage = () => {
             </div>
 
             <div className="mb-4 flex justify-center">
-              <img
-                src="/images/sellers/seller1.png"
-                alt={`Merchant ${merchantId}`}
-                className="object-contain h-32"
-              />
+            <img
+              src={`/images/sellers/${merchantId}.png`}
+              alt={`Merchant ${merchantId}`}
+              className="object-contain h-32"
+            />
             </div>
 
             <div className="border-t border-sepia pt-4">
