@@ -83,24 +83,43 @@ const MerchantPage: React.FC = () => {
     }
   }, [player]);
 
-  const handleSell = async (item: Item) => {
-    if (!item || !player) return;
-
+  const handleSell = async (item, quantity) => {
+    console.log('Handling sell for item:', item); // Log para ver el artículo que se está vendiendo
+    console.log('Quantity to sell:', quantity); // Log para verificar la cantidad seleccionada
+  
+    if (!item || !player || quantity < 1) return;
+  
     try {
       setLoading(true);
-      const encodedItem = encodeURIComponent(JSON.stringify(item));
-      const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
-
-      if (res.status === 200) {
-        const response = await res.json();
-        setPlayer(response);
-        setAvailableMoney(response.gold); 
-        setSelectedItem(null);
-      } else {
-        setError('Failed to sell');
+  
+      // Calcular el valor de la venta por unidad
+      const sellValue = Math.floor(item.value / 3);
+      console.log('Calculated sell value per item:', sellValue); // Log para ver el valor calculado de la venta por artículo
+  
+      // Realizar la venta por la cantidad seleccionada
+      for (let i = 0; i < quantity; i++) {
+        console.log(`Selling item #${i + 1}`);
+        
+        // Codificar el artículo
+        const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantityToSell: 1 }));
+  
+        // Enviar la venta al backend
+        const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
+        console.log('Response from server for sale #', i + 1, ':', res); // Log para la respuesta del servidor por cada venta
+  
+        if (res.status === 200) {
+          const response = await res.json();
+          console.log('Server response after sale:', response); // Log para la respuesta del servidor después de cada venta
+          setPlayer(response);
+          setAvailableMoney(response.gold); // Actualiza el oro disponible después de cada venta
+        } else {
+          setError('Failed to sell');
+          console.error('Failed to sell. Status:', res.status); // Log para errores de venta
+          break; // Si ocurre un error, salir del bucle
+        }
       }
     } catch (error) {
-      console.error('Failed to complete sell:', error);
+      console.error('Failed to complete sell:', error); // Log para errores en el proceso
       setError('Failed to sell');
     } finally {
       setLoading(false);
@@ -108,6 +127,8 @@ const MerchantPage: React.FC = () => {
       setConfirmationDetails(null);
     }
   };
+  
+  
 
   const handleViewDetails = () => {
     setIsModalOpen(true);
@@ -118,13 +139,18 @@ const MerchantPage: React.FC = () => {
   };
 
   const selectItem = (item: Item) => {
-    console.log(item);
+    console.log('Selected item:', item); // Log para verificar el artículo seleccionado
     setSelectedItem(item);
   };
-
+  
   const initiateSell = (item: Item) => {
     if (!player) return;
+  
     const sellValue = Math.floor(item.value / 3);
+    console.log('Initiating sell for item:', item); // Log para verificar la venta antes de confirmar
+    console.log('Current gold:', player.gold); // Log para ver el oro actual del jugador
+    console.log('New gold after sell:', player.gold + sellValue); // Log para ver el oro que se recibirá después de la venta
+  
     setConfirmationDetails({
       currentGold: player.gold,
       newGold: player.gold + sellValue,
@@ -132,6 +158,7 @@ const MerchantPage: React.FC = () => {
     });
     setIsConfirming(true);
   };
+  
 
   if (!session) return null;
 
@@ -165,16 +192,16 @@ const MerchantPage: React.FC = () => {
 
       {loading && <Loading />}
       <div className="bg-[url('/images/shop/shop_background.png')] bg-cover bg-center bg-opacity-90 min-h-screen flex flex-row">
-        
+
         {/* Lateral Izquierdo con estilo Skyrim (bordes sepia, botones antiguos) */}
         <div className="w-3/12 relative p-4 bg-black/60 text-gray-200 rounded shadow-lg border-sepia border-2 flex flex-col items-center">
-                {/* Botón para regresar */}
-                <button 
-          onClick={() => router.back()}
-          className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
-        >
-          ←
-        </button>
+          {/* Botón para regresar */}
+          <button
+            onClick={() => router.back()}
+            className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
+          >
+            ←
+          </button>
           {/* Esquinas decorativas */}
           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-sepia"></div>
           <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-sepia"></div>
@@ -222,7 +249,7 @@ const MerchantPage: React.FC = () => {
                 View details
               </button>
               {selectedItem && (
-                <button 
+                <button
                   onClick={() => initiateSell(selectedItem)}
                   className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                 >
@@ -263,7 +290,7 @@ const MerchantPage: React.FC = () => {
               </div>
             </div>
           )}
-          {player &&  
+          {player &&
             <SellInventory
               player={player}
               GRID_NUMBER={64}
