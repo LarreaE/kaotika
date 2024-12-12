@@ -2,7 +2,15 @@ import React from 'react';
 import ItemStats from './ItemStats';
 import ItemBaseStats from './ItemBaseStats';
 
-const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, initiateSell }) => {
+interface Props {
+  selectedItem : any,
+  currentAttributes: any,
+  player: any,
+  closeModal: any,
+  initiateSell: any,
+}
+
+const SellItemDetailModal: React.FC<Props> = ({ selectedItem, currentAttributes, player, closeModal, initiateSell }) => {
   // Función para iniciar la venta y cerrar el modal
   const handleSellClick = () => {
     initiateSell(selectedItem); // Inicia la venta
@@ -21,9 +29,7 @@ const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeMod
           {/* Estadísticas del ítem */}
           <div className="w-1/3 flex items-center justify-center rounded-xl p-4">
             <ItemStats
-              className="rounded-3xl border-sepia border-2 w-full"
               selectedItem={selectedItem}
-              atributtes={currentAttributes}
               player={player}
             />
           </div>

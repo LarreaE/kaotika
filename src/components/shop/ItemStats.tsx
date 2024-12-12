@@ -16,7 +16,7 @@ type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
 
 interface ItemStatsProps {
   selectedItem: Item | null;
-  player: Player | undefined;
+  player: Player;
 }
 
 const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
@@ -51,8 +51,15 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   ];
 
   // Función para calcular los atributos totales del jugador, excluyendo las pociones
-  const calculateTotalAttributes = (player: Player): Modifier => {
-    const totalAttributes: Modifier = {};
+  const calculateTotalAttributes = (player: any): Modifier => {
+    const totalAttributes: Modifier = {
+      intelligence: 0,
+      dexterity: 0,
+      constitution: 0,
+      insanity: 0,
+      charisma: 0,
+      strength: 0
+    };
 
     // Inicializar los atributos con los valores base del jugador
     for (const attr of attributesToDisplay) {
@@ -83,9 +90,9 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   const totalAttributesWithCurrentEquipment = calculateTotalAttributes(player);
 
   // Obtener el ítem actualmente equipado del mismo tipo que el seleccionado
-  const getCurrentlyEquippedItem = (): Item | null => {
+  const getCurrentlyEquippedItem = (): any => {
     const itemType = selectedItem.type.toLowerCase(); // Convertir a minúsculas
-    return player.equipment[itemType as keyof Player['equipment']] || null;
+    return player?.equipment[itemType as keyof Player['equipment']] || null;
   };
 
   const currentlyEquippedItem = getCurrentlyEquippedItem();
@@ -261,7 +268,7 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   
       return (
         <div className="mb-4">
-          <ProgressBar label={label} value={totalNewDefense} maxValue={maxValue} barColor={barColor} />
+          <ProgressBar label={label} value={totalNewDefense} maxValue={maxValue} />
         </div>
       );
     }
