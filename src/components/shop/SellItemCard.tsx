@@ -1,6 +1,18 @@
 import React from 'react';
 
-const SellItemCard = ({ selectedItem }) => {
+// Definir la interfaz Item directamente en este archivo
+interface Item {
+  name: string;
+  image: string;
+  description: string;
+  value: number;
+}
+
+interface SellItemCardProps {
+  selectedItem: Item | null; // El ítem puede ser null si no hay un ítem seleccionado
+}
+
+const SellItemCard: React.FC<SellItemCardProps> = ({ selectedItem }) => {
   return (
     <div className="w-3/5 h-4/6 p-4 bg-black bg-opacity-70 flex flex-col items-center rounded-2xl shadow-lg border-4 border-sepia">
       <div className="w-full text-center bg-medievalSepia py-2 rounded-t-2xl">

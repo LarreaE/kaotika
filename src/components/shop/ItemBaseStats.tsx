@@ -39,7 +39,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
   // Función para renderizar los atributos que no son de armas (es decir, otros modificadores)
   const renderAttributeProgressBars = () => {
     return attributesToDisplay.map((attrName) => {
-      const value = selectedItem.modifiers?.[attrName] || 0;
+      const value = selectedItem.modifiers?.[attrName] ?? 0; // Asegurarse de que value no sea undefined
       const isNegative = value < 0;
       const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
       const maxValue = Math.max(Math.abs(value), 50);
@@ -62,7 +62,6 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
       );
     });
   };
-  
 
   // Renderizar las estadísticas defensivas si el ítem es de tipo Armor, Boot, Helmet o Shield
   const renderDefensiveStats = () => {
@@ -72,8 +71,7 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
       selectedItem?.type === 'helmet' ||
       selectedItem?.type === 'shield'
     ) {
-      // Verificamos el tipo y accedemos a las propiedades del item correspondiente
-      let defenseStat = null;
+      let defenseStat: number | null = null;
 
       if (selectedItem.type === 'armor') {
         const armor = selectedItem as Armor;
@@ -88,34 +86,35 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
         const shield = selectedItem as Shield;
         defenseStat = shield.defense;
       }
-      const attrName = "Defense";
-      const isNegative = defenseStat < 0;
-      const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
-      const maxValue = Math.max(Math.abs(defenseStat), 100);
-      const label = (
-        <span className="text-white">
-          {attrName.toUpperCase()}: {isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}
-        </span>
-      );
-      return (
-        <div key={attrName} className="mb-4">
-          <ProgressBar
-            label={label}
-            value={Math.abs(defenseStat)} 
-            maxValue={maxValue}
-            barColor={barColor}
-          />
-        </div> 
-      );
+
+      if (defenseStat !== null) {
+        const attrName = "Defense";
+        const isNegative = defenseStat < 0;
+        const barColor = isNegative ? 'bg-red-500' : 'bg-green-500';
+        const maxValue = Math.max(Math.abs(defenseStat), 100);
+        const label = (
+          <span className="text-white">
+            {attrName.toUpperCase()}: {isNegative ? `-${Math.abs(defenseStat)}` : defenseStat}
+          </span>
+        );
+        return (
+          <div key={attrName} className="mb-4">
+            <ProgressBar
+              label={label}
+              value={Math.abs(defenseStat)} 
+              maxValue={maxValue}
+              barColor={barColor}
+            />
+          </div> 
+        );
+      }
     }
     return null;
   };
 
-  // Renderizar las estadísticas del daño si el ítem es un arma (Weapon)
   const renderWeaponStats = () => {
     if (selectedItem?.type === 'weapon') {
       const weapon = selectedItem as Weapon;
-
       const damageDisplay = `${weapon.die_num}D${weapon.die_faces} + ${weapon.die_modifier}`;
       return (
         <div className="mb-4">
@@ -129,13 +128,8 @@ const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) =
 
   return (
     <div className="w-[100%] p-4 bg-gray-900 rounded shadow-md text-white border-2 border-sepia">
-      {/* Mostrar las estadísticas específicas de la arma si es una Weapon */}
       {renderWeaponStats()}
-
-      {/* Mostrar estadísticas defensivas si es un Armor, Boot, Helmet o Shield */}
       {renderDefensiveStats()}
-
-      {/* Renderizar las barras de progreso para los atributos */}
       {renderAttributeProgressBars()}
     </div>
   );
