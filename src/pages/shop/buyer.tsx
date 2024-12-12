@@ -223,12 +223,24 @@ const MerchantPage: React.FC = () => {
             />
           </div>
 
-          <div className="border-t-2 border-sepia pt-4 w-full">
-            <ItemStats
-              selectedItem={selectedItem}
-              player={player}
-            />
-          </div>
+          <div className="border-t border-sepia pt-4">
+              {selectedItem?.type === 'ingredient' ? (
+                <div>
+                  <h2 className="text-3xl font-bold mb-4 text-center">{selectedItem.name}</h2>
+                  <p className="text-xl text-center">{selectedItem.description}</p>
+                  <p className="text-xl text-center">
+                    {selectedItem.effects[0].replace(/_/g, ' ')}
+                  </p>
+
+                </div>
+              ) : (
+                <ItemStats
+                  selectedItem={selectedItem}
+                  atributtes={currentAttributes}
+                  player={player}
+                />
+              )}
+            </div>
         </div>
 
         {/* Panel central */}
