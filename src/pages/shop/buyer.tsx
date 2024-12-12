@@ -217,7 +217,7 @@ const MerchantPage: React.FC = () => {
 
           <div className="mb-4 flex justify-center">
             <img
-              src="/images/sellers/seller1.png"
+              src="/images/sellers/buyer.png"
               alt={`Merchant ${merchantId}`}
               className="object-contain h-32"
             />

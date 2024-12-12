@@ -40,25 +40,25 @@ const Shop = () => {
     <FlipCard
         name="Alaric Gemwright"
         description="Master jeweler of unmatched skill, crafts exquisite pieces sought after by royalty. Renowned for their intricate designs and flawless craftsmanship, his creations blend elegance, precision, and a touch of magic. Those who wear them often claim to feel imbued with grace and prestige."
-        merchantId="seller1"
+        merchantId="jeweler"
         profession='jeweler'
       />
       <FlipCard
         name="Eadric Steelwright"
         description="Eadric Steelwright, master armorer of the north, forges armor of unmatched strength and beauty, crafted to endure the fiercest battles. Each strike of his hammer echoes like a vow of victory, creating symbols of honor and resilience treasured by warriors and kings."
-        merchantId="seller2"
+        merchantId="armorsmith"
         profession='armorsmith'
       />
       <FlipCard
         name="Quintus Wildbrew"
         description="Quintus Wildbrew, the eccentric alchemist, is known for his chaotic experiments and unpredictable potions. His shop, filled with bubbling cauldrons and glowing vials, attracts adventurers seeking rare ingredients and daring creations."
-        merchantId="seller3"
+        merchantId="alchemist"
         profession='alchemist'
       />
       <FlipCard
         name="Draven Ironvalor"
         description="Draven Ironvalor, the legendary master of shields and weapons, is revered by warriors and kings. In his blazing forge, he crafts shields and blades so sharp they sing in battle. Each strike of his hammer is a promise of strength, and his masterpieces tell stories of valor and offer unmatched protection."
-        merchantId="seller4"
+        merchantId="weaponsmith"
         profession='weaponsmith'
       />
         <FlipCard
