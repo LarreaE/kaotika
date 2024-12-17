@@ -31,15 +31,15 @@ const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeMod
               </div>
               {/* Nombre, descripción y botón de venta */}
               <div className="w-2/3 flex flex-col justify-center items-center text-center">
-                <p className="text-white text-3xl font-bold mb-4">
+                <p className="text-white text-5xl font-bold mb-4">
                   {selectedItem?.name || 'Unnamed Item'}
                 </p>
-                <p className="text-white text-xl mb-6">
+                <p className="text-white text-3xl mb-6">
                   {selectedItem?.description || 'No description available.'}
                 </p>
                 <button
                   onClick={handleSellClick} // Usamos la nueva función aquí
-                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                  className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
                   Sell for {Math.floor(selectedItem.value / 3)}
                 </button>
               </div>
@@ -65,21 +65,21 @@ const SellItemDetailModal = ({ selectedItem, currentAttributes, player, closeMod
               </div>
               {/* Descripción y acciones */}
               <div className="w-1/3 flex flex-col justify-center items-center text-center">
-                <p className="text-white text-2xl mb-6 p-2">
-                  {selectedItem?.description || 'Selecciona un elemento para ver sus estadísticas.'}
+                <p className="text-white text-3xl mb-6 p-2">
+                  {selectedItem?.description || 'Select an item to view stats.'}
                 </p>
                 {selectedItem ? (
                   <ItemBaseStats selectedItem={selectedItem} player={player} />
                 ) : (
-                  <div className="text-center text-gray-500 italic">
-                    Selecciona un elemento para ver sus estadísticas.
+                  <div className="text-center text-4xl text-white italic">
+                    Select an item to view stats.
                   </div>
                 )}
                 <div className="flex space-x-4 mt-auto p-2">
                   {selectedItem && (
                     <button
                       onClick={handleSellClick} // Usamos la nueva función aquí
-                      className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+                      className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
                       Sell for {Math.floor(selectedItem.value / 3)}
                     </button>
                   )}

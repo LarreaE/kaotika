@@ -88,16 +88,16 @@ const ItemCard: React.FC<ItemCardProps> = ({
           alt={item.name || "Unnamed Item"}
           className="w-24 h-24 mb-2 object-contain"
         />
-        <strong className="text-gray-200 text-center text-3xl font-semibold px-2 truncate w-full">
+        <strong className="text-gray-200 text-center text-4xl font-semibold px-2 truncate w-full">
           {item.name || "Unnamed Item"}
         </strong>
-        <div className="text-gray-300 text-2xl font-medium mt-1">
+        <div className="text-gray-300 text-3xl font-medium mt-1">
           Price: {item.value || "N/A"} gold
         </div>
 
         <div className="flex space-x-2 mt-auto pt-2">
           <button
-             className="bg-black bg-opacity-70 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+             className="bg-black bg-opacity-70 text-white text-2xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
             onClick={(e) => {
               e.stopPropagation();
               openBuyConfirmationModal();
@@ -106,7 +106,7 @@ const ItemCard: React.FC<ItemCardProps> = ({
             Buy Now
           </button>
           <button
-             className="bg-black bg-opacity-70 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+             className="bg-black bg-opacity-70 text-white text-2xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
             onClick={(e) => {
               e.stopPropagation();
               addToCart();

@@ -68,7 +68,7 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
             />
 
             {/* Descripción */}
-            <p className="mb-4 text-xl text-white">{confirmationDetails.item.description}</p>
+            <p className="mb-4 text-3xl text-white">{confirmationDetails.item.description}</p>
 
             <p className="mb-4 text-3xl text-white">
               Total: <strong>{totalCost}</strong> gold
@@ -78,14 +78,14 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
               <div className="flex justify-center items-center gap-4 mb-4">
                 <button
                   onClick={onDecrement}
-                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                  className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                 >
                   -
                 </button>
                 <span className="text-3xl text-white">{quantity}</span>
                 <button
                   onClick={onIncrement}
-                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                  className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                 >
                   +
                 </button>
@@ -97,12 +97,12 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
         <div className="flex justify-around mt-4">
           <button
             onClick={onConfirm}  // Confirmar compra
-            className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+            className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
             Confirm
           </button>
           <button
             onClick={() => setIsConfirming(false)} // Cancelar
-            className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+            className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
             Cancel
           </button>
         </div>

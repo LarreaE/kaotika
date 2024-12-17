@@ -58,7 +58,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
                 <p className="text-white text-3xl font-bold mb-4">
                   {selectedItem?.name || 'Unnamed Item'}
                 </p>
-                <p className="text-white text-xl mb-6">
+                <p className="text-white text-3xl mb-6">
                   {selectedItem?.description || 'No description available.'}
                 </p>
                 <button
@@ -66,7 +66,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
                     e.stopPropagation();
                     openBuyConfirmationModal(); // Abrir el modal de confirmación o mostrar error
                   }}
-                  className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                  className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                 >
                   Buy for {itemPrice}
                 </button>
@@ -94,14 +94,14 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
               </div>
               {/* Descripción y acciones */}
               <div className="w-1/3 flex flex-col justify-center items-center text-center">
-                <p className="text-white text-2xl mb-6 p-2">
-                  {selectedItem?.description || 'Selecciona un elemento para ver sus estadísticas.'}
+                <p className="text-white text-3xl mb-6 p-2">
+                  {selectedItem?.description || 'Select an item to view stats.'}
                 </p>
                 {selectedItem ? (
                   <ItemBaseStats selectedItem={selectedItem} player={player} />
                 ) : (
-                  <div className="text-center text-gray-500 italic w-full">
-                    Selecciona un elemento para ver sus estadísticas.
+                  <div className="text-center text-4xl text-white italic">
+                    Select an item to view stats.
                   </div>
                 )}
                 <div className="flex space-x-4 mt-auto p-2">
@@ -111,7 +111,7 @@ const ItemDetailModal = ({ selectedItem, currentAttributes, player, closeModal, 
                         e.stopPropagation();
                         openBuyConfirmationModal(); // Abrir el modal de confirmación o mostrar error
                       }}
-                      className="bg-black bg-opacity-70 text-white text-xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
+                      className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2"
                     >
                       Buy for {itemPrice}
                     </button>

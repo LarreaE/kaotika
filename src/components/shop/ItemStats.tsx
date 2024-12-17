@@ -22,8 +22,8 @@ interface ItemStatsProps {
 const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   if (!selectedItem) {
     return (
-      <div className="text-center text-gray-500 italic">
-        Selecciona un elemento para ver sus estadísticas.
+      <div className="text-center text-4xl text-white italic">
+        Select an item to view stats.
       </div>
     );
   }

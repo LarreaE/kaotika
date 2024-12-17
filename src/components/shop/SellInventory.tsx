@@ -64,7 +64,7 @@ const SellInventory: React.FC<InventoryProps> = ({ player, GRID_NUMBER, selectIt
             key={ingredient._id}
             className="flex justify-center items-center bg-black/30 aspect-square relative"
           >
-            <div className="text-2xl absolute top-0 right-0 bg-black bg-opacity-70 w-[30px] h-[30px] rounded-md flex items-center justify-center">
+            <div className="text-3xl absolute top-0 right-0 bg-black bg-opacity-70 w-[30px] h-[30px] rounded-md flex items-center justify-center border border-sepia">
               <span>{ingredient.qty}</span>
             </div>
             <div className="w-full h-full flex justify-center items-center overflow-hidden rounded-lg border-2 border-sepia">
