@@ -22,6 +22,7 @@ const MerchantPage = () => {
     image: string;
     value: number;
     type: string;
+    quantity: number;
   }
 
   const { data: session, status } = useSession();
@@ -328,7 +329,6 @@ const MerchantPage = () => {
               ) : (
                 <ItemStats
                   selectedItem={selectedItem}
-                  atributtes={currentAttributes}
                   player={player}
                 />
               )}

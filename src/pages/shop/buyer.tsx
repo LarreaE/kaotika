@@ -41,7 +41,7 @@ const MerchantPage: React.FC = () => {
   const [player, setPlayer] = useState<Player>();
   const [error, setError] = useState<string | null>(null);
   const [availableMoney, setAvailableMoney] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Item | any>(null);
   const [currentAttributes, setCurrentAttributes] = useState<Modifier>();
 
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
@@ -237,7 +237,6 @@ const MerchantPage: React.FC = () => {
             ) : (
               <ItemStats
                 selectedItem={selectedItem}
-                atributtes={currentAttributes}
                 player={player}
               />
             )}

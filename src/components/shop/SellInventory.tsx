@@ -25,9 +25,9 @@ interface Player {
 
 // Propiedades del componente SellInventory
 interface InventoryProps {
-  player: Player | null; // Puede ser null si el jugador no está disponible
+  player: Player | any; // Puede ser null si el jugador no está disponible
   GRID_NUMBER: number;   // Número total de casillas en la cuadrícula
-  selectItem: (item: InventoryItem) => void;  // Función para seleccionar un ítem
+  selectItem: (item: InventoryItem) => void | any;  // Función para seleccionar un ítem
 }
 
 const SellInventory: React.FC<InventoryProps> = ({ player, GRID_NUMBER, selectItem }) => {

@@ -12,11 +12,11 @@ import { Modifier } from '@/_common/interfaces/Modifier';
 import { Player } from '@/_common/interfaces/Player';
 import populatePlayer from '@/helpers/populatePlayer';
 
-type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
+type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield | any;
 
 interface ItemStatsProps {
   selectedItem: Item | null;
-  player: Player | undefined;
+  player: Player | any;
 }
 
 const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
@@ -51,7 +51,7 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   ];
 
   // Función para calcular los atributos totales del jugador, excluyendo las pociones
-  const calculateTotalAttributes = (player: Player): Modifier => {
+  const calculateTotalAttributes = (player: Player | any): Modifier => {
     const totalAttributes: Modifier = {};
 
     // Inicializar los atributos con los valores base del jugador
@@ -261,7 +261,7 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
   
       return (
         <div className="mb-4">
-          <ProgressBar label={label} value={totalNewDefense} maxValue={maxValue} barColor={barColor} />
+          <ProgressBar label={label} value={totalNewDefense} maxValue={maxValue}/>
         </div>
       );
     }
