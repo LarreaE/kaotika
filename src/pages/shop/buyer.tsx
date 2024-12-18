@@ -93,23 +93,23 @@ const MerchantPage: React.FC = () => {
       const sellValue = Math.floor(item.value / 3);
       console.log('Calculated sell value per item:', sellValue);
 
-      for (let i = 0; i < quantity; i++) {
-        console.log(`Selling item #${i + 1}`);
-        const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantity}));
+      const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantity }));      
 
-        const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
+      const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
 
-        if (res.status === 200) {
-          const response = await res.json();
-          console.log('Server response after sale:', response);
-          setPlayer(response);
-          setAvailableMoney(response.gold);
-          setSelectedItem(null)
-        } else {
-          setError('Failed to sell');
-          console.error('Failed to sell. Status:', res.status);
-          break;
-        }
+
+      console.log(quantity);
+      
+
+      if (res.status === 200) {
+        const response = await res.json();
+        console.log('Server response after sale:', response);
+        setPlayer(response);
+        setAvailableMoney(response.gold);
+        setSelectedItem(null)
+      } else {
+        setError('Failed to sell');
+        console.error('Failed to sell. Status:', res.status);
       }
     } catch (error) {
       console.error('Failed to complete sell:', error);
