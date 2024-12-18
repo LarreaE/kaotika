@@ -3,7 +3,7 @@ import { Progress } from '@nextui-org/react';
 import React from 'react';
 
 interface Props {
-  label: React.JSX.Element;
+  label: string | any;
   value: number | undefined;
   maxValue: number;
   barColor: string;

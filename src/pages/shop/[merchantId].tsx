@@ -22,6 +22,7 @@ const MerchantPage = () => {
     image: string;
     value: number;
     type: string;
+    quantity: number;
   }
 
   const { data: session, status } = useSession();
@@ -246,9 +247,9 @@ const MerchantPage = () => {
         {/* Visualización del oro del jugador en la esquina superior derecha */}
         {player && (
           <div className="absolute mt-[70%]top-4 right-4 w-auto p-2 bg-black/40 border-sepia border-2 flex items-center justify-between rounded-lg shadow">
-            <div className="text-white text-2xl font-bold">Gold</div>
+            <div className="text-white text-3xl font-bold">Gold</div>
             <div className="flex items-center ml-2">
-              <p className="text-white text-3xl font-bold">{player.gold}</p>
+              <p className="text-white text-4xl font-bold">{player.gold}</p>
               <img
                 src="/images/shop/gold.png"
                 alt="gold coin"
@@ -302,7 +303,7 @@ const MerchantPage = () => {
 
             {/* Título del Merchant */}
             <div className="flex justify-center mb-4">
-              <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-lg tracking-wide">
+              <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-2xl tracking-wide">
                 Merchant {merchantId}
               </div>
             </div>
@@ -319,8 +320,8 @@ const MerchantPage = () => {
               {selectedItem?.type === 'ingredient' ? (
                 <div>
                   <h2 className="text-3xl font-bold mb-4 text-center">{selectedItem.name}</h2>
-                  <p className="text-xl text-center">{selectedItem.description}</p>
-                  <p className="text-xl text-center">
+                  <p className="text-3xl text-center">{selectedItem.description}</p>
+                  <p className="text-3xl text-center">
                     {selectedItem.effects[0].replace(/_/g, ' ')}
                   </p>
 
@@ -328,7 +329,6 @@ const MerchantPage = () => {
               ) : (
                 <ItemStats
                   selectedItem={selectedItem}
-                  atributtes={currentAttributes}
                   player={player}
                 />
               )}

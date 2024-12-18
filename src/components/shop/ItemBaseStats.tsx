@@ -14,15 +14,15 @@ import { Player } from '@/_common/interfaces/Player';
 type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
 
 interface ItemBaseStatsProps {
-  selectedItem: Item | null;
-  player: Player;
+  selectedItem: Item | any;
+  player: Player | any;
 }
 
 const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) => {
   if (!selectedItem) {
     return (
-      <div className="text-center text-gray-500 italic">
-        Selecciona un elemento para ver sus estadísticas.
+      <div className="text-center text-4xl text-white italic">
+        Select an item to view stats.
       </div>
     );
   }

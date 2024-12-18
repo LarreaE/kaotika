@@ -16,7 +16,7 @@ const SellItemCard: React.FC<SellItemCardProps> = ({ selectedItem }) => {
   return (
     <div className="w-3/5 h-4/6 p-4 bg-black bg-opacity-70 flex flex-col items-center rounded-2xl shadow-lg border-4 border-sepia">
       <div className="w-full text-center bg-medievalSepia py-2 rounded-t-2xl">
-        <p className="text-black text-4xl font-bold">
+        <p className="text-black text-5xl font-bold">
           {selectedItem?.name || 'Select any item'}
         </p>
       </div>
@@ -41,7 +41,7 @@ const SellItemCard: React.FC<SellItemCardProps> = ({ selectedItem }) => {
       
       {selectedItem && (
         <div className="w-auto -bottom-12 mt-auto text-center bg-medievalSepia py-1 px-2 rounded-2xl flex flex-row items-center justify-center relative">
-          <p className="text-black text-4xl font-bold mr-2">{selectedItem.value}</p>
+          <p className="text-black text-5xl font-bold mr-2">{selectedItem.value}</p>
           <img
             src="/images/shop/gold.png"
             alt="gold coin"
