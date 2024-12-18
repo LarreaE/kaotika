@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         value: number;
         isUnique: boolean;
         isActive: boolean;
+        quantity: number;  // Asegúrate de que `quantity` está aquí
     }
 
     interface Player {
@@ -21,9 +22,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         };
     }
 
-    const { playerEmail, item, quantity } = req.query;
+    // Obtenemos los parámetros de la query string
+    const { playerEmail } = req.query;
+    const item = req.query.item;
+
+    if (!item || !playerEmail) {
+        return res.status(400).json({ error: "Item o playerEmail son requeridos." });
+    }
+
+    const itemObj: Item = JSON.parse(decodeURIComponent(item as string));
+    console.log(`Item decodificado:`, itemObj);
+    
+    // Usamos quantity desde el objeto item, no desde la URL
+    const quantity = itemObj.quantity || 1;
+    console.log(`Cantidad de artículos a procesar: ${quantity}`);
 
     const removeItemFromInventory = async (player: any, types: string, _id: string, quantity: number) => {
+        console.log(`Eliminando ${quantity} artículos del inventario`);
+
         const type = transformStringLowerPlural(types);
         if (player.inventory[type]) {
             console.log(`Inventario antes de la eliminación:`, player.inventory[type]);
@@ -57,6 +73,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     };
 
     const transferItemAndPayPlayer = async (player: Player, itemType: string, itemId: string, quantity: number) => {
+        console.log(`Iniciando transferencia de ${quantity} artículos`);
+
         try {
             const collectionName = transformStringSingular(itemType);
             const model = mongoose.models[collectionName];
@@ -76,7 +94,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 console.log(`${item.name} es único, cambiando isActive para añadirlo al grupo de botín disponible`);
                 await model.updateOne({ _id: item._id }, { $set: { isActive: true } });
             }
-
+            console.log("La cantidad de objetos total a vender es de " + quantity);
+            
             // Eliminar el artículo del inventario la cantidad de veces seleccionada
             await removeItemFromInventory(player, item.type, item._id.toString(), quantity);
             payPlayer(player, item, quantity);
@@ -89,10 +108,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         }
     };
 
-    if (!item || !playerEmail) {
-        return res.status(400).json({ error: "Item o playerEmail son requeridos." });
-    }
-
     try {
         const player = await Player.findOne({ email: playerEmail });
 
@@ -100,16 +115,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(404).json({ error: "Jugador no encontrado." });
         }
 
-        const itemsArr = Array.isArray(item) ? item[0] : item;
-        const itemObj: Item = JSON.parse(decodeURIComponent(itemsArr));
-        console.log(`Procesando artículo con _id: ${itemObj._id}`);
-
         // Validar el formato del _id
         if (!mongoose.Types.ObjectId.isValid(itemObj._id)) {
             return res.status(400).json({ error: 'Formato de _id de artículo inválido.' });
         }
 
-        const quantity = req.body.quantity || 1;  // La cantidad se pasa en el cuerpo de la solicitud
         console.log(`Cantidad de artículos seleccionados: ${quantity}`);
 
         let newPlayer = player;
@@ -134,7 +144,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         );
 
         const populatedPlayer = await populatePlayer(updatedPlayer._id);
-        console.log('Jugador actualizado:', populatedPlayer);
         res.status(200).json(populatedPlayer);
 
     } catch (error) {

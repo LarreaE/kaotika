@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     // Redirigir al usuario a /player si está en la raíz
     if (router.pathname === '/') {
-      router.push('/player');
+      router.push('/shop');
     }
   }, [router]);
 
