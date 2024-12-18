@@ -14,8 +14,8 @@ import { Player } from '@/_common/interfaces/Player';
 type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield;
 
 interface ItemBaseStatsProps {
-  selectedItem: Item | null;
-  player: Player;
+  selectedItem: Item | any;
+  player: Player | any;
 }
 
 const ItemBaseStats: React.FC<ItemBaseStatsProps> = ({ selectedItem, player }) => {

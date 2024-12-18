@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         };
     }
 
-    const { playerEmail, item } = req.query;
+    const { playerEmail, item, quantity } = req.query;
 
     const removeItemFromInventory = async (player: any, types: string, _id: string, quantity: number) => {
         const type = transformStringLowerPlural(types);

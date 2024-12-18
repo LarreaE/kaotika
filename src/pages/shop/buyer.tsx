@@ -38,7 +38,7 @@ const MerchantPage: React.FC = () => {
 
   const [items, setItems] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [player, setPlayer] = useState<Player>();
+  const [player, setPlayer] = useState<Player | any>();
   const [error, setError] = useState<string | null>(null);
   const [availableMoney, setAvailableMoney] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<Item | any>(null);
@@ -84,43 +84,36 @@ const MerchantPage: React.FC = () => {
   }, [player]);
 
   const handleSell = async (item, quantity) => {
-    console.log('Handling sell for item:', item); // Log para ver el artículo que se está vendiendo
-    console.log('Quantity to sell:', quantity); // Log para verificar la cantidad seleccionada
 
     if (!item || !player || quantity < 1) return;
 
     try {
       setLoading(true);
 
-      // Calcular el valor de la venta por unidad
       const sellValue = Math.floor(item.value / 3);
-      console.log('Calculated sell value per item:', sellValue); // Log para ver el valor calculado de la venta por artículo
+      console.log('Calculated sell value per item:', sellValue);
 
-      // Realizar la venta por la cantidad seleccionada
       for (let i = 0; i < quantity; i++) {
         console.log(`Selling item #${i + 1}`);
-
-        // Codificar el artículo
-        const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantityToSell: 1 }));
+        const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantity}));
 
         // Enviar la venta al backend
         const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
-        console.log('Response from server for sale #', i + 1, ':', res); // Log para la respuesta del servidor por cada venta
 
         if (res.status === 200) {
           const response = await res.json();
-          console.log('Server response after sale:', response); // Log para la respuesta del servidor después de cada venta
+          console.log('Server response after sale:', response);
           setPlayer(response);
-          setAvailableMoney(response.gold); // Actualiza el oro disponible después de cada venta
+          setAvailableMoney(response.gold);
           setSelectedItem(null)
         } else {
           setError('Failed to sell');
-          console.error('Failed to sell. Status:', res.status); // Log para errores de venta
-          break; // Si ocurre un error, salir del bucle
+          console.error('Failed to sell. Status:', res.status);
+          break;
         }
       }
     } catch (error) {
-      console.error('Failed to complete sell:', error); // Log para errores en el proceso
+      console.error('Failed to complete sell:', error);
       setError('Failed to sell');
     } finally {
       setLoading(false);

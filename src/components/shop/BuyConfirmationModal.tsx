@@ -12,7 +12,7 @@ interface BuyConfirmationModalProps {
       image: string;
       effects: string[];
       type: string;
-    };
+    } | any;
   };
   handleBuy: (item: any, quantity: number) => void; // Necesitamos la cantidad para la compra
   setIsConfirming: React.Dispatch<React.SetStateAction<boolean>>;
@@ -96,14 +96,14 @@ const BuyConfirmationModal: React.FC<BuyConfirmationModalProps> = ({
         )}
         <div className="flex justify-around mt-4">
           <button
-            onClick={onConfirm}  // Confirmar compra
-            className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
-            Confirm
-          </button>
-          <button
             onClick={() => setIsConfirming(false)} // Cancelar
             className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
             Cancel
+          </button>
+          <button
+            onClick={onConfirm}  // Confirmar compra
+            className="bg-black bg-opacity-70 text-white text-3xl font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2">
+            Confirm
           </button>
         </div>
       </div>

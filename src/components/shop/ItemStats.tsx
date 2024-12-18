@@ -52,7 +52,7 @@ const ItemStats: React.FC<ItemStatsProps> = ({ selectedItem, player }) => {
 
   // Función para calcular los atributos totales del jugador, excluyendo las pociones
   const calculateTotalAttributes = (player: Player | any): Modifier => {
-    const totalAttributes: Modifier = {};
+    const totalAttributes: Modifier | any = {};
 
     // Inicializar los atributos con los valores base del jugador
     for (const attr of attributesToDisplay) {
