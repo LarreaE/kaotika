@@ -83,30 +83,29 @@ const MerchantPage: React.FC = () => {
     }
   }, [player]);
 
-  const handleSell = async (item, quantity) => {
-
+  const handleSell = async (item: Item, quantity: number) => {
+    // Aseguramos que `item` no sea nulo y que `quantity` sea un número positivo
     if (!item || !player || quantity < 1) return;
-
+  
     try {
       setLoading(true);
-
+  
+      // Calculamos el valor de la venta
       const sellValue = Math.floor(item.value / 3);
       console.log('Calculated sell value per item:', sellValue);
-
-      const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantity }));      
-
+  
+      // Codificamos el artículo con su cantidad
+      const encodedItem = encodeURIComponent(JSON.stringify({ ...item, quantity }));
+  
+      // Hacemos la petición al servidor para vender el artículo
       const res = await fetch(`/api/shop/sell/${player?.email}/${encodedItem}`);
-
-
-      console.log(quantity);
-      
-
+  
       if (res.status === 200) {
         const response = await res.json();
         console.log('Server response after sale:', response);
         setPlayer(response);
         setAvailableMoney(response.gold);
-        setSelectedItem(null)
+        setSelectedItem(null);  // Desmarcamos el artículo seleccionado
       } else {
         setError('Failed to sell');
         console.error('Failed to sell. Status:', res.status);

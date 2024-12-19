@@ -18,7 +18,7 @@ interface ConfirmationDetails {
 
 interface SellConfirmationModalProps {
   confirmationDetails: ConfirmationDetails | any;
-  handleSell: (item: Item, quantity: number) => void;
+  handleSell: (item: Item | any, quantity: number | any) => void;
   setIsConfirming: (isConfirming: boolean) => void;
 }
 
