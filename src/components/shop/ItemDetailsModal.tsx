@@ -141,6 +141,7 @@ const ItemDetailModal = ({
         />
       )}
       {error && <NotEnoughMoneyModal errorMessage={error} closeModal={closeErrorModal} />}
+    </div>
   );
 };
 
