@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SERVER_URL } from '@/constants/constants';
 import '../../../DB/mongoose/config.js';
-import { retrieveAllEquipments } from '../../../helpers/retrieveAllEquipments.js';
 import { populatePlayer } from '@/helpers/populatePlayer';
 
 import {
