@@ -4,7 +4,6 @@ import "../styles/globals.css";
 import { NextUIProvider } from "@nextui-org/react";
 import Head from "next/head";
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -20,13 +19,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     refreshToken: "",
     email: "eneko.larrea@ikasle.aeg.eus",
   };
-
-  useEffect(() => {
-    // Redirigir al usuario a /player si está en la raíz
-    if (router.pathname === '/') {
-      router.push('/shop');
-    }
-  }, [router]);
 
   return (
     <SessionProvider session={mockSession}>
