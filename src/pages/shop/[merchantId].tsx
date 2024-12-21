@@ -12,6 +12,7 @@ import CartPreview from '@/components/shop/CartPreview';
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { transformStringLowerPlural } from '@/helpers/transformString';
+import NotEnoughMoneyModal from '@/components/shop/ NotEnoughMoneyModal';
 
 const MerchantPage = () => {
 
@@ -91,7 +92,7 @@ const MerchantPage = () => {
     }
   }, [session]);
 
-  useEffect(() => {
+  useEffect(() => {availableMoney
     if (player) {
       calculateAllAttributes(player, setCurrentAttributes);
       setAvailableMoney(player?.gold || 0);
@@ -162,15 +163,13 @@ const MerchantPage = () => {
       if (currentQuantity > 1) {
         updatedCartItems[existingItemIndex].quantity -= 1;
       } else {
-        updatedCartItems.splice(existingItemIndex, 1); // Eliminar el ítem completamente si la cantidad es 1
+        updatedCartItems.splice(existingItemIndex, 1);
       }
 
       setCartItems(updatedCartItems);
-      setAvailableMoney((prev) => prev + item.value); // Sumamos el valor de un ítem al dinero disponible
+      setAvailableMoney((prev) => prev + item.value);
     }
   };
-
-
 
   const handleAddToCart = (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null);
@@ -178,13 +177,18 @@ const MerchantPage = () => {
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.item._id === item._id);
 
     if (item.type === 'ingredient') {
-      if (existingItemIndex !== -1) {
+      if (existingItemIndex !== -1 && availableMoney >= item.value) {
         const updatedCartItems = [...cartItems];
         updatedCartItems[existingItemIndex].quantity += 1;
         setCartItems(updatedCartItems);
-      } else {
+      } else if (availableMoney <= item.value) {
+        setError("You don't have enough gold to buy this item.");
+      }
+      else {
         setCartItems([...cartItems, { item, quantity: 1 }]);
       }
+      
+
       setAvailableMoney((prev) => prev - item.value);
     }
     else {
@@ -243,7 +247,6 @@ const MerchantPage = () => {
     <Layout>
       {loading && <Loading />}
       <div className="relative">
-        {/* Visualización del oro del jugador en la esquina superior derecha */}
         {player && (
           <div className="absolute mt-[70%]top-4 right-4 w-auto p-2 bg-black/40 border-sepia border-2 flex items-center justify-between rounded-lg shadow">
             <div className="text-white text-3xl font-bold">Gold</div>
@@ -257,26 +260,18 @@ const MerchantPage = () => {
             </div>
           </div>
         )}
-
-        {/* Botón para regresar */}
         <button
           onClick={() => router.back()}
           className="absolute top-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded hover:bg-neutral-800 hover:bg-opacity-70 border-sepia border-2 z-10"
         >
           ←
         </button>
-
-        {/* Contenedor principal con la disposición del merchant */}
         <div className="flex">
-          {/* Franja izquierda con estilo tipo Skyrim */}
           <div className="w-[30%] p-4 relative bg-black/60 border border-sepia text-gray-200 rounded shadow-lg">
-            {/* Esquinas decorativas */}
             <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-sepia"></div>
             <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-sepia"></div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-sepia"></div>
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-sepia"></div>
-
-            {/* Botón del carrito absolutamente posicionado en la esquina superior derecha */}
             <div className="absolute top-4 right-4">
               <button
                 onClick={() => setShowCartModal(true)}
@@ -299,8 +294,6 @@ const MerchantPage = () => {
                 </svg>
               </button>
             </div>
-
-            {/* Título del Merchant */}
             <div className="flex justify-center mb-4">
               <div className="px-4 py-1 bg-black/40 border border-sepia uppercase font-bold text-2xl tracking-wide">
                 Merchant {merchantId}
@@ -308,11 +301,11 @@ const MerchantPage = () => {
             </div>
 
             <div className="mb-4 flex justify-center">
-            <img
-              src={`/images/sellers/${merchantId}.png`}
-              alt={`Merchant ${merchantId}`}
-              className="object-contain h-32"
-            />
+              <img
+                src={`/images/sellers/${merchantId}.png`}
+                alt={`Merchant ${merchantId}`}
+                className="object-contain h-32"
+              />
             </div>
 
             <div className="border-t border-sepia pt-4">
@@ -334,8 +327,6 @@ const MerchantPage = () => {
             </div>
 
           </div>
-
-          {/* Contenido principal */}
           <div className="w-3/4 p-4 mt-12">
             <ItemCarousel
               items={allItems}
@@ -348,8 +339,6 @@ const MerchantPage = () => {
 
         </div>
       </div>
-
-      {/* Modal del CartPreview */}
       {showCartModal && (
         <div
           className="fixed inset-0 z-50 flex justify-center items-end bg-black bg-opacity-50"
@@ -360,7 +349,6 @@ const MerchantPage = () => {
             style={{ transition: 'transform 0.3s ease-in-out' }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Botón para cerrar el modal */}
             <button
               className="absolute top-[12%] right-[13%] text-gray-400 hover:text-gray-900 z-51"
               onClick={() => setShowCartModal(false)}
@@ -377,7 +365,7 @@ const MerchantPage = () => {
               onClose={onClose}
               handleAddToCart={handleAddToCart}
               handleDecreaseQuantity={handleDecreaseQuantity}
-              player={player}  // Pass player here
+              player={player}
             />
           </div>
         </div>
