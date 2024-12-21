@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     user: {
       name: "ENEKO LARREA PEREZ",
       email: "eneko.larrea@ikasle.aeg.eus",
-      image: "",
+      image: "https://lh3.googleusercontent.com/a-/ALV-UjW79byZC_JXJCJrG0AsR_UyQdUoLxTi5YQ5W-4oD4UbHC1NI3Mo",
     },
     expires: "2025-12-31T23:59:59.999",
     accessToken: "",

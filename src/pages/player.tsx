@@ -80,7 +80,7 @@ const PlayerPage = () => {
       const fetchPlayerData = async () => {
         try {
           setLoading(true);
-          const res = await fetch(`/api/player/check-registration?email=${session.user?.email}`);
+          const res = await fetch(`/api/shop/player?email=${session.user?.email}`);
           if (res.status === 200) {
             const response = await res.json();            
             setCurrentEquipment(response.equipment);

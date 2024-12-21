@@ -10,7 +10,7 @@ import { Ring } from '@/_common/interfaces/Ring';
 import { Shield } from '@/_common/interfaces/Shield';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { Player } from '@/_common/interfaces/Player';
-import populatePlayer from '@/helpers/populatePlayer';
+
 
 type Item = Weapon | Armor | Boot | Helmet | Artifact | Ring | Shield | any;
 

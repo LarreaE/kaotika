@@ -12,7 +12,6 @@ import CartPreview from '@/components/shop/CartPreview';
 import { calculateAllAttributes } from '@/helpers/PlayerAttributes';
 import { Modifier } from '@/_common/interfaces/Modifier';
 import { transformStringLowerPlural } from '@/helpers/transformString';
-import populatePlayer from '@/helpers/populatePlayer';
 
 const MerchantPage = () => {
 
@@ -70,7 +69,7 @@ const MerchantPage = () => {
         try {
           setLoading(true);
           const res = await fetch(
-            `/api/player/check-registration?email=${session.user?.email}`
+            `/api/shop/player?email=${session.user?.email}`
           );
           if (res.status === 200) {
             const response = await res.json();

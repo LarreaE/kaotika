@@ -17,7 +17,7 @@ const Home = () => {
       const email = session?.user?.email || '';
       const fetchPlayer = async () => {
         try {        
-          const res = await fetch(`/api/player/check-registration?email=${email}`);
+          const res = await fetch(`/api/shop/player?email=${email}`);
           if(res.status === 200 && email.endsWith(ACOLYTE_EMAIL)) router.push('/player');
           if(res.status === 200 && email.endsWith(MENTOR_EMAIL)) router.push('/dashboard'); 
           if(res.status === 404) router.push('/welcome');           

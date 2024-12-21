@@ -25,7 +25,6 @@ import { Helmet } from '@/_common/interfaces/Helmet';
 import { Ring } from '@/_common/interfaces/Ring';
 import { Shield } from '@/_common/interfaces/Shield';
 import { Weapon } from '@/_common/interfaces/Weapon';
-import populatePlayer from '@/helpers/populatePlayer';
 
 const MerchantPage: React.FC = () => {
 
@@ -54,7 +53,7 @@ const MerchantPage: React.FC = () => {
         try {
           setLoading(true);
           const res = await fetch(
-            `/api/player/check-registration?email=${session.user?.email}`
+            `/api/shop/player?email=${session.user?.email}`
           );
           if (res.status === 200) {
             const response = await res.json();
