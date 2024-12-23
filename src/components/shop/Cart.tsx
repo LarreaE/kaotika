@@ -49,38 +49,28 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
     try {
       setLoading(true);
   
-      // Preparamos los artículos para enviarlos. Aquí repetimos la acción de envío por la cantidad de cada artículo.
-      for (const cartItem of items) {
-        // Enviamos la misma petición por cada unidad de un artículo
-        for (let i = 0; i < cartItem.quantity; i++) {
-          const simplifiedItem = {
-            name: cartItem.item.name,
-            type: cartItem.item.type,
-            quantity: 1, // Como estamos enviando uno por vez, la cantidad será 1
-          };
+      const simplifiedItems = items.map((cartItem) => ({
+        name: cartItem.item.name,
+        type: cartItem.item.type,
+        quantity: cartItem.quantity,
+      }));
   
-          const encodedItem = encodeURIComponent(JSON.stringify([simplifiedItem])); // Convertimos a string y lo codificamos
-          console.log("Sending purchase request with item:", simplifiedItem);
+      const encodedItems = encodeURIComponent(JSON.stringify(simplifiedItems));
+      console.log("Sending purchase request with items:", simplifiedItems);
   
-          const res = await fetch(`/api/shop/checkout/${session.email}/${encodedItem}`);
-          if (res.status === 200) {
-            const response = await res.json();
-            console.log("Purchase successful:", response);
-          } else if (res.status === 404) {
-            setError("Item not found.");
-            return; // Detenemos el proceso si no encontramos el artículo
-          } else if (res.status === 400) {
-            setError("Invalid request.");
-            return;
-          } else {
-            setError("An error occurred while purchasing. Please try again.");
-            return;
-          }
-        }
+      const res = await fetch(`/api/shop/checkout/${session.email}/${encodedItems}`);
+      if (res.status === 200) {
+        const response = await res.json();
+        console.log("Purchase successful:", response);
+  
+        setItems([]);
+      } else if (res.status === 404) {
+        setError("Item not found.");
+      } else if (res.status === 400) {
+        setError("Invalid request.");
+      } else {
+        setError("An error occurred while purchasing. Please try again.");
       }
-  
-      // Limpiar el carrito después de realizar todas las compras
-      setItems([]);
     } catch (error) {
       console.error("Failed to complete purchase:", error);
       setError("Failed to complete purchase. Please try again.");
@@ -88,6 +78,8 @@ const Cart: React.FC<CartProps> = ({ Items }) => {
       setLoading(false);
     }
   };
+  
+  
   
   
 

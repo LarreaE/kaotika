@@ -171,35 +171,44 @@ const MerchantPage = () => {
     }
   };
 
-  const handleAddToCart = (item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
+  const handleAddToCart = ( item: Item, player: Player, setError: React.Dispatch<React.SetStateAction<string | null>>) => {
     setError(null);
-
-    const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.item._id === item._id);
-
+    const newAvailableMoney = availableMoney - item.value;
+  
+    const existingItemIndex = cartItems.findIndex(
+      (cartItem) => cartItem.item._id === item._id
+    );
+  
     if (item.type === 'ingredient') {
-      if (existingItemIndex !== -1 && availableMoney >= item.value) {
-        const updatedCartItems = [...cartItems];
-        updatedCartItems[existingItemIndex].quantity += 1;
-        setCartItems(updatedCartItems);
-      } else if (availableMoney <= item.value) {
+      if (existingItemIndex !== -1) {
+        if (availableMoney >= item.value) {
+          const updatedCartItems = [...cartItems];
+          updatedCartItems[existingItemIndex].quantity += 1;
+          setCartItems(updatedCartItems);
+          setAvailableMoney(newAvailableMoney);
+        } else {
+          setError("You don't have enough gold to buy this item.");
+        }
+      } else if (availableMoney >= item.value) {
+        setCartItems([...cartItems, { item, quantity: 1 }]);
+        setAvailableMoney(newAvailableMoney);
+      } else {
         setError("You don't have enough gold to buy this item.");
       }
-      else {
-        setCartItems([...cartItems, { item, quantity: 1 }]);
-      }
-      
-
-      setAvailableMoney((prev) => prev - item.value);
-    }
-    else {
+    } else {
       if (existingItemIndex === -1 && !checkItemInsidePlayer(item, player)) {
-        setCartItems([...cartItems, { item, quantity: 1 }]);
-        setAvailableMoney((prev) => prev - item.value);
+        if (availableMoney >= item.value) {
+          setCartItems([...cartItems, { item, quantity: 1 }]);
+          setAvailableMoney(newAvailableMoney);
+        } else {
+          setError("You don't have enough gold to buy this item.");
+        }
       } else {
         setError('Item already in inventory');
       }
     }
   };
+  
 
 
   const emptyCart = () => {
@@ -220,7 +229,7 @@ const MerchantPage = () => {
 
   const goToCheckout = () => {
     const encodedCartItems = encodeURIComponent(JSON.stringify(cartItems));
-    console.log(encodedCartItems);
+    console.log(encodedCartItems + "un saludo master");
 
     router.push(`/shop/checkout?cart=${encodedCartItems}`);
   };

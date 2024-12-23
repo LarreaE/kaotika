@@ -78,10 +78,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const updatedPlayer = await Player.findOneAndUpdate(
         { _id: player?._id },
         {
-          $set: { inventory: player.inventory }, // adds the inventory of the modified player
-          $inc: { gold: -item.value }, // take out the money
+          $set: { inventory: player.inventory },
+          $inc: { gold: -item.value },
         },
-        { returnDocument: 'after' } //return document after
+        { returnDocument: 'after' }
       );
 
       console.log('Item purchased successfully:', item.value);
